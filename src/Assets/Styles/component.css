@@ -1,0 +1,56 @@
+/** Button Style */
+
+.btn_transparent {
+    transition: 0.4s;
+}
+
+.btn_transparent:hover {
+    background-color: var(--clr-tertiary);
+}
+
+.btn_light {
+    background-color: var(--clr-bg) !important;
+    color: var(--clr-dark);
+    margin: 2em 0;
+    box-shadow: var(--bs-dark) !important;
+}
+
+.btn_light:hover {
+    background-color: var(--clr-primary) !important;
+    color: var(--clr-bg) !important;
+    transition: 0.3s;
+}
+
+.btn_dark {
+    background-color: var(--clr-primary) !important;
+    color: var(--clr-bg) !important;
+    box-shadow: var(--bs-dark) !important;
+}
+
+.btn_dark:hover {
+    background-color: var(--clr-tertiary) !important;
+    color: var(--clr-dark) !important;
+    transition: 0.3s;
+}
+
+/** Button Style End */
+
+
+/** Navigation */
+
+.nav_light {
+    box-shadow: var(--bs-light);
+}
+
+.navbar-account {
+    box-shadow: var(--bs-light);
+}
+
+/** Navigation End */
+
+/** Sidebar */
+
+.sidebar {
+}
+
+/** Sidebar End */
