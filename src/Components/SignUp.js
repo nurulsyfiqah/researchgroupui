@@ -94,6 +94,8 @@ export default function SignUp () {
 
     const submitHandler =(e)=>{
         e.preventDefault();
+        const createAccountPromise = toast.loading("Creating account...")
+        // get the email
         axios({
             method: 'GET',
             url: `${base_url}/signup/getaccountbyemail?email=${input.email}`,
@@ -101,7 +103,7 @@ export default function SignUp () {
             .then(function (response){
                 // warn the user if the email had registered before
                 if (response.data.length > 0) {
-                    toast.error("The email had registered");
+                    toast.update(createAccountPromise, { render: "The email had registered.", type: "error", isLoading: false });
                 } else {
                     // if not register yet, create a new account
                     axios({
@@ -110,10 +112,10 @@ export default function SignUp () {
                         data: input
                     })
                         .then(function (response){
-                            // redirect to login page
+                            toast.update(createAccountPromise, { render: "Your account has been created. You will be redirected to the Login page", type: "success", isLoading: false });
                             window.location.href = `${ui_url}/login`;
                         }, (error)=>{
-                           toast.error("Fail to create Account");
+                            toast.update(createAccountPromise, { render: "Your account fail to be created", type: "error", isLoading: false });
                         });
                 }
             }, (error) => {
@@ -124,12 +126,37 @@ export default function SignUp () {
 
     return (
         <section id="section_login" className="section_login">
-        <ToastContainer />
+        <ToastContainer position="top-center" />
         <div className="section_subtitle">Sign Up</div>
         <div className="container_login">
-          <img className="img-fluid" src={Logo} alt="signup"  />
           <form onSubmit={ submitHandler }>
-            <div className="">
+              <div className="row mt-2">
+                  <div className="col-md-6">
+                      <label htmlFor="firstName" className="form-label">First Name*</label>
+                      <input
+                          type="text"
+                          className="form-control"
+                          id="firstName"
+                          name="firstName"
+                          input={ input.firstName }
+                          onChange={ onInputChange }
+                          onBlur={ validateInput }
+                      />
+                  </div>
+                  <div className="col-md-6">
+                      <label htmlFor="email" className="form-label">Last Name*</label>
+                      <input
+                          type="text"
+                          className="form-control"
+                          id="lastName"
+                          name="lastName"
+                          input={ input.lastName }
+                          onChange={ onInputChange }
+                          onBlur={ validateInput }
+                      />
+                  </div>
+              </div>
+            <div className="mt-2">
               <label htmlFor="email" className="form-label">Email</label>
               <input
                 type="text"
@@ -141,7 +168,7 @@ export default function SignUp () {
                 onBlur={ validateInput }
               />
             </div>
-              {error.email && <span className='text-danger'>{error.email}</span>}
+            <div>{error.email && <span className='text-danger'>{error.email}</span>}</div>
 
             <label htmlFor="password" className="form-label mt-2">Password</label>
             <div className="input-group">
@@ -157,7 +184,7 @@ export default function SignUp () {
               <span className="input-group-text" onClick={ togglePassword }
                 > <div> { (passwordType === "password" ? <HidePassIcon className="hide-pass-icon" /> : <ShowPassIcon className="hide-pass-icon" />) } </div> </span>
             </div>
-              {error.password && <span className='text-danger'>{error.password}</span>}
+              <div> {error.password && <span className='text-danger'>{error.password}</span>}</div>
 
             <label htmlFor="password" className="form-label mt-2">Confirm Password</label>
             <div className="input-group">

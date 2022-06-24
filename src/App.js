@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ReactSession } from 'react-client-session';
 import LandingPage from './Pages/LandingPage'
 import LoginPage from './Pages/LoginPage'
 import SignUpPage from './Pages/SignUpPage'
@@ -17,6 +18,7 @@ import 'react-toastify/dist/ReactToastify.min.css'
 import "./Assets/Styles/style.css"
 
 function App() {
+    ReactSession.setStoreType("localStorage");
   return (
       <Router>
           <Routes>

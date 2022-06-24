@@ -7,6 +7,7 @@ import { GiSoapExperiment as ResearchIcon } from "react-icons/gi";
 import { BiWorld as WebsiteIcon } from "react-icons/bi";
 import { FiLogOut as LogoutIcon } from "react-icons/fi";
 import { MdOutlineArticle as BlogIcon } from "react-icons/md";
+import { BsFillBellFill as ActivityIcon } from "react-icons/bs";
 
 export default function Sidebar({content}) {
 
@@ -52,8 +53,8 @@ export default function Sidebar({content}) {
                         </Link>
                         <div className="nav-list">
                             <Link to="/home" className="nav-link-sidebar active">
-                                <HomeIcon className="nav-link-icon"/>
-                                <span className="nav-link-name">Home</span>
+                                <ActivityIcon className="nav-link-icon"/>
+                                <span className="nav-link-name">Activity</span>
                             </Link>
                             <Link to="/research" className="nav-link-sidebar">
                                 <ResearchIcon className="nav-link-icon"/>

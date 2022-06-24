@@ -2,14 +2,12 @@ import React, {useState} from "react";
 import { Link } from "react-router-dom";
 import { BsFillEyeSlashFill as HidePassIcon,  BsFillEyeFill as ShowPassIcon } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
+import { ReactSession } from 'react-client-session';
 import axios from "axios";
 import base_url from "../Service/serviceapi";
 import ui_url from "../Service/serviceui";
 import TeamLogo from "../Assets/Images/undraw_login_re_4vu2.svg"
 import "../Assets/Styles/component.css"
-
-
-
 
 export default function Login () {
 
@@ -39,7 +37,7 @@ export default function Login () {
 
     const submitHandler =(e)=>{
         e.preventDefault();
-        // check account with the email exist
+        // check account existence with the email
         axios({
             method: 'GET',
             url: `${base_url}/signup/getaccountbyemail?email=${input.email}`,
@@ -50,7 +48,9 @@ export default function Login () {
                 if (response.data.length > 0) {
                     if (response.data[0].password === input.password) {
                         // save the account data in session
-                        sessionStorage.setItem('account', response.data[0]);
+                        // ReactSession.setStoreType("localStorage");
+                        ReactSession.set("account", response.data[0]);
+                        // sessionStorage.setItem('account', response.data);
                         window.location.href = `${ui_url}/home`;
                     } else {
                         toast.error("Wrong Password");
@@ -65,7 +65,7 @@ export default function Login () {
 
     return (
       <section id="section_login" className="section_login">
-        <ToastContainer />
+        <ToastContainer position="top-center" />
         <div className="section_subtitle">Log In</div>
         <div className="container_login">
           <form onSubmit={submitHandler}>
