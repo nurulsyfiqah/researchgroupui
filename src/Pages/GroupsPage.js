@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import GroupCard from "../Components/GroupCard";
-import CreateGroupCard from "../Components/CreateGroupCard";
-import CreateGroupModal from "../Components/CreateGroupModal";
+import GroupCard from "../Components/Group/GroupCard";
+import CreateGroupCard from "../Components/Group/CreateGroupCard";
+import CreateGroupModal from "../Components/Group/CreateGroupModal";
 import Sidebar from "../Components/Sidebar";
 import base_url from "../Service/serviceapi"
 
@@ -28,7 +28,7 @@ function GroupPageComponent() {
             (response)=>{
                 setGroups(response.data)
                 console.log(response.data)
-                toast.info("All Group loaded from Server !!",{position:"top-right"})
+                //toast.info("All Group loaded from Server !!",{position:"top-right"})
             },
             (error)=>{
                 toast.error("Something went wrong on Server. We are looking at it. !!")

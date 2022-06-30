@@ -6,7 +6,7 @@ import { ReactSession } from 'react-client-session';
 import axios from "axios";
 import base_url from "../Service/serviceapi";
 import ui_url from "../Service/serviceui";
-import TeamLogo from "../Assets/Images/undraw_login_re_4vu2.svg"
+import TeamLogo from "../Assets/Images/undraw_unlock_re_a558.svg"
 import "../Assets/Styles/component.css"
 
 export default function Login () {
@@ -96,11 +96,11 @@ export default function Login () {
             <div className="d-grid">
               <button type="submit" className="btn btn_dark">Log In</button>
             </div>
-            <div>
-              <small>No Account? <Link to="/signup">Sign Up!</Link> </small>
+            <div className="mt-2 text-center fw-bold">
+              <small><Link to="/forgotpassword">Forgot Your Password? </Link> </small>
             </div>
           </form>
-          <img className="img-fluid" src={ TeamLogo } alt="team" />
+          <img className="img-fluid me-3" src={ TeamLogo } alt="team" />
         </div>
       </section>
     )

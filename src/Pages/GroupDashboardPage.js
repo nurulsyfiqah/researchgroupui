@@ -1,12 +1,15 @@
-import React, {  useMemo, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
-import { IoPersonAddSharp as AddMemberIcon } from "react-icons/io5";
+import { IoPersonAddSharp as AddMemberIcon, IoAdd as AddAnnouncementIcon } from "react-icons/io5";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import base_url from "../Service/serviceapi"
 import Sidebar from "../Components/Sidebar";
-import MemberList from "../Components/MemberList";
-import AddMemberModal from "../Components/AddMemberModal";
+import MemberList from "../Components/Group/MemberList";
+import AddMemberModal from "../Components/Group/AddMemberModal";
+import AnnouncementList from "../Components/Group/AnnouncementList";
+import AddAnnouncementModal from "../Components/Group/AddAnnouncementModal"
+import GroupSetting from "../Components/Group/GroupSetting"
 
 export default function GroupDashboardPage() {
 
@@ -20,17 +23,20 @@ export default function GroupDashboardPage() {
 function GroupDashboardPageComponent() {
     const { groupId } = useParams();
     const [group, setGroup] = useState([])
+    const [announcement, setAnnouncement] = useState([])
+    const [annModal, setAnnModal] = useState(false)
 
     useEffect(() =>{
         getGroupFromServer()
-    }, [])
+        getAnnouncementFromServer()
+    },[])
 
     const getGroupFromServer = ()=>{
         axios.get(`${base_url}/group/${groupId}`).then(
             (response)=>{
                 const data = response.data;
                 // label the status indicator
-                console.log(data)
+
                 data.member.forEach(function(item, index) {
                    if (item.status === 0) {
                        item.status = "Not Registered"
@@ -39,6 +45,7 @@ function GroupDashboardPageComponent() {
                    }
                 });
                 setGroup(data)
+                console.log(group)
                 //toast.info("Group loaded from Server !!",{position:"top-right"})
             },
             (error)=>{
@@ -47,6 +54,24 @@ function GroupDashboardPageComponent() {
         )
     }
 
+    const getAnnouncementFromServer=()=>{
+        axios.get(`${base_url}/group/announcement/all`).then(
+            (response)=>{
+                // label the status indicator
+                console.log(response.data)
+                setAnnouncement(response.data)
+                console.log(announcement)
+                //toast.info("Group loaded from Server !!",{position:"top-right"})
+            },
+            (error)=>{
+                toast.error("Something went wrong on Server")
+            }
+        )
+    }
+
+    const showAnnModal=()=>{
+        return setAnnModal(true)
+    }
 
     return (
         <div className="group_page container">
@@ -69,21 +94,32 @@ function GroupDashboardPageComponent() {
             </nav>
             <div className="tab-content" id="nav-tabContent">
 
-                <div className="tab-pane fade show active" id="nav-ann" role="tabpanel"
-                     aria-labelledby="nav-home-tab">Announcement List Here
+                <div className="tab-pane fade show active" id="nav-ann" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <div className="w-100 text-end">
+                        <button type="button" className="btn btn_dark_icon mt-2 mb-2" onClick={()=>showAnnModal()} ><AddAnnouncementIcon /></button>
+                    </div>
+                    {
+                        announcement.length > 0 ? <AnnouncementList announcement={announcement}/> : "No announcement yet"
+                    }
+
+                    {
+                        annModal === true ? <AddAnnouncementModal group={group} hide={()=>setAnnModal(false)}/> : ''
+                    }
+
                 </div>
 
                 <div className="tab-pane fade" id="nav-member" role="tabpanel" aria-labelledby="nav-profile-tab">
                     <div className="w-100 text-end">
-                        <button type="button" className="btn btn_dark_normal mt-2 mb-2" data-bs-toggle="modal" data-bs-target="#addMemberModal"><AddMemberIcon /></button>
+                        <button type="button" className="btn btn_dark_icon mt-2 mb-2" data-bs-toggle="modal" data-bs-target="#addMemberModal"><AddMemberIcon /></button>
                     </div>
                     <MemberList members={group} />
                 </div>
 
-                <div className="tab-pane fade" id="nav-setting" role="tabpanel"
-                     aria-labelledby="nav-home-tab">Group setting here
+                <div className="tab-pane fade" id="nav-setting" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <GroupSetting group={group}/>
                 </div>
             </div>
+
 
             <AddMemberModal group={group}/>
         </div>

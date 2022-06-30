@@ -1,14 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import {useParams} from "react-router-dom";
-import { Waiter, useWait } from "react-wait";
 import { Editor } from '@tinymce/tinymce-react';
 import { ToastContainer, toast } from 'react-toastify'
-import "../Assets/Styles/component.css"
+import { ReactSession } from "react-client-session";
+import "../../Assets/Styles/component.css"
 import moment from "moment";
 import axios from "axios";
-import base_url from "../Service/serviceapi";
-import ui_url from "../Service/serviceui";
-import {ReactSession} from "react-client-session";
+import base_url from "../../Service/serviceapi";
+import ui_url from "../../Service/serviceui";
 
 
 export default function EditPostBody() {
@@ -124,9 +123,17 @@ export default function EditPostBody() {
 
     }
 
+    const previewPost=()=> {
+        window.open(
+            `${ui_url}/${account.username}/${params.id}`,
+            '_blank' // <- This is what makes it open in a new window.
+        );
+        // window.location.href = `${ui_url}/${account}/${params.id}`;
+    }
+
     return (
         <div className="p-3">
-            <ToastContainer />
+            <ToastContainer autoClose={1000}/>
             <div className="row title-section mb-2">
                 <div className="col-md-8 form-floating mb-3">
                     <input type="text" className="form-control post-title-input" id="title" placeholder="Title" name="title" onChange={setTitleHandler} value={title}/>
@@ -134,7 +141,7 @@ export default function EditPostBody() {
                 </div>
                 <div className="col-md-4 d-flex align-items-center justify-content-end">
                     <button className="btn btn-outline-dark me-2" onClick={ savePost }>Save</button>
-                    <button className="btn btn_dark_normal me-2">Preview</button>
+                    <button className="btn btn_dark_normal me-2" onClick={() =>previewPost()}>Preview</button>
                     <button className="btn btn_dark"  onClick={ publishPost }>Publish</button>
                 </div>
             </div>

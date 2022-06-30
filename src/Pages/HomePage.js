@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { ReactSession } from 'react-client-session';
 import Sidebar from "../Components/Sidebar";
-import base_url from "../Service/serviceapi"
+import Home from "../Components/Home/Home";
 
 export default function HomePage() {
     const account = ReactSession.get("account");
@@ -16,9 +16,9 @@ export default function HomePage() {
 
 function HomePageComponent() {
     return (
-        <div className="group_page">
+        <div >
             <ToastContainer/>
-            Home
+            <Home />
         </div>
     )
 }

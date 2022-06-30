@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {toast} from "react-toastify";
 import axios from "axios";
 import MUIDataTable from "mui-datatables";
-import base_url from "../Service/serviceapi";
+import base_url from "../../Service/serviceapi";
 
 export default function MemberList({members}) {
     const [emailList, setEmailList] = useState([]);

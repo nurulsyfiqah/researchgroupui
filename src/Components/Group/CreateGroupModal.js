@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {BsXLg} from "react-icons/bs";
 import {toast} from "react-toastify";
-import base_url from "../Service/serviceapi";
+import base_url from "../../Service/serviceapi";
 import axios from "axios";
 import emailjs from '@emailjs/browser';
 import moment from "moment";
@@ -9,7 +9,6 @@ import moment from "moment";
 
 export default function CreateGroupModal() {
     const [group, setGroup] = useState({})
-
 
     const [groupName, setGroupName] = useState("")
     const [description, setDescription] = useState("")
@@ -72,36 +71,36 @@ export default function CreateGroupModal() {
                 var count = 0;
                 toast.success("Group created successfully")
                 if(response){
-                    window.location.reload(true);
-                    // if (emailList.length > 0) {
-                    //     emailList.forEach((email, index) => {
-                    //         const emailParams = {
-                    //             service_id: "service_nc347wl",
-                    //             template_id: "template_a9a7mi9",
-                    //             user_id: "VJgY9rNMYrcl4jBgg",
-                    //             template_params: {
-                    //                 'to_email': email.memberEmail,
-                    //                 'reply_to': 'nurulsyfiqah25@gmail.com',
-                    //                 'group_name': groupName,
-                    //                 'creator': 'nurul',
-                    //                 'message': '',
-                    //                 'system_name': 'Research Group Management System'
-                    //             }
-                    //         }
-                    //         emailjs.send(emailParams.service_id, emailParams.template_id, emailParams.template_params, emailParams.user_id)
-                    //             .then((result) => {
-                    //                 if (result.status === 200) {
-                    //                     count++;
-                    //                     if (count >= emailList.length) {
-                    //                         toast.success("Invitation had been sent")
-                    //                         window.location.reload(false)
-                    //                     }
-                    //                 }
-                    //             }, (error) => {
-                    //                 console.log(error.text);
-                    //             });
-                    //     })
-                    // }
+                    // window.location.reload(true);
+                    if (emailList.length > 0) {
+                        emailList.forEach((email, index) => {
+                            const emailParams = {
+                                service_id: "service_nc347wl",
+                                template_id: "template_a9a7mi9",
+                                user_id: "VJgY9rNMYrcl4jBgg",
+                                template_params: {
+                                    'to_email': email.memberEmail,
+                                    'reply_to': 'nurulsyfiqah25@gmail.com',
+                                    'group_name': groupName,
+                                    'creator': 'nurul',
+                                    'message': '',
+                                    'system_name': 'Research Group Management System'
+                                }
+                            }
+                            emailjs.send(emailParams.service_id, emailParams.template_id, emailParams.template_params, emailParams.user_id)
+                                .then((result) => {
+                                    if (result.status === 200) {
+                                        count++;
+                                        if (count >= emailList.length) {
+                                            toast.success("Invitation had been sent")
+                                            window.location.reload(false)
+                                        }
+                                    }
+                                }, (error) => {
+                                    console.log(error.text);
+                                });
+                        })
+                    }
                 }
 
             })

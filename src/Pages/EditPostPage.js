@@ -1,6 +1,6 @@
 import React from 'react'
-import Header from '../Components/EditPostHeader'
-import Body from '../Components/EditPostBody'
+import Header from '../Components/Blog/EditPostHeader'
+import Body from '../Components/Blog/EditPostBody'
 import {useParams} from "react-router-dom";
 
 export default function EditPostPage() {

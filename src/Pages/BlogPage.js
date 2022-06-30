@@ -3,12 +3,12 @@ import axios from "axios";
 import { Link } from 'react-router-dom';
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
+import { ReactSession } from "react-client-session";
 import Sidebar from "../Components/Sidebar";
-import BlogPostsList from "../Components/BlogPostsList";
+import BlogPostsList from "../Components/Blog/BlogPostsList";
 import base_url from "../Service/serviceapi"
 import ui_url from "../Service/serviceui"
 import "../Assets/Styles/component.css"
-import { IoMdSend as PublishIcon, IoMdTrash as TrashIcon, IoIosEye as PreviewIcon } from "react-icons/io";
 
 export default function BlogPage() {
     return (
@@ -19,9 +19,10 @@ export default function BlogPage() {
 }
 
 function BlogComponent() {
+    const account = ReactSession.get("account");
 
     const params = {
-        userId: "",
+        userId: account.id,
         title: "",
         date:  moment().format(),
         status: 0,
@@ -51,7 +52,8 @@ function BlogComponent() {
     }
 
     const getPostsFromServer=()=>{
-        axios.get(`${base_url}/blog/all`).then((
+
+        axios.get(`${base_url}/blog/getpostsbyuserid?userId=${account.id}`).then((
             response)=>{
             const data = response.data;
             console.log(data)
@@ -64,7 +66,7 @@ function BlogComponent() {
     // get all posts
     useEffect(()=>{
         getPostsFromServer()
-    },[])
+    })
 
     return (
         <div className="group_page">

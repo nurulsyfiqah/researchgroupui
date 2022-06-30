@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import {BsXLg} from "react-icons/bs";
 import {toast} from "react-toastify";
-import base_url from "../Service/serviceapi";
+import base_url from "../../Service/serviceapi";
 import axios from "axios";
-import emailjs from '@emailjs/browser';
-import moment  from "moment";
 
 
 export default function AddMemberModal({group}) {
@@ -18,6 +16,7 @@ export default function AddMemberModal({group}) {
         domain: group.domain,
         member: group.member,
         createdBy: group.createdBy,
+        createdDate: group.createdDate,
         status: 0,
     }
 
@@ -50,6 +49,15 @@ export default function AddMemberModal({group}) {
         // combine previous member and additional member
         Array.prototype.push.apply(input.member,emailList);
         console.log(input)
+
+        input.member.forEach(function(item, index) {
+            if (item.status === "Not Registered") {
+                item.status = 0
+            } else if (item.status === "Registered") {
+                item.status = 1
+            }
+        });
+
         axios({
             method: 'PUT',
             url: `${base_url}/group/update`,
@@ -60,7 +68,7 @@ export default function AddMemberModal({group}) {
                 window.location.reload();
             }, (error)=>{
                 toast.error(error.text);
-                window.location.reload();
+                //window.location.reload();
             })
     }
 

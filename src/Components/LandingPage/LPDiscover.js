@@ -1,6 +1,6 @@
 import React from "react";
-import DiscoveryLogo from "../Assets/Images/undraw_researching_re_fuod.svg"
-import "../Assets/Styles/component.css"
+import DiscoveryLogo from "../../Assets/Images/undraw_researching_re_fuod.svg"
+import "../../Assets/Styles/component.css"
 
 export default function LPDiscover () {
     return (

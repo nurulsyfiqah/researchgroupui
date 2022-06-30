@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { IoMdArrowBack as BackIcon } from "react-icons/io";
-import Logo from "../Assets/Images/resgm-logo-2.png"
-import "../Assets/Styles/component.css"
+import Logo from "../../Assets/Images/resgm-logo-2.png"
+import "../../Assets/Styles/component.css"
 
 export default function EditPostHeader() {
     return (

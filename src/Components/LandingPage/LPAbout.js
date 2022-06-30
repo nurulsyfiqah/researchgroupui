@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import TeamLogo from "../Assets/Images/undraw_teamwork_hpdk.svg"
-import "../Assets/Styles/component.css"
+import TeamLogo from "../../Assets/Images/undraw_teamwork_hpdk.svg"
+import "../../Assets/Styles/component.css"
 
 
 export default function LPAbout() {
