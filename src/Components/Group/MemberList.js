@@ -4,9 +4,11 @@ import axios from "axios";
 import MUIDataTable from "mui-datatables";
 import base_url from "../../Service/serviceapi";
 
-export default function MemberList({members}) {
+export default function MemberList({members, change}) {
     const [emailList, setEmailList] = useState([]);
-    const input = {
+    const [param, setParam] = useState(members);
+    const [counter, setCounter] = useState(0);
+    let input = {
         id: members.id,
         name: members.name,
         description: members.description,
@@ -15,6 +17,16 @@ export default function MemberList({members}) {
         createdBy: members.createdBy,
         status: 0,
     }
+
+    useEffect(() => {
+        // setParam(prevState => ({
+        //     ...prevState,
+        //     'member': emailList.length > 0 ? emailList : members.member
+        // }));
+        input.member = emailList.length > 0 ? emailList : members.member;
+        console.log(counter)
+
+    },[counter])
 
     // datatable
     const columns = [
@@ -43,26 +55,6 @@ export default function MemberList({members}) {
         }
     ];
 
-    const deleteMember=(e)=> {
-        axios({
-            method: 'PUT',
-            url: `${base_url}/group/update`,
-            data: input
-        })
-            .then(function(response){
-                console.log("success")
-                setEmailList([])
-            })
-    }
-
-    function remainingMembers(email, status, memberId) {
-        this.email = email;
-        this.status = status;
-        this.memberId = memberId;
-    }
-
-    let idsToDelete;
-
     const options = {
         filterType: 'checkbox',
         download: false,
@@ -71,7 +63,35 @@ export default function MemberList({members}) {
         filter: false,
         elevation: 0,
         onRowsDelete: function(rowsDeleted, data) {
-            console.log(data)
+            const arr = [];
+            data.forEach(function(item,index){
+                // change the details
+                if (item[1] === "Not Registered") {
+                    item[1] = 0
+                } else if (item[1] === "Registered") {
+                    item[1] = 1
+                }
+                const obj = {memberEmail: item[0], status: item[1], memberId: item[2]};
+                arr.push(obj)
+
+            })
+            input.member = arr;
+            setEmailList(arr)
+            setCounter(counter + 1)
+
+            axios({
+                method: 'PUT',
+                url: `${base_url}/group/update`,
+                data: input
+            })
+                .then(function(response){
+                    console.log("success")
+                    setEmailList([])
+                    change()
+                }, (error) => {
+                    console.log(error.text)
+                    setEmailList([])
+                })
         }
     };
 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { IoIosEye as PreviewIcon, IoMdSend as PublishIcon, IoMdTrash as TrashIcon } from "react-icons/io";
+import { IoIosEye as PreviewIcon, IoMdTrash as TrashIcon } from "react-icons/io";
+import { MdCancelScheduleSend as UnpublishIcon, MdSend as PublishIcon } from "react-icons/md";
 import { BsShareFill as ShareIcon, BsFillChatLeftFill as CommentIcon } from "react-icons/bs";
 import { Link } from "react-router-dom"
 import {ReactSession} from "react-client-session";
@@ -10,12 +11,13 @@ import base_url from "../../Service/serviceapi";
 import ui_url from "../../Service/serviceui";
 import {toast} from "react-toastify";
 
-export default function BlogPostsList({post}) {
+export default function BlogPostsList({post, change}) {
 
     const account = ReactSession.get("username");
     console.log(account)
     const [modal, setModal] = useState(false)
     const [tempData, setTempData] = useState([])
+
     let params = {
         id: post.id,
         userId: post.userId,
@@ -74,10 +76,28 @@ export default function BlogPostsList({post}) {
             data: params
         })
             .then(function(response){
-                toast.success("Successfully published")
-                window.location.reload()
+                toast.success("Successfully published", {autoClose: 1500,hideProgressBar: true})
+                change()
+                //window.location.reload()
             }, (error) => {
-                toast.error("Error in publishing")
+                toast.error("Error in publishing", {autoClose: 1500,hideProgressBar: true})
+            })
+    }
+
+    //unpublish post
+    const unPublishPost=()=> {
+        params.status = 0;
+        axios({
+            method: 'PUT',
+            url: `${base_url}/blog/update`,
+            data: params
+        })
+            .then(function(response){
+                toast.success("Successfully unpublished", {autoClose: 1500,hideProgressBar: true})
+                change()
+                //window.location.reload()
+            }, (error) => {
+                toast.error("Error in unpublishing", {autoClose: 1500,hideProgressBar: true})
             })
     }
 
@@ -96,9 +116,10 @@ export default function BlogPostsList({post}) {
             data: params
         })
             .then(function(response){
-                toast.success("Successfully deleted")
+                toast.success("Successfully deleted", {autoClose: 1500,hideProgressBar: true})
+                change()
             }, (error) => {
-                toast.error("Error in deleting")
+                toast.error("Error in deleting", {autoClose: 1500,hideProgressBar: true})
             })
     }
 
@@ -111,7 +132,7 @@ export default function BlogPostsList({post}) {
                 </div>
                 <div className="d-flex flex-column align-items-center">
                     <div className="d-flex flex-row">
-                        <div className="blog-icon" onClick={() =>publishPost()}><PublishIcon data-bs-toggle="tooltip" data-bs-placement="bottom" title="Publish the Post" /> </div>
+                        <div className="blog-icon"> { post.status === 0 ? <PublishIcon onClick={() =>publishPost()} data-bs-toggle="tooltip" data-bs-placement="bottom" title="Publish the Post" /> : <UnpublishIcon onClick={() => unPublishPost()} data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unpublish the Post" /> }  </div>
                         <div className="blog-icon" onClick={() =>previewPost()}><PreviewIcon  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Preview the Post"  /> </div>
                         <div className="blog-icon" onClick={() =>deletePost()}><TrashIcon  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete the Post"  /> </div>
                     </div>

@@ -6,7 +6,13 @@ import axios from "axios";
 import base_url from "../../Service/serviceapi";
 import {toast} from "react-toastify";
 
-export default function AnnouncementList({announcement}) {
+export default function AnnouncementList({announcement, edit}) {
+    const [editedAnn, setEditedAnn] = useState(0)
+
+    const editedStatus=()=>{
+        setEditedAnn(editedAnn + 1);
+        edit()
+    }
 
     return (
         <div className="">
@@ -14,7 +20,7 @@ export default function AnnouncementList({announcement}) {
                 {
                     announcement.length > 0 ?
                         announcement.map((ann, index)=>(
-                            <AnnouncementBody key={index} ann={ann}/>
+                            <AnnouncementBody key={index} ann={ann} edit={editedStatus}/>
                         ))
                         :
                         ""
@@ -24,11 +30,17 @@ export default function AnnouncementList({announcement}) {
     )
 }
 
-function AnnouncementBody({myKey, ann}) {
+function AnnouncementBody({myKey, ann, edit}) {
     const [editAnnModal, setEditAnnModal] = useState(false)
+    const [editedAnn, setEditedAnn] = useState(0)
 
     const showEditAnnModal=()=>{
         return setEditAnnModal(true)
+    }
+
+    const editedStatus=()=>{
+        setEditedAnn(editedAnn + 1);
+        edit()
     }
 
     function formatDate1(date) {
@@ -44,10 +56,11 @@ function AnnouncementBody({myKey, ann}) {
             url: `${base_url}/group/announcement/delete/${ann.id}`
         })
             .then(function(response){
-                toast.success("Successfully deleted")
-                window.location.reload()
+                toast.success("Successfully deleted", {autoClose: 1500,hideProgressBar: true})
+                edit()
+                //window.location.reload()
             }, (error) => {
-                toast.error("Error in deleting")
+                toast.error("Error in deleting", {autoClose: 1500,hideProgressBar: true})
             })
     }
 
@@ -73,7 +86,7 @@ function AnnouncementBody({myKey, ann}) {
             </div>
 
             {
-                editAnnModal === true ? <EditAnnouncementModal ann={ann} hide={()=>setEditAnnModal(false)}/> : ""
+                editAnnModal === true ? <EditAnnouncementModal ann={ann} hide={()=>setEditAnnModal(false)} edit={editedStatus}/> : ""
             }
 
         </div>

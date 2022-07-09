@@ -409,6 +409,7 @@ footer {
     cursor: pointer;
     font-size: var(--fs-h3);
     fill: var(--clr-primary);
+    transition: .2s;
 }
 
 .icon_dark:hover {
@@ -568,3 +569,36 @@ footer {
 /** Modal */
 
 /** Modal End */
+
+/** Geometry Shape */
+.circle {
+    width: 2em;
+    height: 2em;
+    line-height: 2em;
+    border-radius: 50%;
+    font-size: 2em;
+    color: var(--clr-bg);
+    text-align: center;
+    background: var(--clr-primary);
+    margin: .5em;
+    display: flex;
+    justify-content: center;
+}
+/** Geometry Shape End */
+
+/** Overiding Default Library Style */
+.emoji-picker-react input.emoji-search {
+    padding: 2px;
+}
+
+aside.emoji-picker-react {
+    box-shadow: none;
+}
+
+.nav-link {
+    color: var(--clr-dark);
+}
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    background-color: #000;olor: var(--clr-primary);
+}

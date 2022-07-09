@@ -16,6 +16,8 @@ export default function EditPostBody() {
     const [title, setTitle] = useState("");
     const { blogId } = useParams();
     const [post, setPost] = useState("");
+
+
     // const [input, setInput] = useState({
     //     id: blogId,
     //     userId: account.userId,
@@ -96,10 +98,10 @@ export default function EditPostBody() {
         })
             .then(function(response) {
                 // redirect user to edit post page
-                toast.success("Successfully saved")
+                toast.success("Successfully saved", {autoClose: 1500,hideProgressBar: true})
                 console.log("successfully save"+response.data.toString)
             }, (error) => {
-                toast.error("Error in saving")
+                toast.error("Error in saving", {autoClose: 1500,hideProgressBar: true})
                 console.log(error.text)
             });
     }
@@ -116,9 +118,9 @@ export default function EditPostBody() {
             data: params
         })
             .then(function(response){
-                toast.success("Successfully published")
+                toast.success("Successfully published", {autoClose: 1500,hideProgressBar: true})
             }, (error) => {
-                toast.error("Error in publishing")
+                toast.error("Error in publishing", {autoClose: 1500,hideProgressBar: true})
             })
 
     }

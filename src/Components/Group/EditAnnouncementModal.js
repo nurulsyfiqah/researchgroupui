@@ -5,7 +5,7 @@ import axios from "axios";
 import base_url from "../../Service/serviceapi";
 import {toast} from "react-toastify";
 
-export default function EditAnnouncementModal({ann, hide}) {
+export default function EditAnnouncementModal({ann, hide, edit}) {
 
     const editorRef = useRef(null);
     let [input, setInput] = useState(ann);
@@ -19,7 +19,6 @@ export default function EditAnnouncementModal({ann, hide}) {
     }
 
     const submitHandler=(e)=>{
-        e.preventDefault();
         input.createdDate = moment().format();
         input.content = editorRef.current ? editorRef.current.getContent() : "";
         console.log(input)
@@ -30,17 +29,17 @@ export default function EditAnnouncementModal({ann, hide}) {
         })
             .then(function(response) {
                 // redirect user to edit post page
-                toast.success("Successfully update announcement")
+                toast.success("Successfully update announcement", {autoClose: 1500,hideProgressBar: true})
                 hide()
-                window.location.reload()
+                edit()
+                // window.location.reload()
             }, (error) => {
-                toast.error("Error in updating")
+                toast.error("Error in updating", {autoClose: 1500,hideProgressBar: true})
                 console.log(error.text)
             });
     }
 
     return (
-        <form onSubmit={submitHandler}>
             <div className="modal show fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
                  tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style={{display:'block', backgroundColor: 'rgba(0,0,0,0.8)'}}>
                 <div className="modal-dialog modal-dialog-scrollable modal-dialog-centered  modal-lg">
@@ -80,11 +79,10 @@ export default function EditAnnouncementModal({ann, hide}) {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={hide}>Close</button>
-                            <button type="submit" className="btn btn_dark_normal">Edit</button>
+                            <button  onClick={submitHandler} className="btn btn_dark_normal">Edit</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
     )
 }

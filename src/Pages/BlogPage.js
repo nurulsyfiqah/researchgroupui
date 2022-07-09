@@ -20,6 +20,7 @@ export default function BlogPage() {
 
 function BlogComponent() {
     const account = ReactSession.get("account");
+    const [change, setChange] = useState(0);
 
     const params = {
         userId: account.id,
@@ -69,7 +70,7 @@ function BlogComponent() {
     })
 
     return (
-        <div className="group_page">
+        <div className="">
             <ToastContainer/>
             <h1 className="page_title">Blog</h1>
 
@@ -91,11 +92,11 @@ function BlogComponent() {
 
                 <div className="tab-pane fade show active" id="nav-post" role="tabpanel"
                      aria-labelledby="nav-home-tab">
-                    <button className="btn btn_dark mt-3 mb-2" onClick={ createPost } > <Link to="/blog/create" > New Post</Link></button>
+                    <button className="btn btn-sm btn_dark mt-3 mb-2" onClick={ createPost } > <Link to="/blog/create" > New Post</Link></button>
                     {
                         posts.length > 0 ?
                             posts.map((post)=>(
-                                <BlogPostsList post={post}/>
+                                <BlogPostsList post={post} change={()=>{setChange(change+1)}}/>
                             ))
                             :
                             ""

@@ -18,10 +18,13 @@ export default function GroupsPage() {
 function GroupPageComponent() {
 
     const [groups, setGroups] = useState([])
+    const [showModal, setShowModal] = useState(false)
+    const [groupCreated, setGroupCreated] = useState(false)
 
+    // get list of groups from server
     useEffect(() =>{
         getAllGroupsFromServer()
-    }, [])
+    }, [groupCreated])
 
     const getAllGroupsFromServer = ()=>{
         axios.get(`${base_url}/group`).then(
@@ -41,7 +44,7 @@ function GroupPageComponent() {
         <ToastContainer/>
         <h1 className="page_title">Groups</h1>
         <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2 g-lg-3">
-            <CreateGroupCard />
+            <CreateGroupCard  showModal={()=>setShowModal(true)} />
             {
                 groups.length > 0 ?
                     groups.map((group)=>(
@@ -52,7 +55,10 @@ function GroupPageComponent() {
             }
 
         </div>
-        <CreateGroupModal />
+        {
+            showModal ? <CreateGroupModal create={()=>setGroupCreated(true)} hide={()=>setShowModal(false)}/> : ''
+        }
+
     </div>
   )
 }

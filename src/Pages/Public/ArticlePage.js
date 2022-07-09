@@ -5,12 +5,18 @@ import Navbar from '../../Components/Website/PublicNavbar'
 import Article from '../../Components/Website/Article/ViewArticle'
 import base_url from "../../Service/serviceapi"
 import {
+    EmailIcon,
+    EmailShareButton,
     FacebookIcon,
     FacebookShareButton,
     LinkedinIcon,
     LinkedinShareButton,
     TwitterIcon,
-    TwitterShareButton
+    TwitterShareButton,
+    TelegramIcon,
+    TelegramShareButton,
+    WhatsappIcon,
+    WhatsappShareButton
 } from "react-share";
 
 export default function ArticlePage() {
@@ -46,6 +52,14 @@ export default function ArticlePage() {
             <hr />
             <div className="text-center">Share this article</div>
             <div className="d-flex flex-row justify-content-center mb-4">
+                <EmailShareButton
+                    url={"https://orcid.org/0000-0001-9624-3506"}
+                    quote={post.title}
+                    hashtag="#research"
+                    className="m-2"
+                >
+                    <EmailIcon size={36} round={true}/>
+                </EmailShareButton>
                 <FacebookShareButton
                     url={"https://orcid.org/0000-0001-9624-3506"}
                     quote={post.title}
@@ -72,7 +86,22 @@ export default function ArticlePage() {
                 >
                     <LinkedinIcon size={36} round={true}/>
                 </LinkedinShareButton>
-
+                <TelegramShareButton
+                    url={"https://orcid.org/0000-0001-9624-3506"}
+                    quote={post.title}
+                    hashtag="#research"
+                    className="m-2"
+                >
+                    <TelegramIcon size={36} round={true}/>
+                </TelegramShareButton>
+                <WhatsappShareButton
+                    url={"https://orcid.org/0000-0001-9624-3506"}
+                    quote={post.title}
+                    hashtag="#research"
+                    className="m-2"
+                >
+                    <WhatsappIcon size={36} round={true}/>
+                </WhatsappShareButton>
             </div>
         </div>
     )

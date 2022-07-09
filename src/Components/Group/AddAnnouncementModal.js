@@ -6,10 +6,9 @@ import axios from "axios";
 import base_url from "../../Service/serviceapi";
 import {toast} from "react-toastify";
 
-export default function AddAnnouncementModal({group, hide}) {
+export default function AddAnnouncementModal({group, hide, create}) {
     const account = ReactSession.get("account");
     const editorRef = useRef(null);
-    console.log(group)
     let [input, setInput] = useState({
         groupId: "",
         title: '',
@@ -31,7 +30,6 @@ export default function AddAnnouncementModal({group, hide}) {
         e.preventDefault();
         input.groupId = group.id;
         input.content = editorRef.current ? editorRef.current.getContent() : "";
-        console.log(input)
         axios({
             method: 'POST',
             url: `${base_url}/group/createannouncement`,
@@ -39,17 +37,16 @@ export default function AddAnnouncementModal({group, hide}) {
         })
             .then(function(response) {
                 // redirect user to edit post page
-                toast.success("Successfully create announcement")
+                toast.success("Successfully create announcement", {autoClose: 1500,hideProgressBar: true})
                 hide()
-                window.location.reload()
+                create()
             }, (error) => {
-                toast.error("Error in saving")
+                toast.error("Error in saving", {autoClose: 1500,hideProgressBar: true})
                 console.log(error.text)
             });
     }
 
     return(
-        <form onSubmit={submitHandler}>
             <div className="modal show fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
                  tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style={{display:'block', backgroundColor: 'rgba(0,0,0,0.8)'}}>
                 <div className="modal-dialog modal-dialog-scrollable modal-dialog-centered  modal-lg">
@@ -88,12 +85,11 @@ export default function AddAnnouncementModal({group, hide}) {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={hide}>Close</button>
-                            <button type="submit" className="btn btn-primary">Add</button>
+                            <button type="button" className="btn btn-sm btn-secondary" data-bs-dismiss="modal" onClick={hide}>Close</button>
+                            <button type="button" className="btn btn-sm btn_dark" onClick={submitHandler}>Add</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
     )
 }

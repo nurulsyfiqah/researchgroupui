@@ -23,13 +23,15 @@ export default function GroupDashboardPage() {
 function GroupDashboardPageComponent() {
     const { groupId } = useParams();
     const [group, setGroup] = useState([])
+    const [addMemberModal, setAddMemberModal] = useState(false)
     const [announcement, setAnnouncement] = useState([])
     const [annModal, setAnnModal] = useState(false)
+    const [createdAnn, setCreatedAnn] = useState(0)
 
     useEffect(() =>{
         getGroupFromServer()
         getAnnouncementFromServer()
-    },[])
+    },[createdAnn])
 
     const getGroupFromServer = ()=>{
         axios.get(`${base_url}/group/${groupId}`).then(
@@ -49,22 +51,19 @@ function GroupDashboardPageComponent() {
                 //toast.info("Group loaded from Server !!",{position:"top-right"})
             },
             (error)=>{
-                toast.error("Something went wrong on Server")
+                toast.error("Something went wrong on Server", {autoClose: 1500,hideProgressBar: true})
             }
         )
     }
 
     const getAnnouncementFromServer=()=>{
-        axios.get(`${base_url}/group/announcement/all`).then(
+        axios.get(`${base_url}/group/announcement/${groupId}`).then(
             (response)=>{
-                // label the status indicator
-                console.log(response.data)
                 setAnnouncement(response.data)
                 console.log(announcement)
-                //toast.info("Group loaded from Server !!",{position:"top-right"})
             },
             (error)=>{
-                toast.error("Something went wrong on Server")
+                toast.error("Something went wrong on Server", {autoClose: 1500,hideProgressBar: true})
             }
         )
     }
@@ -75,7 +74,7 @@ function GroupDashboardPageComponent() {
 
     return (
         <div className="group_page container">
-            <ToastContainer/>
+            <ToastContainer hideProgressBar autoClose={1500}/>
             <h1 className="page_title">{ group.name }</h1>
             <p>{ group.description }</p>
             <nav>
@@ -99,29 +98,31 @@ function GroupDashboardPageComponent() {
                         <button type="button" className="btn btn_dark_icon mt-2 mb-2" onClick={()=>showAnnModal()} ><AddAnnouncementIcon /></button>
                     </div>
                     {
-                        announcement.length > 0 ? <AnnouncementList announcement={announcement}/> : "No announcement yet"
+                        announcement.length > 0 ? <AnnouncementList announcement={announcement} edit={()=>setCreatedAnn(createdAnn + 1)}/> : "No announcement yet"
                     }
 
                     {
-                        annModal === true ? <AddAnnouncementModal group={group} hide={()=>setAnnModal(false)}/> : ''
+                        annModal === true ? <AddAnnouncementModal group={group} hide={()=>setAnnModal(false)} create={()=>setCreatedAnn(createdAnn + 1)}/> : ''
                     }
 
                 </div>
 
                 <div className="tab-pane fade" id="nav-member" role="tabpanel" aria-labelledby="nav-profile-tab">
                     <div className="w-100 text-end">
-                        <button type="button" className="btn btn_dark_icon mt-2 mb-2" data-bs-toggle="modal" data-bs-target="#addMemberModal"><AddMemberIcon /></button>
+                        <button type="button" className="btn btn_dark_icon mt-2 mb-2" onClick={()=>setAddMemberModal(true)}><AddMemberIcon /></button>
                     </div>
-                    <MemberList members={group} />
+                    <MemberList members={group} change={()=>setCreatedAnn(createdAnn + 1)}/>
+
+                    {
+                        addMemberModal ?  <AddMemberModal group={group} change={()=>setCreatedAnn(createdAnn + 1)} hide={()=>setAddMemberModal(false)}/> : ""
+                    }
                 </div>
 
                 <div className="tab-pane fade" id="nav-setting" role="tabpanel" aria-labelledby="nav-home-tab">
-                    <GroupSetting group={group}/>
+                    <GroupSetting group={group} change={()=>setCreatedAnn(createdAnn + 1)}/>
                 </div>
             </div>
 
-
-            <AddMemberModal group={group}/>
         </div>
     )
 }

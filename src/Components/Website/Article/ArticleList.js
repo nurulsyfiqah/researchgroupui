@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Placeholder from "../../../Assets/Images/image-placeholder.jpg";
 
 export default function ArticleList() {
     return (

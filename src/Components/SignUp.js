@@ -6,7 +6,6 @@ import moment  from "moment";
 import axios from "axios";
 import base_url from "../Service/serviceapi";
 import ui_url from "../Service/serviceui"
-import Logo from "../Assets/Images/undraw_access_account_re_8spm.svg"
 import "../Assets/Styles/component.css"
 
 export default function SignUp () {
@@ -27,6 +26,18 @@ export default function SignUp () {
         email: '',
         password: '',
         confirmPassword: ''
+    })
+    const [userInput, setUserInput] = useState({
+        accountId: "",
+        groupIds: [],
+        firstName: "",
+        lastName: "",
+        publishedName: "",
+        socialMedia: [],
+        about: "",
+        image: "",
+        domain: [],
+        affiliation: []
     })
 
     const onInputChange = e => {
@@ -112,8 +123,23 @@ export default function SignUp () {
                         data: input
                     })
                         .then(function (response){
-                            toast.update(createAccountPromise, { render: "Your account has been created. You will be redirected to the Login page", type: "success", isLoading: false });
-                            window.location.href = `${ui_url}/login`;
+                            console.log(response.data)
+                            // set data for user document
+                            userInput.accountId = response.data.id;
+                            userInput.lastName = response.data.lastName;
+                            userInput.firstName = response.data.firstName;
+
+                            axios({
+                                method:'POST',
+                                url: `${base_url}/user/create`,
+                                data: userInput
+                            }).then(function(response) {
+                                toast.update(createAccountPromise, { render: "Your account has been created. You will be redirected to the Login page", type: "success", isLoading: false });
+                                window.location.href = `${ui_url}/login`;
+                            }, (error) => {
+                                console.log(error.text);
+                            })
+
                         }, (error)=>{
                             toast.update(createAccountPromise, { render: "Your account fail to be created", type: "error", isLoading: false });
                         });
@@ -126,7 +152,7 @@ export default function SignUp () {
 
     return (
         <section id="section_login" className="section_login">
-        <ToastContainer position="top-center" />
+        <ToastContainer position="top-center" hideProgressBar/>
         <div className="section_subtitle">Sign Up</div>
         <div className="container_login">
           <form onSubmit={ submitHandler }>
@@ -156,17 +182,31 @@ export default function SignUp () {
                       />
                   </div>
               </div>
-            <div className="mt-2">
-              <label htmlFor="email" className="form-label">Email</label>
-              <input
-                type="text"
-                className="form-control"
-                id="email"
-                name="email"
-                input={ input.email }
-                onChange={ onInputChange }
-                onBlur={ validateInput }
-              />
+            <div className="row mt-2">
+                <div className="col-md-6">
+                    <label htmlFor="email" className="form-label">Email</label>
+                    <input
+                        type="email"
+                        className="form-control"
+                        id="email"
+                        name="email"
+                        input={ input.email }
+                        onChange={ onInputChange }
+                        onBlur={ validateInput }
+                    />
+                </div>
+                <div className="col-md-6">
+                    <label htmlFor="username" className="form-label">Username</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="username"
+                        name="username"
+                        input={ input.username }
+                        onChange={ onInputChange }
+                        onBlur={ validateInput }
+                    />
+                </div>
             </div>
             <div>{error.email && <span className='text-danger'>{error.email}</span>}</div>
 

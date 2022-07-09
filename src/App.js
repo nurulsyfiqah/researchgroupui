@@ -15,7 +15,7 @@ import WebsitePage from './Pages/WebsitePage'
 import WebPage from './Pages/Public/WebPage'
 import PublicationPage from './Pages/Public/PublicationPage'
 import GroupPage from './Pages/Public/GroupPage'
-import ArticleListPage from './Pages/Public/ArticleListPage'
+import ArticleListPage from './Pages/Public/ArticleListPage' 
 import ArticlePage from './Pages/Public/ArticlePage'
 import ErrorPage from './Pages/ErrorPage'
 import "bootstrap/dist/css/bootstrap.min.css"

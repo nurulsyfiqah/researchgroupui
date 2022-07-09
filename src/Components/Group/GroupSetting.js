@@ -7,12 +7,15 @@ import {toast} from "react-toastify";
 import moment from "moment";
 import ui_url from "../../Service/serviceui";
 
-export default function GroupSetting({group}) {
+export default function GroupSetting({group,change}) {
 
     const [modal, setModal] = useState(false)
-    // useEffect(()=>{
-    //     console.log(input)
-    // },[])
+    const [changeState, setChangeState] = useState(0)
+
+    const changeStatus=()=>{
+        setChangeState(change + 1)
+        change()
+    }
 
     const onEditInformation = () =>  {
         // setInput(group)
@@ -40,13 +43,12 @@ export default function GroupSetting({group}) {
             })
     }
 
-
     return (
         <div>
             <div className="card my-2">
                 <div className="card-header d-flex justify-content-between">
                     <div>Group Information</div>
-                    <EditIcon className="icon_dark" data-bs-toggle="modal" data-bs-target="#editSettingModal" onClick={() =>onEditInformation()}/>
+                    <EditIcon className="icon_dark" onClick={() =>onEditInformation()}/>
                 </div>
                 <div className="card-body">
                     <div className="row my-1">
@@ -59,7 +61,12 @@ export default function GroupSetting({group}) {
                     </div>
                     <div className="row my-1">
                         <div className="col-md-3 fw-bold">Domain</div>
-                        <div className="col-md-9">{group.domain}</div>
+                        <div className="col-md-9">
+                            {
+                                group.domain ? group.domain.map(value => <span className="badge bg-secondary me-1">{value}</span> ) : 'No designated domain'
+                            }
+
+                        </div>
                     </div>
                     <div className="row my-1">
                         <div className="col-md-3 fw-bold">Created By</div>
@@ -80,14 +87,34 @@ export default function GroupSetting({group}) {
                     <div className="row my-1">
                         <div className="col-md-9 fw-bold">Delete this group</div>
                         <div className="col-md-3 text-md-end">
-                            <button type="button" className="btn btn-sm btn-danger"  onClick={() =>deleteGroup()}>Delete</button>
+                            <button type="button" className="btn btn-sm btn-danger"  data-bs-toggle="modal" data-bs-target="#deleteGroupModal">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="modal fade" id="deleteGroupModal" data-bs-backdrop="static" data-bs-keyboard="false"
+                 tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="staticBackdropLabel">Delete Confirmation</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            Confirm to delete this group?
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-sm btn-danger" onClick={() =>deleteGroup()}>DELETE</button>
                         </div>
                     </div>
                 </div>
             </div>
 
             {
-                modal === true ? <EditSettingModal group={group} hide={()=>setModal(false)} /> : ''
+                modal === true ? <EditSettingModal group={group} hide={()=>setModal(false)} change={changeStatus} /> : ''
             }
 
         </div>

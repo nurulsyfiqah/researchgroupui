@@ -4,10 +4,6 @@ import moment from  'moment'
 
 export default function ViewArticle({post}) {
 
-    function isString(value) {
-        return typeof value === 'string' || value instanceof String;
-    }
-
     console.log(post.content)
     function formatDate1(date) {
         //2022-06-20T11:10:12.000+00:00
