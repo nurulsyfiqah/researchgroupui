@@ -7,89 +7,106 @@ import axios from 'axios';
 import {ReactSession} from "react-client-session";
 import base_url from "../../Service/serviceapi"
 import {BsXLg} from "react-icons/bs";
+import Dropzone from "react-dropzone-uploader";
 
 export function UploadImageModal({data, hide}) {
     const account = ReactSession.get("account");
-    const [files, setFiles] = useState([])
-    const [loading, setLoading] = useState(false);
-    const [selectedFile, setSelectedFile] = useState();
-    const [isFilePicked, setIsFilePicked] = useState(false);
+    // const [files, setFiles] = useState([])
+    // const [loading, setLoading] = useState(false);
+    // const [selectedFile, setSelectedFile] = useState();
+    // const [isFilePicked, setIsFilePicked] = useState(false);
 
-    const { getRootProps, getInputProps } = useDropzone({
-        accept: "image/*",
-        multiple: false,
-        onDrop: (acceptedFiles) => {
-            setFiles(
-                acceptedFiles.map((file) =>
-                    Object.assign(file, {
-                        preview: URL.createObjectURL(file),
-                    })
-                )
-            )
-        },
-    })
+    // const { getRootProps, getInputProps } = useDropzone({
+    //     accept: "image/*",
+    //     multiple: false,
+    //     onDrop: (acceptedFiles) => {
+    //         setFiles(
+    //             acceptedFiles.map((file) =>
+    //                 Object.assign(file, {
+    //                     preview: URL.createObjectURL(file),
+    //                 })
+    //             )
+    //         )
+    //     },
+    // })
 
-    const images = files.map((file) => (
-        <div key={file.name} >
-            <img className="d-block mx-auto" src={file.preview} style={{ width: "50%" }} alt="preview" />
-            <div>Title: {file.path} ({file.size} bytes)</div>
-        </div>
-    ))
+    // const images = files.map((file) => (
+    //     <div key={file.name} >
+    //         <img className="d-block mx-auto" src={file.preview} style={{ width: "50%" }} alt="preview" />
+    //         <div>Title: {file.path} ({file.size} bytes)</div>
+    //     </div>
+    // ))
 
     let modalStyle = {
         display: 'block',
         backgroundColor: 'rgba(0,0,0,0.8)'
     }
 
-    const changeHandler = (event) => {
-        setSelectedFile(event.target.files[0]);
-        console.log(event.target.files[0])
-        //setIsSelected(true);
-    };
+    // const changeHandler = (event) => {
+    //     setSelectedFile(event.target.files[0]);
+    //     console.log(event.target.files[0])
+    //     //setIsSelected(true);
+    // };
 
-    const uploadImageHandler=()=>{
-        //const files = e.target.file;
-        const formData = new FormData();
-        // formData.append('file', files);
-        console.log(formData)
-        formData.append('File', files);
-        // formData.append('title', files.title);
-        // formData.append('accountId', account.id);
-        console.log(formData)
-        // setLoading(true);
-        // axios({
-        //     method: 'POST',
-        //     url: `${base_url}/user/uploadimage`,
-        //     data: data
-        // })
-        //     .then(function(response){
-        //         console.log(response.data)
-        //         setLoading(false);
-        //     }, (error) => {
-        //         console.log(error.text)
-        //     });
-    }
+    // const uploadImageHandler=()=>{
+    //     //const files = e.target.file;
+    //     const formData = new FormData();
+    //     // formData.append('file', files);
+    //     console.log(formData)
+    //     formData.append('File', files);
+    //     // formData.append('title', files.title);
+    //     // formData.append('accountId', account.id);
+    //     // console.log(formData)
+    //     // setLoading(true);
+    //     // axios({
+    //     //     method: 'POST',
+    //     //     url: `${base_url}/user/uploadimage`,
+    //     //     data: data
+    //     // })
+    //     //     .then(function(response){
+    //     //         console.log(response.data)
+    //     //         setLoading(false);
+    //     //     }, (error) => {
+    //     //         console.log(error.text)
+    //     //     });
+    // }
+
+    const getUploadParams = () => {
+        return { url: 'https://httpbin.org/post' }
+      }
+    
+      const handleChangeStatus = ({ meta }, status) => {
+        console.log(status, meta)
+      }
+    
+      const handleSubmit = (files, allFiles) => {
+        console.log(files.map(f => f.meta))
+        allFiles.forEach(f => f.remove())
+      }
 
     return (
 
         <div className="modal show fade"  data-bs-backdrop="static" data-bs-keyboard="false"
              aria-labelledby="staticBackdropLabel" aria-hidden="true" style={modalStyle}>
-            <div className="modal-dialog">
+            <div className="modal-dialog modal-xl">
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="staticBackdropLabel">Upload your image </h5>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={hide}></button>
                     </div>
                     <div className="modal-body ">
-                        <p>Drag 'n Drop your image or select an image</p>
-                        <div {...getRootProps()}>
-                            <div className="d-flex justify-content-center">{files.length !== 0 ? images : <label htmlFor="imageInput"><img src={Placeholder} style={{ width: "50%", cursor:"pointer" }} className="d-block mx-auto" alt="placeholder"/></label> }</div>
-                            <input type="file" name="file" onChange={changeHandler} id="imageInput" {...getInputProps()}/>
-                        </div>
+                    <Dropzone
+                        inputContent={null}
+                        getUploadParams={getUploadParams}
+                        onChangeStatus={handleChangeStatus}
+                        onSubmit={handleSubmit}
+                        accept="image/*"
+                        styles={{ dropzone: { minHeight: 300, maxHeight: 400 } }}
+                    />
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-sm btn-secondary" onClick={hide}>Close</button>
-                        <button type="submit" className="btn btn-sm btn_dark" onClick={uploadImageHandler}>Save</button>
+                        <button type="submit" className="btn btn-sm btn_dark">Save</button>
                     </div>
                 </div>
             </div>
