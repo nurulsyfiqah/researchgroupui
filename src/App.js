@@ -36,6 +36,8 @@ function App() {
               <Route path="/forgotpassword" element={<ForgotPasswordPage />}/>
               <Route path="/home" element={<HomePage />}/>
               <Route path="/research" element={<ResearchPage />}/>
+              <Route path="/research/add" element={<ResearchPage />}/>
+              <Route path="/research/verify" element={<ResearchPage />}/>
               <Route path="/group" element={<GroupsPage />}/>
               <Route path="/group/:groupId" element={<GroupDashboardPage />}/>
               <Route path="/tracker" element={<TrackerPage />}/>

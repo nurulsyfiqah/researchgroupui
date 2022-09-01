@@ -566,6 +566,16 @@ footer {
 }
 /** Group Page End */
 
+/** Research Page */
+@media only screen and (min-width: 790px) {
+    .add_research_container {
+        padding: 0 10em;
+    }
+    
+}
+
+/** Research Page End*/
+
 /** Modal */
 
 /** Modal End */
@@ -600,5 +610,21 @@ aside.emoji-picker-react {
 }
 
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-    background-color: #000;olor: var(--clr-primary);
+    background-color: #000;
+}
+
+.dropdown-toggle::after {
+    content: none;
+}
+
+.noti_dropdown {
+    font-size: .75em;
+}
+
+.noti_dropdown_item {
+    border-bottom: 1px solid rgba(0,0,0,.15)
+}
+
+.badge {
+    font-size: .5em;
 }
