@@ -6,6 +6,7 @@ import SignUpPage from './Pages/SignUpPage'
 import ForgotPasswordPage from './Pages/ForgotPasswordPage'
 import HomePage from './Pages/HomePage'
 import ResearchPage from './Pages/ResearchPage'
+import EditPublicationPage from './Pages/EditPublicationPage';
 import GroupsPage from './Pages/GroupsPage'
 import GroupDashboardPage from "./Pages/GroupDashboardPage";
 import TrackerPage from './Pages/TrackerPage'
@@ -38,6 +39,7 @@ function App() {
               <Route path="/research" element={<ResearchPage />}/>
               <Route path="/research/add" element={<ResearchPage />}/>
               <Route path="/research/verify" element={<ResearchPage />}/>
+              <Route path="/publication" element={<EditPublicationPage />}/>
               <Route path="/group" element={<GroupsPage />}/>
               <Route path="/group/:groupId" element={<GroupDashboardPage />}/>
               <Route path="/tracker" element={<TrackerPage />}/>
