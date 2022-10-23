@@ -129,7 +129,7 @@ export default function CreateGroupModal({create, hide}) {
 
     return (
         <div className="modal show fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1"
-             aria-labelledby="staticBackdropLabel" aria-hidden="true"  style={modalStyle}>
+             aria-labelledby="staticBackdropLabel" aria-hidden="true" style={modalStyle}>
             <div className="modal-dialog modal-dialog-centered modal-lg">
                 <div className="modal-content p-md-3 p-1">
                     <div className="modal-body">

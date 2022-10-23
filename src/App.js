@@ -10,6 +10,7 @@ import EditPublicationPage from './Pages/EditPublicationPage';
 import GroupsPage from './Pages/GroupsPage'
 import GroupDashboardPage from "./Pages/GroupDashboardPage";
 import TrackerPage from './Pages/TrackerPage'
+import ViewGrpTrackerPage from "./Pages/ViewGrpTrackerPage";
 import BlogPage from './Pages/BlogPage'
 import EditPostPage from './Pages/EditPostPage'
 import WebsitePage from './Pages/WebsitePage'
@@ -43,6 +44,7 @@ function App() {
               <Route path="/group" element={<GroupsPage />}/>
               <Route path="/group/:groupId" element={<GroupDashboardPage />}/>
               <Route path="/tracker" element={<TrackerPage />}/>
+              <Route path="/tracker/:trackerId" element={<ViewGrpTrackerPage />}/>  
               <Route path="/blog" element={<BlogPage />}/>
               <Route path="/blog/edit/:blogId" element={<EditPostPage />}/>
               <Route path="/website" element={<WebsitePage />}/>
