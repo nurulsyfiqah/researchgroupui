@@ -21,7 +21,8 @@ export default function BlogPage() {
 function BlogComponent() {
     const account = ReactSession.get("account");
     const [change, setChange] = useState(0);
-
+    const [posts, setPosts] = useState([]);
+    
     const params = {
         userId: account.id,
         title: "",
@@ -33,7 +34,7 @@ function BlogComponent() {
         keyword: [],
         commentOption: 0,
     }
-    const [posts, setPosts] = useState([]);
+    
 
     // When user clicks New Post, the data for the post will be sent to db, return post id
     const createPost=(e) => {

@@ -14,9 +14,9 @@ import {toast} from "react-toastify";
 export default function BlogPostsList({post, change}) {
 
     const account = ReactSession.get("username");
-    console.log(account)
-    const [modal, setModal] = useState(false)
-    const [tempData, setTempData] = useState([])
+    console.log(account);
+    const [modal, setModal] = useState(false);
+    const [tempData, setTempData] = useState([]);
 
     let params = {
         id: post.id,
