@@ -35,7 +35,7 @@ export default function MemberList({members, change}) {
             label: "Email",
             options: {
                 filter: true,
-                sort: true,
+                sort: true, 
             }
         },
         {
