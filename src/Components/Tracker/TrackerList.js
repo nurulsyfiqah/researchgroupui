@@ -1,65 +1,201 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { Link } from 'react-router-dom';
+import {ReactSession} from "react-client-session";
+import axios from "axios";
+import base_url from "../../Service/serviceapi"
+import { ToastContainer, toast } from "react-toastify";
+import moment from 'moment'
+import CreateGrpTrackerModal from "./CreateGrpTrackerModal";
+import CreatePerTrackerModal from "./CreatePerTrackerModal";
 
 export default function TrackerList({tracker, change}) {
+    const account = ReactSession.get("account");
+    const [modal, setModal] = useState(false);
+    const [personalModal, setPersonalModal] = useState(false);
+    const [userGroup, setUserGroup] = useState([]);
+
+    const getData = (e) => {
+        if (e.target.value === "personal") {
+            setPersonalModal(true);
+        } else {
+            getUserGroup();
+            setModal(true)
+        }
+    }
+
+    const getUserGroup = () => {
+        axios.get(`${base_url}/group/member/${account.id}`).then((
+            response)=>{
+            console.log(response.data)
+            setUserGroup(response.data)
+        }, (error)=>{
+            toast.error("Something went wrong on Server")
+        })
+    }
+
+    const [userinfo, setUserInfo] = useState({
+        languages: [],
+        response: [],
+      });
+    
+    const [subtask, setSubtask] = useState([])
+
+    const removeSubtask = (index) => {
+        // const list = [...subtasks];
+        // const list2 = [...subtasksTemp];
+        // // list.splice(index, 1);
+        // list2.splice(index, 1);
+        // // setSubtasks(list);
+        // setSubtasksTemp(list2);
+        // input.subTask = list2;
+    };
+
+    const handleChange = (e) => {
+        // Destructuring
+        const { value, checked} = e.target;
+        const index = e.target.getAttribute('index');
+        const taskid = e.target.getAttribute('taskid');
+        const subtasks  = e.target.getAttribute('allvalue');
+        const subtaskArr = subtasks.split(",");
+        console.log(subtaskArr)
+        setSubtask(subtaskArr);
+        console.log(subtask)
+        // setSubtask(task => {
+        //     console.log(task)
+        //     const modifiedValue = subtasks.split(",");
+        //     console.log(modifiedValue);
+        //     return modifiedValue;
+        // });
+
+        
+        let input = {
+            id: taskid,
+            userId: "",
+            title: "",
+            type: "",
+            groupId: "",
+            details: "",
+            filePath: "",
+            subTask: "",
+            startDate: "",
+            endDate: "",
+        };
+        // console.log(`${value} is ${checked}`);
+         
+        // Case 1 : The user checks the box
+
+        // if (checked) {
+        //     const list = [...subtask];
+        //     const str = value.split(':')[0]
+        //     list.splice(index, 1, `${str}:1`);
+        //     setSubtask(list)
+        //     console.log(subtask)
+        // }
+        // // Case 2  : The user unchecks the box
+        // else {
+        //     const list = [...subtask];
+        //     const str = value.split(':')[0]
+        //     list.splice(index, 1, `${str}:0`);
+        //     setSubtask(list)
+        //     console.log(subtask)
+        // }
+        // axios({
+        //     method: 'PUT',
+        //     url: `${base_url}/tracker/updatetask`,
+        //     data: input,
+        // }).then(function(response) {
+        //     toast.success("Successfully update the task", {autoClose: 1500,hideProgressBar: true})
+        // }, (error) => {
+        //     toast.error("Error updating the task", {autoClose: 1500,hideProgressBar: true})
+        // })
+
+      };
+
+    // const account = ReactSession.get("username");
+    // const [data, setData] = useState([]);
+
+    // const getDataFromServer = () => {
+
+    //     axios.get(`${base_url}/tracker/all/${account.id}`).then((
+    //         response)=>{
+    //         console.log(data)
+    //         setData(response.data)
+    //     }, (error)=>{
+    //         toast.error("Something went wrong on Server")
+    //     })
+
+    // }
+
+    // useEffect(()=>{
+    //     getDataFromServer();
+    // })
 
     return (
         <div>
+        {
+            tracker.type === "Group" || tracker.type === "group" ? 
             <div className="card my-2">
                 <div className="card-body">
-                    <h5 className="card-title">Activity 1</h5>
-                    <h6 className="card-subtitle mb-2 text-muted">Group Tracker</h6>
-                    <p className="card-text">As discussed in the tutorial slot, we should survey similar systems and identify possible improvements or innovations. This step can help us to identify suitable software tools too. In addition, we can begin searching for suitable datasets for the assignment and try to make use of our passport photo.</p>
-                    <div>Start Date: 26th June 2022</div>
-                    <div>End Date: 26th July 2022</div>
+                    <h5 className="card-title">{ tracker.title }</h5>
+                    <h4 className="card-subtitle mb-2"><span class="badge border border-dark text-dark">{ tracker.groupName }</span> </h4>
+                    <h6 className="card-subtitle mb-2 text-muted">{ tracker.type } Tracker</h6>
+                    <p className="card-text">{ tracker.details }</p>
+                    <div>Start Date: { tracker.startDate != null ? moment(tracker.startDate).format('DD/MM/YYYY') : "-"} </div>
+                    <div>End Date: { tracker.endDate != null ? moment(tracker.endDate).format('DD/MM/YYYY') : "-"} </div>
                     <div>Number of Member Completed: 0/5</div>
                     <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <Link to="/tracker/1234">
+                    <Link to={`/tracker/${tracker.id}`}>
                         <button className="btn btn_dark_normal btn-sm me-md-2" type="button">View</button>
                     </Link>
+                    <button className="btn btn-dark btn-sm me-md-2" type="button" onClick={getData} value="group">Edit</button>
                     </div>
                 </div>
             </div>
-
+            :
             <div className="card my-2">
-                <div className="card-body">
-                    <h5 className="card-title">Activity 2</h5>
-                    <h6 className="card-subtitle mb-2 text-muted">Personal Tracker</h6>
-                    <div className="card-text">
-                        <div className="form-check">
-                            <input className="form-check-input" type="checkbox" value="" id="defaultCheck1" checked/>
-                                <label className="form-check-label" htmlFor="defaultCheck1">
-                                    Sub Activity 1
+            <div className="card-body">
+                <h5 className="card-title">{ tracker.title }</h5>
+                <h6 className="card-subtitle mb-2 text-muted">{ tracker.type } Tracker</h6>
+                <div className="card-text">
+                    <div>{ tracker.details }</div>
+                    {/* { Array.isArray(tracker.subTask ) ? tracker.subTask.length : "not array" } */}
+                    {
+                        Array.isArray(tracker.subTask ) ?
+                        tracker.subTask.length > 0 ?
+                        tracker.subTask.map((task, index) => {
+                            let splitTask = task.split(":");
+                            let checkedStatus = splitTask[1] === "1" ? true : "";
+                            return (
+                            <div className="form-check">
+                                <input className="form-check-input" type="checkbox" name="languages" defaultValue={task} defaultChecked={checkedStatus} id={`task_${index}_${splitTask[0]}`} onChange={handleChange} taskid={tracker.id} allvalue={tracker.subTask} index={index}/>
+                                <label className="form-check-label" htmlFor={`task_${index}_${splitTask[0]}`}>
+                                    {splitTask[0]}
                                 </label>
-                        </div>
-                        <div className="form-check">
-                            <input className="form-check-input" type="checkbox" value="" id="defaultCheck2" />
-                                <label className="form-check-label" htmlFor="defaultCheck2">
-                                    Sub Activity 2
-                                </label>
-                        </div>
-                        <div className="form-check">
-                            <input className="form-check-input" type="checkbox" value="" id="defaultCheck1" checked/>
-                            <label className="form-check-label" htmlFor="defaultCheck1">
-                                Sub Activity 3
-                            </label>
-                        </div>
-                        <div className="form-check">
-                            <input className="form-check-input" type="checkbox" value="" id="defaultCheck2" />
-                            <label className="form-check-label" htmlFor="defaultCheck2">
-                                Sub Activity 4
-                            </label>
-                        </div>
-                    </div>
-                    <div className="mt-2">Start Date: 26th June 2022</div>
-                    <div>End Date: 26th July 2022</div>
-                    <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <button className="btn btn_dark_normal btn-sm me-md-2" type="button">View</button>
-                        <button className="btn btn-dark btn-sm me-md-2" type="button">Edit</button>
-                    </div>
+                            </div>
+                        )
+                        })
+                        :
+                        "No Subtask"
+                        :
+                        ""
+                    }
+                </div>
+                <div className="mt-2">Start Date: { tracker.startDate != null ? moment(tracker.startDate).format('DD/MM/YYYY') : "-"} </div>
+                <div>End Date: { tracker.startDate != null ? moment(tracker.endDate).format('DD/MM/YYYY') : "-"} </div>
+                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                    {/* <button className="btn btn_dark_normal btn-sm me-md-2" type="button">View</button> */}
+                    <button className="btn btn-dark btn-sm me-md-2" type="button" onClick={getData} value="personal">Edit</button>
                 </div>
             </div>
-
+        </div>
+        }
+        {
+        modal === true ? <CreateGrpTrackerModal data={ tracker } hide={()=>setModal(false)} change={change} action="edit" group={userGroup}/> : ''
+        }
+        {
+        personalModal === true ? <CreatePerTrackerModal data={ tracker } hide={()=>setPersonalModal(false)} change={change} action="edit"/> : ''
+        }
+        
         </div>
     )
 
