@@ -151,27 +151,6 @@ export default function AddPublication() {
         add_file: null,
     });
 
-    // const input = {
-    //     id: '',
-    //     type: '',
-    //     filePath: '',
-    //     addFilePath: '',
-    //     description: '',
-    //     author: '',
-    //     day: 1,
-    //     month: 1,
-    //     year: 1111,
-    //     pubAbstract: '',
-    //     conferenceName: '',
-    //     conferenceTitle: '',
-    //     location: '',
-    //     peerReviewStat: '',
-    //     reportNum: '',
-    //     institution: '',
-    //     degree: '',
-    //     supervisor: '',
-    // }
-
     const onUploadFirstStep = (e) => { 
         e.preventDefault();
         setResearchDetails(true);

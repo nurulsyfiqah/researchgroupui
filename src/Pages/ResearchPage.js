@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import Sidebar from "../Components/Sidebar";
 import Research from "../Components/Research/Research"
-import base_url from "../Service/serviceapi"
+import VerifyPublication from "../Components/Research/VerifyPublication";
 
 export default function ResearchPage() {
     return (
@@ -13,10 +13,12 @@ export default function ResearchPage() {
 }
 
 function ResearchPageComponent() {
+
+
     return (
         <div className="">
             <ToastContainer/>
-            <Research />
+            <Research />            
         </div>
     )
 }
