@@ -93,15 +93,17 @@ export default function Home() {
                     </div>
                     <div className="card-body">
                         {
-
-                            ('socialMedia' in user) ? user.socialMedia.map(data =>
-                                <div className="my-1" key={data}>
-                                    <SocialIcon url={`../${data}`} target="_blank" style={{ height: 35, width: 35 }}/>
-                                    <span className="ms-3"><Link to={data} target="_blank"> {data}</Link></span>
-                                </div>
-                            ) : 'No social links added yet'
+                            ('socialMedia' in user) ? 
+                            user.socialMedia.map((data, index)=>{
+                                return(
+                                    <div className="my-1" key={data}>
+                                        <SocialIcon url={data} target="_blank" style={{ height: 35, width: 35 }}/>
+                                        <span className="ms-3"><Link to={data} target="_blank"> {data}</Link></span>
+                                    </div>
+                                    )
+                            })
+                            : 'No social links added'
                         }
-
                     </div>
                 </div>
                 {
