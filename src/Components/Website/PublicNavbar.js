@@ -5,14 +5,13 @@ import {ReactSession} from "react-client-session";
 
 export default function PublicNavbar() {
 
-    // check if there is session under username in localstorage
-    let username = ReactSession.get("username");
-    const params = useParams();
+    // check if there is session under account in localstorage
+    // let username = ReactSession.get("account");
+    const { username } = useParams();
     console.log(username)
-
     // if username undefined or null, set a new username
     if (username === undefined || username === null) {
-        ReactSession.set("username", "syfiqah");
+        ReactSession.set("username", username);
     }
 
 
