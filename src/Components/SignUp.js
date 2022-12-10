@@ -12,6 +12,7 @@ export default function SignUp () {
 
     const [passwordType, setPasswordType] = useState("password");
     const [confirmPasswordType, setConfirmPasswordType] = useState("password");
+    const [signUpBtnDisabled, setSignUpBtnDisabled] = useState(false);
     const [input, setInput] = useState({
         email: "",
         username: "",
@@ -47,6 +48,11 @@ export default function SignUp () {
             [name]: value
         }));
         validateInput(e);
+        if (name === "email") {
+            if (value !== undefined) {
+                validateUniqueEmail(value);
+              }
+        }
     }
 
     const validateInput = e => {
@@ -87,6 +93,29 @@ export default function SignUp () {
         });
     }
 
+    function validateUniqueEmail(value) {
+        // const value = e.target.value;
+        axios({
+            method: 'GET',
+            url: `${base_url}/signup/getaccountbyemail?email=${value}`,
+        })
+            .then(function (response){
+                if (response.data.length > 0) {
+                    setError(prev => ({
+                        ...prev,
+                        email: "The email had been registered."
+                    }));
+                } else {
+                    setError(prev => ({
+                        ...prev,
+                        email: ""
+                    }));
+                }
+            }, (error) => {
+                console.log(error.text);
+            });
+    }
+
     const togglePassword = () => {
         if (passwordType === "password") {
             setPasswordType("text");
@@ -105,6 +134,7 @@ export default function SignUp () {
 
     const submitHandler =(e)=>{
         e.preventDefault();
+        setSignUpBtnDisabled(true);
         const createAccountPromise = toast.loading("Creating account...")
         // get the email
         axios({
@@ -112,9 +142,9 @@ export default function SignUp () {
             url: `${base_url}/signup/getaccountbyemail?email=${input.email}`,
         })
             .then(function (response){
-                // warn the user if the email had registered before
+                // warn the user if the email had been registered before
                 if (response.data.length > 0) {
-                    toast.update(createAccountPromise, { render: "The email had registered.", type: "error", isLoading: false });
+                    toast.update(createAccountPromise, { render: "The email had been registered.", type: "error", isLoading: false });
                 } else {
                     // if not register yet, create a new account
                     axios({
@@ -129,6 +159,7 @@ export default function SignUp () {
                             userInput.lastName = response.data.lastName;
                             userInput.firstName = response.data.firstName;
 
+                            // create new user
                             axios({
                                 method:'POST',
                                 url: `${base_url}/user/create`,
@@ -170,7 +201,7 @@ export default function SignUp () {
                       />
                   </div>
                   <div className="col-md-6">
-                      <label htmlFor="email" className="form-label">Last Name*</label>
+                      <label htmlFor="lastName" className="form-label">Last Name*</label>
                       <input
                           type="text"
                           className="form-control"
@@ -192,7 +223,7 @@ export default function SignUp () {
                         name="email"
                         input={ input.email }
                         onChange={ onInputChange }
-                        onBlur={ validateInput }
+                        // onBlur={ validateUniqueEmail }
                     />
                 </div>
                 <div className="col-md-6">
@@ -241,7 +272,7 @@ export default function SignUp () {
             </div>
               {error.confirmPassword && <span className='text-danger'>{error.confirmPassword}</span>}
             <div className="d-grid mt-3">
-              <button type="submit" className="btn btn_dark trigger-btn" data-toggle="modal" data-bs-target="#myModal">Sign Up</button>
+              <button type="submit" className="btn btn_dark trigger-btn" data-toggle="modal" data-bs-target="#myModal" disabled={signUpBtnDisabled}>Sign Up</button>
             </div>
             <div>
               <small>Already have an account? <Link to="/login">Log in!</Link> </small>

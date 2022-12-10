@@ -27,7 +27,7 @@ import "./Assets/Styles/style.css"
 
 function App() {
     ReactSession.setStoreType("localStorage");
-
+    
   return (
       <Router>
           <Routes>
