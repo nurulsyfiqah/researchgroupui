@@ -85,6 +85,14 @@ a:hover {
     overflow: hidden;
 }
 
+.text-clamping-row {
+    /* display: -webkit-box;
+    -webkit-line-clamp: 1; */
+    /* -webkit-box-orient: vertical; */
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 main {
     position: relative;
     margin: var(--header-height) 0 0 0;

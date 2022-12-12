@@ -7,10 +7,13 @@ import axios from 'axios';
 import {ReactSession} from "react-client-session";
 import base_url from "../../Service/serviceapi"
 import {BsXLg} from "react-icons/bs";
-import Dropzone from "react-dropzone-uploader";
+import Dropzone from 'react-dropzone-uploader'
+import 'react-dropzone-uploader/dist/styles.css'
+import moment from "moment";
 
-export function UploadImageModal({data, hide}) {
+export function UploadImageModal({data, hide, change}) {
     const account = ReactSession.get("account");
+    const [image, setImage] = useState(null);
     // const [files, setFiles] = useState([])
     // const [loading, setLoading] = useState(false);
     // const [selectedFile, setSelectedFile] = useState();
@@ -71,8 +74,10 @@ export function UploadImageModal({data, hide}) {
     //     //     });
     // }
 
-    const getUploadParams = () => {
-        return { url: 'https://httpbin.org/post' }
+    const getUploadParams = ({file, meta}) => {
+        setImage(file)
+        console.log(image)
+        return { url: 'https://httpbin.org/post'}
       }
     
       const handleChangeStatus = ({ meta }, status) => {
@@ -80,9 +85,50 @@ export function UploadImageModal({data, hide}) {
       }
     
       const handleSubmit = (files, allFiles) => {
-        console.log(files.map(f => f.meta))
-        allFiles.forEach(f => f.remove())
+        console.log(image)
+        // console.log(files.map(f => f.meta))
+        const formData = new FormData();
+        formData.append("image", image);
+        formData.append("userId", data.id);
+        console.log(formData)
+        try {
+            axios({
+                method: 'put',
+                url: `${base_url}/user/uploadimage`,
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+              }).then((response)=>{
+                hide()
+                change()
+                toast.success("Image uploaded successfully", {autoClose:1500, hideProgressBar:true});
+              });
+            // axios.put(`${base_url}/user/uploadimage`, formData, {
+            //     headers: {
+            //         'Content-Type': 'multipart/form-data',
+            //         'Access-Control-Allow-Origin': true
+            //     }
+            // }).then((response) => {
+            //     console.log(response.data)
+            //     hide()
+            //     change()
+            //     toast.success("Image uploaded successfully", {autoClose:1500, hideProgressBar:true});
+            // })
+            
+        } catch(error) {
+            console.log(error);
+        }
+        // allFiles.forEach(f => f.remove())
       }
+
+      const getFilesFromEvent = e => {
+        return new Promise(resolve => {
+            getDroppedOrSelectedFiles(e).then(chosenFiles => {
+                resolve(chosenFiles.map(f => f.fileObject))
+            })
+        })
+    }
 
     return (
 
@@ -94,20 +140,39 @@ export function UploadImageModal({data, hide}) {
                         <h5 className="modal-title" id="staticBackdropLabel">Upload your image </h5>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={hide}></button>
                     </div>
+
                     <div className="modal-body ">
                     <Dropzone
+                        getUploadParams={getUploadParams}
+                        onChangeStatus={handleChangeStatus}
+                        onSubmit={handleSubmit}
+                        accept="image/*"
+                        maxFiles={1}
+                        inputContent={(files, extra) => (extra.reject ? 'Only image files allowed!' : 'Select and Drop Files')}
+                        submitButtonDisabled={files => files.length < 1}
+                        getFilesFromEvent={getFilesFromEvent}
+                        submitButtonContent="Upload"
+                        styles={{
+                            dropzoneReject: { borderColor: '#F19373', backgroundColor: '#F1BDAB' },
+                            inputLabel: (files, extra) => (extra.reject ? { color: '#A02800' } : {}),
+                            submitButton: {backgroundColor: '#388087', color: '#f6f6f2'}
+                        }}
+                    />
+
+                    {/* <Dropzone
                         inputContent={null}
                         getUploadParams={getUploadParams}
                         onChangeStatus={handleChangeStatus}
                         onSubmit={handleSubmit}
                         accept="image/*"
-                        styles={{ dropzone: { minHeight: 300, maxHeight: 400 } }}
-                    />
+                        styles={{ dropzone: { minHeight: 300, maxHeight: 400, width: 'auto' } }}
+                    /> */}
                     </div>
-                    <div className="modal-footer">
+
+                    {/* <div className="modal-footer">
                         <button type="button" className="btn btn-sm btn-secondary" onClick={hide}>Close</button>
                         <button type="submit" className="btn btn-sm btn_dark">Save</button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
@@ -186,7 +251,7 @@ export function EditSocialLinkModal({data, hide, change}) {
                                     socialList.map((link, index) =>(
                                         <div className="row justify-content-between">
                                             <div key={index} className="col-8"> {link} </div>
-                                            <div className="col-2"><div className="float-end" type="button" id="`${index}`" onClick={() => removeEmail(index)}> <BsXLg/> </div></div>
+                                            <div className="col-2"><div className="float-end" type="button" key={`${index}`} id={`${index}`} onClick={() => removeEmail(index)}> <BsXLg/> </div></div>
                                         </div>
                                     ))
                                     :
@@ -243,7 +308,7 @@ export function EditDomainModal({data, hide, change}) {
             url: `${base_url}/user/update`,
             data: input
         }).then(function(response) {
-            toast.success("Successfully updated", {autoClose: 1500,hideProgressBar: true})
+            // toast.success("Successfully updated", {autoClose: 1500,hideProgressBar: true})
             change()
             hide()
         }, (error)=>{
@@ -297,6 +362,10 @@ export function EditDomainModal({data, hide, change}) {
 export function EditInfoModal({data, account, hide, change}) {
     const [acc, setAcc] = useState(account);
     const [user, setUser] = useState(data);
+    const [error, setError] = useState({
+        username: '',
+        email: '',
+    })
 
     const onAccChange =(e)=>{
         const { name, value } = e.target;
@@ -304,7 +373,14 @@ export function EditInfoModal({data, account, hide, change}) {
             ...prev,
             [name]: value
         }));
-        console.log(acc)
+        if (name === "username" || name === "email") {
+            console.log(name, value)
+            if (name === "username") {
+                validateUniqueDetails("username", value);
+              } else {
+                validateUniqueDetails("email", value);
+              }
+        }
     }
 
     const onUserChange =(e)=>{
@@ -313,7 +389,52 @@ export function EditInfoModal({data, account, hide, change}) {
             ...prev,
             [name]: value
         }));
-        console.log(user)
+    }
+
+    function validateUniqueDetails(name, value) {
+        // const value = e.target.value;
+        if (name === "username" && value !== "") {
+            axios({
+                method: 'GET',
+                url: `${base_url}/getaccountbyusername/${value}`,
+            })
+                .then(function (response){
+                    if (response.data.length !== 0 && response.data.username !== account.username) {
+                        setError(prev => ({
+                            ...prev,
+                            username: "The username is not available."
+                        }));
+                    } else {
+                        setError(prev => ({
+                            ...prev,
+                            username: ""
+                        }));
+                    }
+                }, (error) => {
+                    console.log(error);
+                });
+        } else if (name === "email" && value !== "") { 
+            axios({
+                method: 'GET',
+                url: `${base_url}/signup/getaccountbyemail?email=${value}`,
+            })
+                .then(function (response){
+                    if (response.data.length > 0 && response.data[0].email !== account.email) {
+                        setError(prev => ({
+                            ...prev,
+                            email: "The email had been registered."
+                        }));
+                    } else {
+                        setError(prev => ({
+                            ...prev,
+                            email: ""
+                        }));
+                    }
+                }, (error) => {
+                    console.log(error.text);
+                });
+        }
+
     }
 
     const submitHandler =()=>{
@@ -324,15 +445,15 @@ export function EditInfoModal({data, account, hide, change}) {
             url: `${base_url}/account/update`,
             data: acc
         }).then(function(response) {
-            toast.success("Successfully update account", {autoClose: 1500,hideProgressBar: true})
+            // update data in session
+            ReactSession.set("account", acc);
             // update user
-            change()
             axios({
                 method: 'PUT',
                 url: `${base_url}/user/update`,
                 data: user
             }).then(function(response) {
-                toast.success("Successfully updated", {autoClose: 1500,hideProgressBar: true})
+                toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
                 change()
                 hide()
             }, (error)=>{
@@ -358,9 +479,10 @@ export function EditInfoModal({data, account, hide, change}) {
                     </div>
                     <div className="modal-body">
                         <label htmlFor="username" className="form-label my-1">Username</label>
-                        <div className="input-group mb-3">
+                        <div className="input-group">
                             <input type="text" className="form-control" id="username" name="username" value={acc.username} onChange={onAccChange}/>
                         </div>
+                        <div className='mb-3'>{error.username && <span className='text-danger'>{error.username}</span>}</div>
                         <label htmlFor="username" className="form-label my-1">Published Name</label>
                         <div className="input-group mb-3">
                             <input type="text" className="form-control" id="publishedName" name="publishedName" value={user.publishedName} onChange={onUserChange}/>
@@ -374,9 +496,10 @@ export function EditInfoModal({data, account, hide, change}) {
                             <input type="text" className="form-control" id="lastName" name="lastName" value={user.lastName} onChange={onUserChange}/>
                         </div>
                         <label htmlFor="username" className="form-label my-1">Email</label>
-                        <div className="input-group mb-3">
+                        <div className="input-group">
                             <input type="email" className="form-control" id="email" name="email" value={acc.email} onChange={onAccChange}/>
                         </div>
+                        <div className='mb-3'>{error.email && <span className='text-danger'>{error.email}</span>}</div>
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-sm btn-secondary" onClick={hide}>Close</button>
@@ -442,28 +565,184 @@ export function EditAboutModal({data, hide, change }) {
     )
 }
 
-export function EditAffiliationModal({data, hide}) {
+export function AddAffiliationModal({hide, change}) {
     let modalStyle = {
         display: 'block',
         backgroundColor: 'rgba(0,0,0,0.8)'
     }
+    const us = ReactSession.get("user");
+
+    const [affiliation, setAffiliation] = useState({
+        userId: us.id,
+        organization: '',
+        position: '',
+        startDate: '',
+        endDate: '',
+    });
+
+    const onAffChange =(e)=>{
+        const { name, value } = e.target;
+        setAffiliation(prev => ({
+            ...prev,
+            [name]: value
+        }));
+        console.log(affiliation)
+    }
+
+    const submitHandler =()=>{
+        console.log(affiliation)
+
+        axios({
+            method: 'PUT',
+            url: `${base_url}/user/updateaffiliation`,
+            data: affiliation
+        }).then(function(response) {
+            toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
+            hide()
+            change()
+        }, (error)=>{
+            console.log(error.text)
+        })
+    }
+
     return (
         <div className="modal show fade"  data-bs-backdrop="static" data-bs-keyboard="false"
              aria-labelledby="staticBackdropLabel" aria-hidden="true" style={modalStyle}>
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
+                        <h5 className="modal-title" id="staticBackdropLabel">Add Affiliation</h5>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={hide}></button>
+                    </div>
+                    <div className="modal-body">
+                        <label htmlFor="organization" className="form-label my-1">Organization</label>
+                        <div className="input-group">
+                            <input type="text" className="form-control" id="organization" name="organization" onChange={onAffChange}/>
+                        </div>
+                        <label htmlFor="position" className="form-label my-1">Position</label>
+                        <div className="input-group">
+                            <input type="text" className="form-control" id="position" name="position" onChange={onAffChange}/>
+                        </div>
+                        <label htmlFor="startDate" className="form-label my-1">Start Date</label>
+                        <div className="input-group">
+                            <input type="date" className="form-control" id="startDate" name="startDate" onChange={onAffChange}/>
+                        </div>
+                        <label htmlFor="endDate" className="form-label my-1">End Date</label>
+                        <div className="input-group">
+                            <input type="date" className="form-control" id="endDate" name="endDate" onChange={onAffChange}/>
+                        </div>
+                    </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-sm btn-secondary" onClick={hide}>Close</button>
+                        <button type="button" className="btn btn-sm btn_dark" onClick={submitHandler}>Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export function EditAffiliationModal({data, allData, hide, change}) {
+    let modalStyle = {
+        display: 'block',
+        backgroundColor: 'rgba(0,0,0,0.8)'
+    }
+
+    const user = ReactSession.get("user");
+    console.log(allData)
+    const [affiliation, setAffiliation] = useState({
+        userId: user.id,
+        organization: '',
+        position: '',
+        startDate: '',
+        endDate: '',
+    });
+
+    const onUserChange =(e)=>{
+        const { name, value } = e.target;
+        setAffiliation(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    }
+
+    const submitHandler =()=>{
+        console.log(user)
+        axios({
+            method: 'PUT',
+            url: `${base_url}/user/updateaffiliation`,
+            data: affiliation
+        }).then(function(response) {
+            toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
+            hide()
+            change()
+        }, (error)=>{
+            console.log(error.text)
+        })
+    }
+
+    function getDifference(a1, a2) {
+
+          const results = a1.filter(({ id: id1 }) => !a2.some(({ id: id2 }) => id2 === id1));
+          
+        console.log(results)
+        return results;
+    }
+      
+
+    const deleteAff=()=>{
+        const diff = getDifference(allData, [data])
+        console.log(diff)
+        axios({
+            method: 'PUT',
+            url: `${base_url}/user/updatedelaffiliation`,
+            data: diff
+        }).then(function(response) {
+            toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
+            hide()
+            change()
+        }, (error)=>{
+            console.log(error.text)
+        })
+    }
+
+    function formatDate(date) {
+        //2022-06-20T11:10:12.000+00:00
+        moment.defaultFormat = "YYYY-MM-DDTHH:mm:ssZ";
+        const d = new Date(date)
+        return moment(d).format('YYYY-MM-DD')
+    }
+
+    return (
+        <div className="modal show fade"  data-bs-backdrop="static" data-bs-keyboard="false"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true" style={modalStyle}>
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div className="modal-content">
+                    <div className="modal-header">
                         <h5 className="modal-title" id="staticBackdropLabel">Edit Affiliation</h5>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={hide}></button>
                     </div>
                     <div className="modal-body">
-                        Choose where you want to share your article with:
-
-
+                        <label htmlFor="username" className="form-label my-1">Organization</label>
+                        <div className="input-group">
+                            <input type="text" className="form-control" id="organization" name="organization" onChange={onUserChange} defaultValue={data.organization}/>
+                        </div>
+                        <label htmlFor="username" className="form-label my-1">Position</label>
+                        <div className="input-group mb-3">
+                            <input type="text" className="form-control" id="position" name="position" onChange={onUserChange} defaultValue={data.position}/>
+                        </div>
+                        <label htmlFor="username" className="form-label my-1">Start Date</label>
+                        <div className="input-group mb-3">
+                            <input type="date" className="form-control" id="startDate" name="startDate" onChange={onUserChange} defaultValue={formatDate(data.startDate)}/>
+                        </div>
+                        <label htmlFor="username" className="form-label my-1">End Date</label>
+                        <div className="input-group mb-3">
+                            <input type="date" className="form-control" id="endDate" name="endDate" onChange={onUserChange} defaultValue={formatDate(data.endDate)}/>
+                        </div>
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-sm btn-secondary" onClick={hide}>Close</button>
-                        <button type="button" className="btn btn-sm btn_dark">Save</button>
+                        <button type="button" className="btn btn-sm btn-danger" onClick={deleteAff}>Delete</button>
+                        <button type="button" className="btn btn-sm btn_dark" onClick={submitHandler}>Save</button>
                     </div>
                 </div>
             </div>

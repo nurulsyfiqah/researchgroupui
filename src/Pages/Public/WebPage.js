@@ -14,7 +14,7 @@ export default function WebPage() {
     ReactSession.set("researcherusername", username);
 
     const getAccountFromServer=()=>{
-        axios.post(`${base_url}/getaccountbyusernameandid/${username}`).then((response)=>{
+        axios.post(`${base_url}/getaccountbyusername/${username}`).then((response)=>{
             setAccount(response.data);
             console.log(response.data)
             getUserFromServer(response.data.id);
