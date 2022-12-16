@@ -239,7 +239,7 @@ export default function Home() {
                                     <div className="col-md-3 fw-bold">End Date</div>
                                     <div className="col-md-9">{formatDate(data.endDate)}</div>
                                 </div>
-                                <div class="d-grid d-md-flex justify-content-md-end me-2">
+                                <div className="d-grid d-md-flex justify-content-md-end me-2">
                                     <EditIcon className="icon_dark" onClick={() =>showAffiliationModal(data)}/>
                                 </div>
                             </div>

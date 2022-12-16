@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import ResearchList from './ResearchList';
 import AddPublication from './AddPublication';
 import VerifyPublication from './VerifyPublication';
@@ -14,16 +14,16 @@ export default function Research() {
     const [change, setChange] = useState(0);
     
     const account = ReactSession.get("account");
-
+    const user = ReactSession.get("user");
 
     // get the scraped data from the google scholar
     const scrapePublication=()=>{   
         axios({
             method: 'GET',
-            url: base_url + '/publication?gscLink=https://scholar.google.ca/citations?user=hKfga9oAAAAJ' ,
+            url: `${base_url}/publication?gscLink=https://scholar.google.ca/citations?user=hKfga9oAAAAJ&userId=${user.id}` ,
           })
             .then(function (response) {
-                const data = response.data;
+                const data = response.data; 
                 setPublications(data);
             }, (error) => {
                 toast.error("Something went wrong on Server")
@@ -31,15 +31,31 @@ export default function Research() {
     }
 
     useEffect(() => {
+        console.log("useEffect triggered")
         scrapePublication()
     }, []);
+
+    function removePublication(id){
+        //get the index of the object in the array.
+        const indexOfObject = publications.findIndex(object => {
+            return object.id === id;
+        });        
+        // remove the element at that index.
+        publications.splice(indexOfObject, 1);
+        setPublications([...publications])
+    }
+
+    // const removeDiv = useCallback((itemId) => {
+    //     // filter out the div which matches the ID
+    //     setP(items.filter((id) => id !== itemId));
+    //   }, [items]);
 
     useEffect(() => {getPublicationFromServer()}, [change]);
 
     // get the publication
     const getPublicationFromServer=()=>{
 
-        axios.get(`${base_url}/publication/all?id=${account.id}`).then((
+        axios.get(`${base_url}/publication/all?id=${user.id}`).then((
             response)=>{
             const data = response.data;
             console.log(data)
@@ -79,8 +95,8 @@ export default function Research() {
                      aria-labelledby="pills-home-tab">
                     {
                         pub.length > 0 ?
-                            pub.map((p) => (
-                                <ResearchList publication={p} change={()=>{setChange(change+1)}}/>
+                            pub.map((p, index) => (
+                                <ResearchList key={index} publication={p} change={()=>{setChange(change+1)}} />
                             ))
                             :
                             <div class="card"><div class="card-body">There is no publication added</div></div>
@@ -96,8 +112,8 @@ export default function Research() {
                 <div className="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
                 {
                 publications.length > 0 ?
-                    publications.map((publication) => (
-                        <VerifyPublication publication={publication} />
+                    publications.map((publication, index) => (
+                        <VerifyPublication key={index} publication={publication} user={user}  change={()=>{setChange(change+1)}} removepub={()=>removePublication(publication.id)}/>
                     ))
                     :
                     <div class="card"><div class="card-body">There is no publication that need to be verified.</div></div>

@@ -6,7 +6,6 @@ import base_url from "../../Service/serviceapi";
 import { toast } from 'react-toastify';
 
 export default function ResearchList({publication, change}) { 
-
     const [modal, setModal] = useState(false);
 
     const getData = () => {
@@ -34,11 +33,11 @@ export default function ResearchList({publication, change}) {
             <div className="card my-1" >
                 <div className="card-body">
                     <h5 className="card-title">{ publication.title!=null ? publication.title : "No Title" }</h5>
-                    <p className="card-text"> 
-                        <div> { publication.author } </div>
+                    <div className="card-text"> 
+                        <div> { publication.authors } </div>
                         <div> { publication.journal } </div>
                         <div className="text-clamping"> { publication.description } </div>
-                    </p>
+                    </div>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <button className="btn btn-danger btn-sm" type="button" onClick={() =>deletePub()}>Delete</button>
                         <button className="btn btn_dark_normal btn-sm" type="button" onClick={() =>getData()}>Edit</button>

@@ -7,7 +7,7 @@ import { ChangeCircle } from '@mui/icons-material';
 
 export default function EditPublicationModal({publication, hide, change}) {
 
-    let [authorList, setAuthorList] = useState( (publication.author != null) ? publication.author.split(","): []);
+    let [authorList, setAuthorList] = useState( publication.hasOwnProperty("authors")  ? publication.authors.split(","): []);
     const [author, setAuthor] = useState([]);
 
     let modalStyle = {
@@ -51,38 +51,38 @@ export default function EditPublicationModal({publication, hide, change}) {
     } 
 
     const [input, setInput] = useState({
-        id: publication.id,
-        userId: publication.userId,
-        type: publication.type,
-        title: publication.title,
-        authors: publication.authors,
-        abstract: publication.pubAbstract,
-        day: publication.day,
-        month: publication.month,
-        year: publication.year,
-        journal: publication.journal,
-        value: '',
-        issue: publication.issue,
-        book: '',
-        page: publication.page,
-        conferenceTitle: '',
-        doi: publication.doi,
-        location: '',
-        description: publication.description,
-        relPublication: '',
-        refNo: '',
-        conferenceName: '',
-        prStatus: '',
-        reportNumber: '',
-        instution: '',
-        degree: '',
-        supervisor: '',
-        publisher: '',
-        isbn: '',
-        repoLink: '',
-        language: '',
-        file: null,
-        add_file: null,
+        id: publication.hasOwnProperty("id") ? publication.id : '',
+        userId: publication.hasOwnProperty("userId") ? publication.userId: '',
+        type: publication.hasOwnProperty("type") ? publication.type: '',
+        title: publication.hasOwnProperty("title") ? publication.title : '',
+        authors:publication.hasOwnProperty("authors") ? publication.authors : '',
+        abstract:publication.hasOwnProperty("pubAbstract") ? publication.pubAbstract : '',
+        day:publication.hasOwnProperty("day") ? publication.day : '',
+        month:publication.hasOwnProperty("month") ? publication.month : '',
+        year:publication.hasOwnProperty("year") ? publication.year : '',
+        journal:publication.hasOwnProperty("journal") ? publication.journal : '',
+        value:publication.hasOwnProperty("value") ? publication.value : '',
+        issue:publication.hasOwnProperty("issue") ? publication.issue : '',
+        book:publication.hasOwnProperty("book") ? publication.book : '',
+        page:publication.hasOwnProperty("page") ? publication.page : '',
+        conferenceTitle:publication.hasOwnProperty("conferenceTitle") ? '' : '',
+        doi:publication.hasOwnProperty("doi") ? publication.doi : '',
+        location:publication.hasOwnProperty("location") ? publication.location : '',
+        description:publication.hasOwnProperty("description") ? publication.description : '',
+        relPublication:publication.hasOwnProperty("relPublication") ? publication.relPublication : '',
+        refNo:publication.hasOwnProperty("refNo") ? publication.refNo : '',
+        conferenceName:publication.hasOwnProperty("conferenceName") ? publication.conferenceName : '',
+        prStatus:publication.hasOwnProperty("prStatus") ? publication.prStatus : '',
+        reportNumber:publication.hasOwnProperty("reportNumber") ? publication.reportNumber : '',
+        instution:publication.hasOwnProperty("institution") ? publication.instution : '',
+        degree:publication.hasOwnProperty("degree") ? publication.degree : '',
+        supervisor:publication.hasOwnProperty("supervisor") ? publication.supervisor : '',
+        publisher:publication.hasOwnProperty("publisher") ? publication.publisher : '',
+        isbn:publication.hasOwnProperty("isbn") ? publication.isbn : '',
+        repoLink:publication.hasOwnProperty("repoLink") ? publication.repoLink : '',
+        language:publication.hasOwnProperty("language") ? publication.language : '',
+        file:publication.hasOwnProperty("file") ? '' : '',
+        add_file:publication.hasOwnProperty("add_file") ? '' : '',
     });
 
     const authorListUpdate = () => {
@@ -91,7 +91,7 @@ export default function EditPublicationModal({publication, hide, change}) {
         } else {
             alert('Please enter an author name')
         }
-        console.log(authorList)
+        // console.log(authorList)
         setAuthor([]);
     };
 
@@ -103,7 +103,7 @@ export default function EditPublicationModal({publication, hide, change}) {
         const list = [...authorList];
         list.splice(index, 1);
         setAuthorList(list);
-        console.log(authorList)
+        // console.log(authorList)
     };
 
     function daysListSelect() {
@@ -166,19 +166,19 @@ export default function EditPublicationModal({publication, hide, change}) {
 
     function submit() {
         console.log(authorList)
-        console.log(input)
         input.authors = authorList
-        axios({
-            method: 'PUT',
-            url: `${base_url}/publication/update`,
-            data: input,
-        }).then(function(response) {
-            toast.success("Successfully updated publication", {autoClose: 1500,hideProgressBar: true})
-            change();
-            hide();
-        }, (error) => {
-            toast.error("Error updating publication", {autoClose: 1500,hideProgressBar: true})
-        })
+        console.log(input)
+        // axios({
+        //     method: 'PUT',
+        //     url: `${base_url}/publication/update`,
+        //     data: input,
+        // }).then(function(response) {
+        //     toast.success("Successfully updated publication", {autoClose: 1500,hideProgressBar: true})
+        //     change();
+        //     hide();
+        // }, (error) => {
+        //     toast.error("Error updating publication", {autoClose: 1500,hideProgressBar: true})
+        // })
 
     }
 
@@ -205,9 +205,9 @@ export default function EditPublicationModal({publication, hide, change}) {
                             }
                         </select>
                         <label className="my-1 fw-bold">Title</label>
-                        <textarea class="form-control my-1" rows="2"  id="title" name="title" onChange={getValue} >{ publication.title }</textarea> 
+                        <textarea class="form-control my-1" rows="2"  id="title" name="title" onChange={getValue} defaultValue={publication.title} />
                         <label className="my-1 fw-bold">Description</label>
-                        <textarea class="form-control" rows="2" name="description" id="description" onChange={getValue}></textarea>
+                        <textarea class="form-control" rows="2" name="description" id="description" onChange={getValue} defaultValue={publication.description}/>
                         <label className="my-1 fw-bold">Authors</label>
                         <div className="author_list">
                             {
@@ -230,7 +230,7 @@ export default function EditPublicationModal({publication, hide, change}) {
 
                         {/* <div className={classNames({ 'd-none': abstractIsShown })}> */}
                             <label className="my-1 fw-bold">Abstract</label>
-                            <textarea class="form-control" rows="5" onChange={getValue} >{ publication.pubAbstract }</textarea>
+                            <textarea class="form-control" rows="5" onChange={getValue} value={publication.abstract}/>
                         {/* </div> */}
 
 
@@ -244,7 +244,7 @@ export default function EditPublicationModal({publication, hide, change}) {
 
                         {/* <div className={classNames({ 'd-none': journalNameIsShown })}> */}
                         <label className="my-1 fw-bold">Journal Name</label>
-                        <input class="form-control my-1" id="name" defaultValue={ publication.journal } onChange={getValue} />
+                        <input class="form-control my-1" id="name" value={ publication.journal } onChange={getValue} />
                     {/* </div> */}
 
                     {/* <div class="row"> */}

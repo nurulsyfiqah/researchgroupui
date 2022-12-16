@@ -462,13 +462,13 @@ export default function AddPublication() {
                     <label className="my-1">Peer-review Status</label>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="prStatus" id="flexRadioDefault1" />
-                        <label class="form-check-label" for="flexRadioDefault1">
+                        <label class="form-check-label" htmlFor="flexRadioDefault1">
                             Yes
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="prStatus" id="flexRadioDefault2"/>
-                        <label class="form-check-label" for="flexRadioDefault2">
+                        <label class="form-check-label" htmlFor="flexRadioDefault2">
                             No
                         </label>
                     </div>
