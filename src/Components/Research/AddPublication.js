@@ -147,8 +147,9 @@ export default function AddPublication() {
         isbn: '',
         repoLink: '',
         language: '',
-        file: null,
-        add_file: null,
+        filepath: null,
+        additionalDetails: [],
+        addFilePath: []
     });
 
     const onUploadFirstStep = (e) => { 
@@ -328,6 +329,49 @@ export default function AddPublication() {
         console.log(input)
     }    
 
+    const [additionalFields, setAdditionalFields] = useState([])
+
+    const addDetails = () => {
+        let newfield = { title: '', value: '' }
+        setAdditionalFields([...additionalFields, newfield])
+    }
+
+    const removeAdditionalField=(index) => {
+        const data = [...additionalFields]; 
+        data.splice(index, 1)
+        setAdditionalFields(data)
+        
+    }
+
+    const getAdditionalValue = (e, index) => {
+        const { name, value } = e.target;
+        const list = [...additionalFields];
+        list[index][name] = value;
+        setAdditionalFields(list);
+    }
+
+    const [addFiles, setAddFiles] = useState([]);
+
+    const addFile = () => {
+        let newfield = { description: '', file: '' }
+        setAddFiles([...addFiles, newfield])
+    }
+
+    const getAddFile = (e, index) => {
+        const name = e.target.name;
+        const value = e.target.files ? e.target.files[0] : e.target.value;
+        const list = [...addFiles];
+        list[index][name] = value;
+        setAddFiles(list);
+    }
+
+    const removeAddFile=(index) => {
+        const data = [...addFiles]; 
+        data.splice(index, 1)
+        setAddFiles(data)
+        
+    }
+
     //* File handler
     const [state, setState] = useState({
         file: null
@@ -352,12 +396,12 @@ export default function AddPublication() {
         e.preventDefault();
         const updatedInput = {...input, author: authorList};
         console.log(updatedInput)
+        console.log(input)
         //* Hide first add detail section
         setResearchDetails(true);
         setAddDetailsSection(false);
-        console.log(researchDetails);
 
-        additionalDetails();
+        // additionalDetails();
 
         // let file = state.file;
         // let formdata = new FormData();
@@ -376,10 +420,16 @@ export default function AddPublication() {
         // })
     }
 
+    const handleUploadEnd = e => {
+        input.addFilePath = addFiles;
+        input.additionalDetails = additionalFields;
+        console.log(input)
+    }
+
     return (
         <div>
             <div className={classNames('add-step-one-publication', { 'd-none': researchDetails })}>
-                <label className="my-1">Type of publication</label>
+                <label className="my-1 fw-bold">Type of publication</label>
                 {/* <Select name="type" options={publicationList} onChange={handleSelect} isSearchable={true}/> */}
                 <select class="form-select" name="type" onChange={getValue}>
                     <option value="" selected>Open this select menu</option>
@@ -391,11 +441,11 @@ export default function AddPublication() {
                         })
                     }
                 </select>
-                <label className="my-1">Title</label>
+                <label className="my-1 fw-bold">Title</label>
                 <input class="form-control my-1" id="title" name="title" onChange={getValue}/>
 
-                <label className="my-1">File</label>
-                <input className="form-control" type="file" id="file" name="file" onChange={getValue}/>
+                <label className="my-1 fw-bold">File</label>
+                <input className="form-control my-1" type="file" id="file" name="file" onChange={getValue}/>
                 {/* <button type="button" class="btn btn-sm my-1 btn-primary" onClick={handleUpload}>Submit</button> */}
                 {/* <div className="card my-1">
                     <div className="card-body p-2" style={{height: '5em'}}>
@@ -406,18 +456,15 @@ export default function AddPublication() {
                     </div>
                 </div> */}
 
-                <label className="my-1">Additional File</label>
-                <input class="form-control" type="file" id="add_file" name="add_file" onChange={getValue} />
-
-                <label className="my-1">Description</label>
+                <label className="my-1 fw-bold">Description</label>
                 <textarea class="form-control" rows="2" name="description" id="description" onChange={getValue}></textarea>
 
-                <label className="my-1">Authors</label>
+                <label className="my-1 fw-bold">Authors</label>
                 <div className="author_list">
                     {
                         authorList.length > 0 ?
                             authorList.map((author, index) =>(
-                                <div className="row justify-content-between">
+                                <div className="row justify-content-between" key={index}>
                                     <div key={index} className="col-8"> {author} </div>
                                     <div className="col-2"><div className="float-end" type="button" onClick={() => removeAuthor(index)}> <BsXLg/> </div></div>
                                 </div>
@@ -433,7 +480,7 @@ export default function AddPublication() {
                 </div>
 
 
-                <label className="my-1">Date</label>
+                <label className="my-1 fw-bold">Date</label>
                 <div class="input-group my-1">
                     { daysListSelect() }
                     { monthsListSelect() }
@@ -441,7 +488,7 @@ export default function AddPublication() {
                             
                 </div>
 
-                <label className="my-1">DOI (Optional)</label>
+                <label className="my-1 fw-bold">DOI</label>
                 <input class="form-control my-1" id="doi" name="doi" onChange={getValue}/>
 
                 <div class="d-grid gap-2 my-3 d-md-flex justify-content-md-end">
@@ -454,12 +501,12 @@ export default function AddPublication() {
                 {  /** Article */ }
                 
                 <div className={classNames({ 'd-none': abstractIsShown })}>
-                    <label className="my-1">Abstract</label>
+                    <label className="my-1 fw-bold">Abstract</label>
                     <textarea class="form-control" rows="5"></textarea>
                 </div>
 
                 <div className={classNames({ 'd-none': prStatusIsShown })}> 
-                    <label className="my-1">Peer-review Status</label>
+                    <label className="my-1 fw-bold">Peer-review Status</label>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="prStatus" id="flexRadioDefault1" />
                         <label class="form-check-label" htmlFor="flexRadioDefault1">
@@ -475,21 +522,21 @@ export default function AddPublication() {
                 </div>
 
                 <div className={classNames({ 'd-none': journalNameIsShown })}>
-                    <label className="my-1">Journal Name</label>
+                    <label className="my-1 fw-bold">Journal Name</label>
                     <input class="form-control my-1" id="name" />
                 </div>
 
                 <div class="row">
                     <div className={classNames('col',{ 'd-none': valueIsShown })}>
-                        <label className="my-1">Volume</label>
+                        <label className="my-1 fw-bold">Volume</label>
                         <input class="form-control my-1" id="volume" />
                     </div>
                     <div className={classNames('col',{ 'd-none': issueIsShown })}>
-                        <label className="my-1">Issue</label>
+                        <label className="my-1 fw-bold">Issue</label>
                         <input class="form-control my-1" id="issue" />
                     </div>
                     <div  className={classNames('col',{ 'd-none': pageIsShown })}>
-                        <label className="my-1">Page</label>
+                        <label className="my-1 fw-bold">Page</label>
                         <input class="form-control my-1" id="page" />
                     </div>
                 </div>
@@ -498,12 +545,12 @@ export default function AddPublication() {
 
                 {  /** Book */ }
                 <div className={classNames({ 'd-none': isbnIsShown })}>
-                    <label className="my-1">ISBN</label>
+                    <label className="my-1 fw-bold">ISBN</label>
                     <input class="form-control my-1" id="isbn" />
                 </div>
 
                 <div className={classNames({ 'd-none': publisherIsShown })}>
-                    <label className="my-1">Publisher</label>
+                    <label className="my-1 fw-bold">Publisher</label>
                     <input class="form-control my-1" id="publisher" />
                 </div>
             
@@ -511,27 +558,27 @@ export default function AddPublication() {
 
                 {  /** Chapter */ }
                 <div className={classNames({ 'd-none': bookTitleIsShown })}>
-                    <label className="my-1">Book Title</label>
+                    <label className="my-1 fw-bold">Book Title</label>
                     <input class="form-control my-1" id="book_title" />
                 </div>
                 
                 {/* <div className={classNames({ 'd-none': pageIsShown })}>
-                    <label className="my-1">Page</label>
+                    <label className="my-1 fw-bold">Page</label>
                     <input class="form-control my-1" id="page" />
                 </div> */}
 
                 {/* <div className={classNames({ 'd-none': doiIsShown })}>
-                    <label className="my-1">DOI</label>
+                    <label className="my-1 fw-bold">DOI</label>
                     <input class="form-control my-1" id="doi" />
                 </div> */}
 
                 {/* <div className={classNames({ 'd-none': isbnIsShown })}>
-                    <label className="my-1">ISBN</label>
+                    <label className="my-1 fw-bold">ISBN</label>
                     <input class="form-control my-1" id="isbn" />
                 </div> */}
 
                 {/* <div className={classNames({ 'd-none': publisherIsShown })}>
-                    <label className="my-1">Publisher</label>
+                    <label className="my-1 fw-bold">Publisher</label>
                     <input class="form-control my-1" id="publisher" />
                 </div>     */}
 
@@ -539,40 +586,84 @@ export default function AddPublication() {
 
                 {  /** Code */ }
                 <div className={classNames({ 'd-none': descriptionIsShown })}> 
-                    <label className="my-1">Description</label>
+                    <label className="my-1 fw-bold">Description</label>
                     <textarea class="form-control" rows="5"></textarea>
                 </div>
                 
                 {/* <div className={classNames({ 'd-none': doiIsShown })}> 
-                    <label className="my-1">DOI</label>
+                    <label className="my-1 fw-bold">DOI</label>
                     <input class="form-control my-1" id="doi" />
                 </div> */}
                 
                 <div className={classNames({ 'd-none': repoLinkIsShown })}> 
-                    <label className="my-1">Repository Link</label>
+                    <label className="my-1 fw-bold">Repository Link</label>
                     <input class="form-control my-1" id="link" />
                 </div>
 
                 <div className={classNames({ 'd-none': languageIsShown })}> 
-                    <label className="my-1">Language</label>
+                    <label className="my-1 fw-bold">Language</label>
                     <input class="form-control my-1" id="language" />
                 </div>
 
                 <div className={classNames({ 'd-none': relPublicationIsShown })}> 
-                    <label className="my-1">Related Publication</label>
+                    <label className="my-1 fw-bold">Related Publication</label>
                     <input class="form-control my-1" id="rel_publication" />
                 </div>
 
                 <div className={classNames({ 'd-none': doiIsShown })}>
-                    <label className="my-1">DOI</label>
+                    <label className="my-1 fw-bold">DOI</label>
                     <input class="form-control my-1" id="doi" />
                 </div>
             
                 {  /** Code End */ }
 
+                <label className="my-1 fw-bold">Additional Details</label>
+                    {additionalFields.map((input, index) => { 
+                        return (
+                            <div className="row" key={index}>
+                                <div className="col-5 my-1">
+                                    <input className="form-control" name='title' placeholder='Title' value={additionalFields[index].title} onChange={e => getAdditionalValue(e, index)}/>
+                                </div>
+                                <div className="col-6 my-1">
+                                <input className="form-control"  name='value' placeholder='Description' value={additionalFields[index].value} onChange={e => getAdditionalValue(e, index)}/>
+                                </div>
+                                <div className="col-1 my-1">
+                                    <div className="float-end" type="button" onClick={() => removeAdditionalField(index)}> <BsXLg/> </div>
+                                </div>
+                            </div>
+                        )
+
+                    } )}
+
+                    <div className="d-grid my-2">
+                        <button className="btn btn-sm btn_dark" type="button" onClick={addDetails}>Add Details</button>
+                    </div>
+
+                <label className="my-1 fw-bold">Additional File</label>
+                
+                {addFiles.map((file, index) => {
+                    return (
+                        <div className="row mt-2" key={index}>
+                            <div className="col-11 my-1">
+                                <input className="form-control" type="file" name='file' value={addFiles[index].value} onChange={e => getAddFile(e, index)}/>
+                            </div>
+                            <div className="col-1 my-1">
+                                <div className="float-end" type="button" onClick={() => removeAddFile(index)}> <BsXLg/> </div>
+                            </div>
+                            <div className="col-12 my-1">
+                                <input className="form-control" placeholder="Description" name='description' value={addFiles[index].description} onChange={e => getAddFile(e, index)}/>
+                            </div>
+                        </div>
+                    )
+                })}
+
+                <div className="d-grid my-2">
+                   <button className="btn btn-sm btn_dark" type="button" onClick={addFile}>Add File</button>
+                </div>
+
                 <div className={classNames('d-grid gap-2 my-3 d-md-flex justify-content-md-end')}>
                     <button className="btn btn-outline-secondary btn-sm" type="button">Skip</button>
-                    <button className="btn btn_dark_normal btn-sm" type="button">Add</button>
+                    <button className="btn btn_dark_normal btn-sm" type="button" onClick={handleUploadEnd}>Add</button>
                 </div>
             </div>
 

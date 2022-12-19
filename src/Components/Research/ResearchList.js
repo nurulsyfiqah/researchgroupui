@@ -36,7 +36,7 @@ export default function ResearchList({publication, change}) {
                     <div className="card-text"> 
                         <div> { publication.authors } </div>
                         <div> { publication.journal } </div>
-                        <div className="text-clamping"> { publication.description } </div>
+                        <div className="text-clamping mt-2"> { publication.description } </div>
                     </div>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <button className="btn btn-danger btn-sm" type="button" onClick={() =>deletePub()}>Delete</button>
