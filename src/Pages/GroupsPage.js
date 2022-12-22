@@ -6,6 +6,7 @@ import CreateGroupCard from "../Components/Group/CreateGroupCard";
 import CreateGroupModal from "../Components/Group/CreateGroupModal";
 import Sidebar from "../Components/Sidebar";
 import base_url from "../Service/serviceapi"
+import { ReactSession } from 'react-client-session';
 
 export default function GroupsPage() {
     return (
@@ -17,6 +18,7 @@ export default function GroupsPage() {
 
 function GroupPageComponent() {
 
+    const user = ReactSession.get("user");
     const [groups, setGroups] = useState([])
     const [showModal, setShowModal] = useState(false)
     const [groupCreated, setGroupCreated] = useState(false)
@@ -27,7 +29,8 @@ function GroupPageComponent() {
     }, [groupCreated])
 
     const getAllGroupsFromServer = ()=>{
-        axios.get(`${base_url}/group`).then(
+        console.log("user id "+user.id)
+        axios.get(`${base_url}/group/member/${user.id}`).then(
             (response)=>{
                 setGroups(response.data)
                 console.log(response.data)

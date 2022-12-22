@@ -11,14 +11,22 @@ import {ReactSession} from "react-client-session";
 
 export default function CreateGroupModal({create, hide}) {
     const account = ReactSession.get("account");
+    const user = ReactSession.get("user");
     const [groupName, setGroupName] = useState("")
     const [description, setDescription] = useState("")
     const [domain, setDomain] = useState("")
     const [domainList, setDomainList] = useState([])
-    const [emailList, setEmailList] = useState(  []);
+    const [emailList, setEmailList] = useState([
+        {
+            memberEmail:account.email,
+            memberName: user.lastName + ", " + user.firstName,
+            status:1,
+            memberId: user.id
+        }
+    ]);
     const [email, setEmail] = useState([]);
     const [chosenEmoji, setChosenEmoji] = useState(null);
-
+    
     const groupNameUpdate=(e)=>{
         setGroupName(e.target.value);
     }
@@ -31,6 +39,18 @@ export default function CreateGroupModal({create, hide}) {
         setDomain(e.target.value);
     }
 
+    const domainListUpdate = () => {
+        setDomainList([...domainList, domain])
+        setDomain("")
+        console.log(domainList)
+    };
+
+    const removeDomain = (index) => {
+        const list = [...domainList];
+        list.splice(index, 1);
+        setDomainList(list);
+    };
+
     const emailUpdate = e => {
         setEmail(e.target.value)
     }
@@ -38,6 +58,7 @@ export default function CreateGroupModal({create, hide}) {
     const emailListUpdate = () => {
         setEmailList([...emailList, {
             memberEmail:email,
+            memberName: "",
             status:0,
             memberId: ""
         }])
@@ -61,7 +82,8 @@ export default function CreateGroupModal({create, hide}) {
         description: description,
         domain: domainList,
         member: emailList,
-        createdBy: account.id,
+        createdById: user.id,
+        createdByName: user.lastName + ", " + user.firstName,
         createdDate: moment().format(),
         status: 0,
     }
@@ -69,14 +91,24 @@ export default function CreateGroupModal({create, hide}) {
     // 1. submit form to create group
     const handleSubmit=(e) => {
         e.preventDefault();
+        // set group creator as the member
+        setEmailList([...emailList], {
+            memberEmail:account.email,
+            status:1,
+            memberId: user.id
+        })
+       
         params.domain = domainList
         console.log(params)
+        // const formData = new FormData();
+        // formData.append("group", params);
+        // formData.append("user", user);
         axios({
             method: 'POST',
             url: `${base_url}/group/create`,
-            data: params
+            data: params,
         })
-            .then(function (response) {
+            .then(function (response)  {
                 // 2. send invitation email to members
                 var count = 0;
                 toast.success("Group created successfully", {autoClose: 1500,hideProgressBar: true})
@@ -144,36 +176,53 @@ export default function CreateGroupModal({create, hide}) {
                                 )}
                             </div>
                         </div>
-                        <label className="form-label" htmlFor="name">Group Icon</label>
+                        <label className="form-label fw-bold my-1" htmlFor="name">Group Icon</label>
                         <Picker native={true} onEmojiClick={onEmojiClick} pickerStyle={{ width: '100%', height: '13em' }} disableSearchBar={false}/>
-                        <label className="form-label" htmlFor="name">Group Name</label>
-                        <div className="input-group input-group-sm mb-1">
+                        <label className="form-label fw-bold my-1" htmlFor="name">Group Name</label>
+                        <div className="input-group input-group-sm my-1">
                             <input type="text" className="form-control" id="name" name="name" onChange={groupNameUpdate}/>
                         </div>
-                        <label className="form-label"  htmlFor="descrption">Description</label>
-                         <div className="input-group mb-1">
+                        <label className="form-label fw-bold my-1"  htmlFor="descrption">Description</label>
+                         <div className="input-group my-1">
                             <textarea className="form-control" id="descrption" name="description" onChange={descriptionUpdate}></textarea>
                         </div>
-                        <label className="form-label"  htmlFor="dom ain">Domain</label>
-                        <div className="input-group input-group-sm mb-1">
-                            <input type="text" className="form-control" id="domain" name="domain" onChange={domainUpdate}/>
+                        <label className="form-label fw-bold my-1"  htmlFor="dom ain">Domain</label>
+                        <div className="input-group input-group-sm my-1">
+                                <input type="text" className="form-control" name="domain" id="email" value={domain} onChange={(e)=>{setDomain(e.target.value)}}/>
+                                <button className="btn btn-outline-dark" type="button" onClick={domainListUpdate}>Add</button>
+                            </div>
+                        <div className="domain_list">
+                            {
+                                domainList.length > 0 ?
+                                    domainList.map((domain, index) =>(
+                                        <div className="row justify-content-between" key={index}>
+                                            <div key={index} className="col-8"> {domain} </div>
+                                            <div className="col-2"><div className="float-end" type="button" id={`${index}`} onClick={() => removeDomain(index)}> <BsXLg/> </div></div>
+                                        </div>
+                                    ))
+                                    :
+                                    "No added domain yet"
+                            }
                         </div>
-                        <label className="form-label">Invite Members by Email</label>
-                        <div className="input-group input-group-sm mb-1">
+                        <label className="form-label fw-bold my-1">Invite Members by Email</label>
+                        <div className="input-group input-group-sm my-1">
                             <input type="text" className="form-control" name="email" id="email" value={email} onChange={emailUpdate}/>
                             <button className="btn btn-outline-dark" type="button" onClick={emailListUpdate}>Add</button>
                         </div>
                         <div className="email_list">
                             {
-                                emailList.length > 0 ?
-                                    emailList.map((email, index) =>(
-                                        <div className="row justify-content-between">
-                                            <div key={index} className="col-8"> {email.memberEmail} </div>
-                                            <div className="col-2"><div className="float-end" type="button" id="`${index}`" onClick={() => removeEmail(index)}> <BsXLg/> </div></div>
-                                        </div>
-                                    ))
-                                    :
-                                    "No added member's email yet"
+                                emailList?.map((item, index)=>{
+                                    if (item.memberEmail !== account.email){
+                                        return(
+                                            <div className="row justify-content-between" key={index}>
+                                                <div key={index} className="col-8"> {item.memberEmail} </div>
+                                                <div className="col-2"><div className="float-end" type="button" id={`${index}`} onClick={() => removeEmail(index)}> <BsXLg/> </div></div>
+                                            </div>
+                                        )
+                                    } else {
+                                        return null;
+                                    }
+                                })
                             }
                         </div>
                     </div>

@@ -61,7 +61,7 @@ export default function EditSettingModal({group, hide, change}) {
 
 
     return (
-            <div className="modal show fade" id="editSettingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-hidden="true"  style={{display:'block', backgroundColor: 'rgba(0,0,0,0.8)'}}>
+            <div className="modal show fade" id="editSettingModal" key={group.id} data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-hidden="true"  style={{display:'block', backgroundColor: 'rgba(0,0,0,0.8)'}}>
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -89,7 +89,7 @@ export default function EditSettingModal({group, hide, change}) {
                                         domainList.map((dom, index) =>(
                                             <div className="row justify-content-between">
                                                 <div key={index} className="col-8"> {dom} </div>
-                                                <div className="col-2"><div className="float-end" type="button" id="`${index}`" onClick={() => removeDomain(index)}> <BsXLg/> </div></div>
+                                                <div className="col-2"><div className="float-end" type="button" id={`${index}`} onClick={() => removeDomain(index)}> <BsXLg/> </div></div>
                                             </div>
                                         ))
                                         :

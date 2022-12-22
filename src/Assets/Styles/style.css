@@ -618,7 +618,7 @@ aside.emoji-picker-react {
 }
 
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-    background-color: #000;
+    background-color: var(--clr-dark);
 }
 
 .dropdown-toggle::after {
@@ -635,4 +635,12 @@ aside.emoji-picker-react {
 
 .badge {
     font-size: .5em;
+}
+
+.accordion-button {
+    color: var(--clr-dark);
+}
+
+.accordion-button:not(.collapsed) {
+    color: var(--clr-dark);
 }

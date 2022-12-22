@@ -44,7 +44,7 @@ export default function GroupSetting({group,change}) {
     }
 
     return (
-        <div>
+        <div key={group.id}>
             <div className="card my-2">
                 <div className="card-header d-flex justify-content-between">
                     <div>Group Information</div>
@@ -70,7 +70,7 @@ export default function GroupSetting({group,change}) {
                     </div>
                     <div className="row my-1">
                         <div className="col-md-3 fw-bold">Created By</div>
-                        <div className="col-md-9">{group.createdBy}</div>
+                        <div className="col-md-9">{group.createdByName}</div>
                     </div>
                     <div className="row my-1">
                         <div className="col-md-3 fw-bold">Created Date</div>

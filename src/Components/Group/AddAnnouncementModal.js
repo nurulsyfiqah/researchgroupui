@@ -8,13 +8,15 @@ import {toast} from "react-toastify";
 
 export default function AddAnnouncementModal({group, hide, create}) {
     const account = ReactSession.get("account");
+    const user = ReactSession.get("user");
     const editorRef = useRef(null);
     let [input, setInput] = useState({
         groupId: "",
         title: '',
         content: '',
         createdDate: moment().format(),
-        createdBy: account.username,
+        createdById: user.id,
+        createdByName: user.lastName + ", " + user.firstName,
         target: ''
     });
 

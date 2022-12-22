@@ -5,9 +5,12 @@ import EditAnnouncementModal from "./EditAnnouncementModal"
 import axios from "axios";
 import base_url from "../../Service/serviceapi";
 import {toast} from "react-toastify";
+import { ReactSession } from 'react-client-session';
 
-export default function AnnouncementList({announcement, edit}) {
+export default function AnnouncementList({announcement, edit, group}) {
+    const user = ReactSession.get("user");
     const [editedAnn, setEditedAnn] = useState(0)
+    console.log(announcement.length)
 
     const editedStatus=()=>{
         setEditedAnn(editedAnn + 1);
@@ -15,22 +18,20 @@ export default function AnnouncementList({announcement, edit}) {
     }
 
     return (
-        <div className="">
             <div className="accordion accordion-flush" id="accordionFlushExample">
                 {
-                    announcement.length > 0 ?
-                        announcement.map((ann, index)=>(
-                            <AnnouncementBody key={index} ann={ann} edit={editedStatus}/>
-                        ))
-                        :
-                        ""
+                    announcement?.map((ann, index)=>{
+                        return (
+                            <AnnouncementBody key={index} ann={ann} edit={editedStatus} group={group}/>
+                        )
+                    })
                 }
             </div>
-        </div>
     )
 }
 
-function AnnouncementBody({myKey, ann, edit}) {
+function AnnouncementBody({myKey, ann, edit, group}) {
+    const user = ReactSession.get("user");
     const [editAnnModal, setEditAnnModal] = useState(false)
     const [editedAnn, setEditedAnn] = useState(0)
 
@@ -76,12 +77,17 @@ function AnnouncementBody({myKey, ann, edit}) {
             <div id={`ann${ann.id}`} className="accordion-collapse collapse"
                  aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                 <div className="accordion-body">
-                    <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <button className="btn btn_dark_normal btn-sm me-md-1" id={`edit_${ann.id}`} type="button" onClick={()=>showEditAnnModal()}>Edit</button>
-                        <button className="btn btn-danger btn-sm" id={`del_${ann.id}`} type="button" onClick={deleteAnn}>Delete</button>
-                    </div>
-                    <blockquote><small>Created by { ann.createdBy } on { formatDate1(ann.createdDate) }</small></blockquote>
                     { ann.content.length > 0 ? parse(ann.content) : "No content"}
+                    <blockquote><small>Created by { ann.createdByName } on { formatDate1(ann.createdDate) }</small></blockquote>
+                    {
+                        (user.id === group.createdById) ? 
+                        <div className="d-grid gap-2 d-md-flex justify-content-md-end my-1">
+                            <button className="btn btn_dark_normal btn-sm me-md-1" id={`edit_${ann.id}`} type="button" onClick={()=>showEditAnnModal()}>Edit</button>
+                            <button className="btn btn-danger btn-sm" id={`del_${ann.id}`} type="button" onClick={deleteAnn}>Delete</button>
+                        </div>
+                        : "" 
+                    }
+                    
                 </div>
             </div>
 

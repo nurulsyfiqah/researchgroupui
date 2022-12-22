@@ -137,9 +137,9 @@ export default function AddMemberModal({group, change, hide}) {
                                     {
                                         emailList.length > 0 ?
                                             emailList.map((email, index) =>(
-                                                <div className="row justify-content-between">
+                                                <div className="row justify-content-between" key={index}>
                                                     <div key={index} className="col-8"> {email.memberEmail} </div>
-                                                    <div className="col-2"><div className="float-end" type="button" id="`${index}`" onClick={() => removeEmail(index)}> <BsXLg/> </div></div>
+                                                    <div className="col-2"><div className="float-end" type="button" id={`${index}`} onClick={() => removeEmail(index)}> <BsXLg/> </div></div>
                                                 </div>
                                             ))
                                             :

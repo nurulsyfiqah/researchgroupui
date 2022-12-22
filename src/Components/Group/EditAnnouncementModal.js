@@ -78,8 +78,8 @@ export default function EditAnnouncementModal({ann, hide, edit}) {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={hide}>Close</button>
-                            <button  onClick={submitHandler} className="btn btn_dark_normal">Edit</button>
+                            <button type="button" className="btn btn-sm btn-secondary" data-bs-dismiss="modal" onClick={hide}>Close</button>
+                            <button  onClick={submitHandler} className="btn btn-sm btn_dark_normal">Edit</button>
                         </div>
                     </div>
                 </div>
