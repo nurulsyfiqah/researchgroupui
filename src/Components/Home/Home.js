@@ -116,7 +116,7 @@ export default function Home() {
                     <div className="card-body text-center">
                         <WebsiteIcon className="icon_dark h3"/>
                         <div className="text-bold">Preview Website</div>
-                        <Link target="_blank" to={ account.length > 0 && account.hasOwnProperty("username") ? `/${account.username}` : ""}> { account || account.hasOwnProperty("username") ? `${ui_url}/${account.username}` : ""  } </Link>
+                        <Link target="_blank" to={ account || account.hasOwnProperty("username") ? `${ui_url}/${account.username}` : ""  }> { account || account.hasOwnProperty("username") ? `${ui_url}/${account.username}` : ""  } </Link>
                     </div>
                 </div>
 

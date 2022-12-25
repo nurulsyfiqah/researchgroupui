@@ -10,9 +10,11 @@ import CreatePerTrackerModal from "./CreatePerTrackerModal";
 
 export default function TrackerList({tracker, change}) {
     const account = ReactSession.get("account");
+    const user = ReactSession.get("user");
     const [modal, setModal] = useState(false);
     const [personalModal, setPersonalModal] = useState(false);
     const [userGroup, setUserGroup] = useState([]);
+    const [data, setData] = useState([]);
 
     const getData = (e) => {
         if (e.target.value === "personal") {
@@ -24,7 +26,7 @@ export default function TrackerList({tracker, change}) {
     }
 
     const getUserGroup = () => {
-        axios.get(`${base_url}/group/member/${account.id}`).then((
+        axios.get(`${base_url}/group/member/${user.id}`).then((
             response)=>{
             console.log(response.data)
             setUserGroup(response.data)
@@ -116,9 +118,8 @@ export default function TrackerList({tracker, change}) {
 
     // const getDataFromServer = () => {
 
-    //     axios.get(`${base_url}/tracker/all/${account.id}`).then((
+    //     axios.get(`${base_url}/tracker/all/${user.id}`).then((
     //         response)=>{
-    //         console.log(data)
     //         setData(response.data)
     //     }, (error)=>{
     //         toast.error("Something went wrong on Server")
@@ -131,13 +132,13 @@ export default function TrackerList({tracker, change}) {
     // })
 
     return (
-        <div>
+        <div key={tracker.id}>
         {
             tracker.type === "Group" || tracker.type === "group" ? 
             <div className="card my-2">
                 <div className="card-body">
                     <h5 className="card-title">{ tracker.title }</h5>
-                    <h4 className="card-subtitle mb-2"><span class="badge border border-dark text-dark">{ tracker.groupName }</span> </h4>
+                    <h4 className="card-subtitle mb-2"><span className="badge border border-dark text-dark">{ tracker.groupName }</span> </h4>
                     <h6 className="card-subtitle mb-2 text-muted">{ tracker.type } Tracker</h6>
                     <p className="card-text">{ tracker.details }</p>
                     <div>Start Date: { tracker.startDate != null ? moment(tracker.startDate).format('DD/MM/YYYY') : "-"} </div>
@@ -152,7 +153,7 @@ export default function TrackerList({tracker, change}) {
                 </div>
             </div>
             :
-            <div className="card my-2">
+            <div className="card my-2" key={tracker.id}>
             <div className="card-body">
                 <h5 className="card-title">{ tracker.title }</h5>
                 <h6 className="card-subtitle mb-2 text-muted">{ tracker.type } Tracker</h6>

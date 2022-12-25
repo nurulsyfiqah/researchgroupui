@@ -68,12 +68,12 @@ function BlogComponent() {
     // get all posts
     useEffect(()=>{
         getPostsFromServer()
-    })
+    },[change])
 
     return (
         <div className="">
             <ToastContainer/>
-            <h1 className="page_title">Blog</h1>
+            <h1 className="page_title mt-2">Blog</h1>
 
             <nav>
                 <div className="nav nav-tabs" id="nav-tab" role="tablist">

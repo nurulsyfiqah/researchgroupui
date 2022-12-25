@@ -21,6 +21,7 @@ function TrackerPageComponent() {
     const [showCreateGrpModal, setShowCreateGrpModal] = useState(false)
 
     const account = ReactSession.get("account");
+    const user = ReactSession.get("user");
     const [data, setData] = useState([]);
     const [change, setChange] = useState(0);
     const [userGroup, setUserGroup] = useState([]);
@@ -35,7 +36,7 @@ function TrackerPageComponent() {
     }
 
     const getUserGroup = () => {
-        axios.get(`${base_url}/group/member/${account.id}`).then((
+        axios.get(`${base_url}/group/member/${user.id}`).then((
             response)=>{
             console.log(response.data)
             setUserGroup(response.data)
@@ -45,8 +46,8 @@ function TrackerPageComponent() {
     }
 
     const getDataFromServer = () => {
-        console.log(account.id)
-        axios.get(`${base_url}/tracker/all/${account.id}`).then((
+        console.log(user.id)
+        axios.get(`${base_url}/tracker/all/${user.id}`).then((
             response)=>{
             console.log(data)
             setData(response.data)
@@ -65,7 +66,7 @@ function TrackerPageComponent() {
             <ToastContainer/>
             <h2 className="page_title">Tracker</h2>
 
-            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+            <div className="d-grid gap-2 d-md-flex justify-content-md-start mb-3">
                 <button className="btn btn-sm btn_dark_normal" type="button" onClick={showGrpModal}>Create Group Tracker</button>
                 <button className="btn btn-dark btn-sm" type="button" onClick={showPerModal} >Create Personal Tracker</button>
             </div>
@@ -76,7 +77,11 @@ function TrackerPageComponent() {
                         <TrackerList tracker={d} change={()=>{setChange(change+1)}}/>
                     ))
                     :
-                    ""
+                    <div className="card mt-4">
+                        <div className="card-body">
+                            No tracker created yet
+                        </div>
+                    </div>
             }
 
             {/* <CreatePerTrackerModal hide={()=>setShowCreatePerModal(false)}/> */}

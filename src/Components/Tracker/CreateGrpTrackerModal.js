@@ -5,9 +5,11 @@ import { toast } from 'react-toastify';
 import base_url from "../../Service/serviceapi";
 import axios from "axios";
 import moment from 'moment';
+import { FourGMobiledataOutlined } from "@mui/icons-material";
 
 export default function CreateGrpTrackerModal({data, hide, change, action, group}) {
     const account = ReactSession.get("account");
+    const user = ReactSession.get("user");
 
     let modalStyle = {
         display: 'block',
@@ -16,10 +18,10 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
 
     let [subtasks, setSubtasks] = useState([]);
     const [subtask, setSubtask] = useState([]);
-    
+    const [files, setFiles] = useState([]);
     const [input, setInput] = useState({
         id: typeof data !== 'undefined' ? data.id : null,
-        userId: typeof data !== 'undefined' ? data.userId : account.id,
+        userId: typeof data !== 'undefined' ? data.userId : user.id,
         title: typeof data !== 'undefined' ? data.title : "",
         type: typeof data !== 'undefined' ? data.type : 'Group',
         groupId: typeof data !== 'undefined' ? data.groupId : "",
@@ -29,6 +31,7 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
         subTask: typeof data !== 'undefined' ? data.subTask : "",
         startDate: typeof data !== 'undefined' ? data.startDate : "",
         endDate: typeof data !== 'undefined' ? data.endDate : "",
+        submissionType: typeof data !== 'undefined' ? data.submissionType : "",
     });
 
     const getValue = e => {
@@ -41,8 +44,21 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
             ...prevState,
             [name]: value
         }))
+
+        if (name === 'groupId') {
+            const group = e.target.options[e.target.selectedIndex].text;
+            setInput(prevState => ({
+                ...prevState,
+                groupName: group
+            }))
+        }
         console.log(input)
     } 
+
+    const getFiles = e => {
+        setFiles(e.target.files)
+        console.log(files)
+    }
 
     const subtasksUpdate = () => {
         if (subtask.length > 0) {
@@ -70,11 +86,22 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
         console.log(input)
 
         if (action === "create") {
+            const formData = new FormData();
+            for(const file of files) {
+                formData.append('files', file);
+            }
+
+            formData.append('tracker', JSON.stringify(input));
             axios({
                 method: 'POST',
                 url: `${base_url}/tracker/create`,
-                data: input,
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Access-Control-Allow-Origin': '*'
+                }
             }).then(function(response) {
+                
                 toast.success("Successfully create the task", {autoClose: 1500,hideProgressBar: true})
                 hide();
                 change();
@@ -115,7 +142,7 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
 
     return (
         <div className="modal show fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true" style={modalStyle}>
+        aria-labelledby="staticBackdropLabel" aria-hidden="true" style={modalStyle} key={input.id}>
         <div className="modal-dialog">
             <div className="modal-content">
             <div className="modal-header">
@@ -135,10 +162,13 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
                     <option value={input.groupId}>{input.groupName}</option>
                     {
                        typeof group !== 'undefined' ? group.map((item, index) => {
+                        if (item.createdById === user.id) {
                             return (
-                                <option value={item.id}>{item.name}</option>
+                                <option value={item.id} key={index}>{item.name}</option>
                             )
-                            
+                        } else {
+                            return null;
+                        }
                         }) : null
                     }
                 </select>
@@ -149,7 +179,7 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
             </div> 
             <div className="my-2 input-group-sm">
                 <label className="fw-bold">Add attachment</label>
-                <input className="form-control" type="file" id="file" name="file" onChange={getValue} valu />
+                <input className="form-control" type="file" id="file" name="file" onChange={getFiles} multiple/>
             </div>
             {/* <div className="my-2">
                 <label className="fw-bold">Add subtask</label>
@@ -188,6 +218,13 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
             <div className="my-2 input-group-sm">
                 <label className="fw-bold">End Date</label>
                 <input type="date" className="form-control" id="endDate" name="endDate" onChange={getValue} defaultValue={ typeof data !== 'undefined' ? data.endDate != null ? moment(data.endDate).format('YYYY-MM-DD') : ""  : "" }/>
+            </div>
+            <div className="my-2 input-group-sm">
+                <label className="fw-bold">Type of Submission</label>
+                <select class="form-select" name="submissionType" onChange={getValue}>
+                    <option value="text">Text</option>
+                    <option value="file">Files (i.e.: .pdf, .jpeg, .png)</option>
+                </select>
             </div>
 
             </div>

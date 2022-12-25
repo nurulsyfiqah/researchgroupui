@@ -26,84 +26,30 @@ function GroupDashboardPageComponent() {
     const { groupId } = useParams();
     const [group, setGroup] = useState([])
     const [addMemberModal, setAddMemberModal] = useState(false)
-    const [announcement, setAnnouncement] = useState([])
     const [annModal, setAnnModal] = useState(false)
     const [createdAnn, setCreatedAnn] = useState(0)
 
-    // useEffect(() =>{
-    //     getGroupFromServer()
-    // },[createdAnn])
 
     useEffect(() =>{
         getDataFromServer()
     },[createdAnn])
 
-    const getDataFromServer=()=>{
-        let group = `${base_url}/group/${groupId}`
-        let announcement = `${base_url}/group/announcement/${groupId}`
-
-        const requestGroup = axios.get(group);
-        const requestAnnouncement = axios.get(announcement);
-
-        axios.all([requestGroup, requestAnnouncement]).then(axios.spread((...responses) => {
-            responses[0].data.member.forEach(function(item, index) {
-               if (item.status === 0) {
-                   item.status = "Not Registered"
-               } else if (item.status === 1) {
-                   item.status = "Registered"
-               }
-            });
-            setGroup(responses[0].data)
-            setAnnouncement(responses[1].data)
-            
-            console.log(responses[0].data)
-            console.log(responses[1].data)
-            
-          })).catch(errors => {
-            // react on errors.
-          })
+    const getDataFromServer= () =>{
+        axios.get(`${base_url}/group/${groupId}`).then((
+            response)=>{
+            const data = response.data;
+            console.log(data)
+            setGroup(data)
+        }, (error)=>{
+            toast.error("Something went wrong on Server")
+        })
     }
 
-    // const getGroupFromServer = ()=>{
-    //     axios.get(`${base_url}/group/${groupId}`).then(
-    //         (response)=>{
-    //             const data = response.data;
-    //             // label the status indicator
-
-    //             data.member.forEach(function(item, index) {
-    //                if (item.status === 0) {
-    //                    item.status = "Not Registered"
-    //                } else if (item.status === 1) {
-    //                    item.status = "Registered"
-    //                }
-    //             });
-    //             setGroup(data)
-    //             console.log(group)
-    //             //toast.info("Group loaded from Server !!",{position:"top-right"})
-    //         },
-    //         (error)=>{
-    //             toast.error("Something went wrong on Server", {autoClose: 1500,hideProgressBar: true})
-    //         }
-    //     )
-    // }
-
-    // const getAnnouncementFromServer=()=>{
-    //     console.log(groupId)
-    //     axios.get(`${base_url}/group/announcement/${groupId}`).then(
-    //         (response)=>{
-    //             setAnnouncement(response.data)
-    //             console.log(announcement)
-    //             console.log(announcement.length)
-    //         },
-    //         (error)=>{
-    //             toast.error("Something went wrong on Server", {autoClose: 1500,hideProgressBar: true})
-    //         }
-    //     )
-    // }
 
     const showAnnModal=()=>{
         return setAnnModal(true)
     }
+
 
     return (
         <div className="group_page container">
@@ -143,13 +89,9 @@ function GroupDashboardPageComponent() {
                     }
                     
                     {
-                        announcement.length > 0 ? <AnnouncementList announcement={announcement} edit={()=>setCreatedAnn(createdAnn + 1)} group={group}/> 
-                        : 
-                        <div className="card mt-3">
-                            <div className="card-body">
-                                No announcement available
-                            </div>
-                        </div>
+                        
+                         <AnnouncementList edit={()=>setCreatedAnn(createdAnn + 1)}/> 
+                        
                     }
 
                     {

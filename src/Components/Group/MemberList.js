@@ -73,7 +73,7 @@ export default function MemberList({members, change}) {
         filter: false,
         elevation: 0,
         responsive: 'standard',
-        selectableRows: (user.id === members.createdById) ? true : false,
+        selectableRows: (user.id === members.createdById) ? 'single' : 'none',
         onRowsDelete: function(rowsDeleted, data) {
             const arr = [];
             data.forEach(function(item,index){

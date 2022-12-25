@@ -124,7 +124,7 @@ export default function BlogPostsList({post, change}) {
     }
 
     return (
-        <div className="card mt-2">
+        <div className="card mt-2" key={post.id}>
             <div className="card-body d-flex justify-content-between">
                 <div className="d-flex flex-column">
                     <h5>  <Link className="stretched-link" to={`/blog/edit/${post.id}`}> {post.title.length > 0 ? post.title : "{Untitled}"}</Link></h5>
