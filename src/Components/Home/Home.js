@@ -7,7 +7,7 @@ import Placeholder from '../../Assets/Images/image-placeholder.jpg'
 import { SocialIcon } from 'react-social-icons';
 import {UploadImageModal, EditSocialLinkModal, EditDomainModal, EditInfoModal, EditAboutModal, AddAffiliationModal ,EditAffiliationModal} from "./HomeModal"
 import axios from "axios";
-import base_url from "../../Service/serviceapi";
+import {base_url, upload_url} from "../../Service/serviceapi";
 import moment from 'moment';
 
 export default function Home() {
@@ -93,17 +93,21 @@ export default function Home() {
         }
     }
 
+    const previewWebsite = () => {
+        return window.open(`${ui_url}/${account.username}`, '_blank');
+    }
+
     return(
         <div className="row my-4">
 
             <div className="col-md-4 mt-4">
-                <div className="card my-2" style={{height: 300, width: "auto", overflow: "hidden"}}>
+                <div className="card my-2" style={{height: 250, width: "auto", overflow: "hidden"}}>
                     <div className="card-header d-flex justify-content-between" >
                         <div>Image</div>
                         <EditIcon className="icon_dark" onClick={() =>showImageModal()}/>
                     </div>
                     {
-                        (user !== null && user.hasOwnProperty('image')) ? <img src={replaceURL(user.image)} className="img-fluid mx-auto d-block" alt="placeholder"/> : <img src={Placeholder} className="img-fluid mx-auto d-block" alt="placeholder"/>
+                        (user !== null && user.hasOwnProperty('image')) ? <img src={`${upload_url}${user.image}`}  style={{overflow: "hidden", height: "250px", width: "auto", objectFit: "cover"}} className="img-fluid mx-auto d-block" alt="placeholder"/> : <img src={Placeholder} className="img-fluid mx-auto d-block" alt="placeholder"/>
                     }
                     
                 </div>
@@ -116,8 +120,8 @@ export default function Home() {
                     <div className="card-body text-center">
                         <WebsiteIcon className="icon_dark h3"/>
                         <div className="text-bold">Preview Website</div>
-                        <Link target="_blank" to={ account || account.hasOwnProperty("username") ? `${ui_url}/${account.username}` : ""  }> { account || account.hasOwnProperty("username") ? `${ui_url}/${account.username}` : ""  } </Link>
-                    </div>
+                        <div className="preview_website_link" onClick={previewWebsite} style={{cursor:"pointer"}} >{ account || account.hasOwnProperty("username") ? `${ui_url}/${account.username}` : ""  } </div>
+                        </div>
                 </div>
 
                 <div className="card my-2">

@@ -3,7 +3,7 @@ import {ReactSession} from "react-client-session";
 import { toast } from 'react-toastify';
 import {BsXLg} from "react-icons/bs";
 import axios from "axios";
-import base_url from "../../Service/serviceapi";
+import {base_url} from "../../Service/serviceapi";
 import moment from 'moment';
 
 export default function CreatePerTrackerModal({data, hide, change, action}) {
@@ -13,15 +13,16 @@ export default function CreatePerTrackerModal({data, hide, change, action}) {
     }
 
     const account = ReactSession.get("account");
+    const user = ReactSession.get("user");
     let [input, setInput] = useState({
         id: typeof data !== 'undefined' ? data.id : null,
-        userId: typeof data !== 'undefined' ? data.userId : account.id,
+        userId: typeof data !== 'undefined' ? data.userId : user.id,
         title: typeof data !== 'undefined' ? data.title : "",
         type: typeof data !== 'undefined' ? 'Personal' : 'Personal',
         groupId: typeof data !== 'undefined' ? data.groupId : null,
         details: typeof data !== 'undefined' ? data.details : "",
-        filePath: typeof data !== 'undefined' ? data.filePath : "",
-        subTask: typeof data !== 'undefined' ? data.subTask : "",
+        filePath: typeof data !== 'undefined' ? data.filePath : [],
+        subTask: typeof data !== 'undefined' ? data.subTask : [],
         startDate: typeof data !== 'undefined' ? data.startDate : "",
         endDate: typeof data !== 'undefined' ? data.endDate : "",
     });
@@ -99,7 +100,7 @@ export default function CreatePerTrackerModal({data, hide, change, action}) {
         if (action === "create") {
             axios({
                 method: 'POST',
-                url: `${base_url}/tracker/create`,
+                url: `${base_url}/tracker/personal/create`,
                 data: input,
             }).then(function(response) {
                 toast.success("Successfully create the task", {autoClose: 1500,hideProgressBar: true})

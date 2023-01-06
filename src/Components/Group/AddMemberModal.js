@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {BsXLg} from "react-icons/bs";
 import {toast} from "react-toastify";
 import _ from "lodash";
-import base_url from "../../Service/serviceapi";
+import {base_url} from "../../Service/serviceapi";
 import axios from "axios";
 
 

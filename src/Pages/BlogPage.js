@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { ReactSession } from "react-client-session";
 import Sidebar from "../Components/Sidebar";
 import BlogPostsList from "../Components/Blog/BlogPostsList";
-import base_url from "../Service/serviceapi"
+import {base_url} from "../Service/serviceapi"
 import ui_url from "../Service/serviceui"
 import "../Assets/Styles/component.css"
 

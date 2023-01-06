@@ -6,7 +6,7 @@ import { ReactSession } from "react-client-session";
 import "../../Assets/Styles/component.css"
 import moment from "moment";
 import axios from "axios";
-import base_url from "../../Service/serviceapi";
+import {base_url} from "../../Service/serviceapi";
 import ui_url from "../../Service/serviceui";
 
 

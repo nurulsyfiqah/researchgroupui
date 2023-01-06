@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import {BsXLg} from "react-icons/bs";
-import base_url from "../../Service/serviceapi";
+import {base_url} from "../../Service/serviceapi";
 import { toast } from 'react-toastify';
 import { ChangeCircle } from '@mui/icons-material';
 

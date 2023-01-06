@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import  axios from 'axios';
 import Navbar from '../../Components/Website/PublicNavbar'
 import Article from '../../Components/Website/Article/ViewArticle'
-import base_url from "../../Service/serviceapi"
+import {base_url} from "../../Service/serviceapi"
 import {
     EmailIcon,
     EmailShareButton,

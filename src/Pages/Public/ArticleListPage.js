@@ -4,7 +4,7 @@ import ArticleList from '../../Components/Website/Article/ArticleList'
 import axios from "axios";
 import { ReactSession } from 'react-client-session';
 import { ToastContainer, toast } from "react-toastify";
-import base_url from "../../Service/serviceapi"
+import {base_url} from "../../Service/serviceapi"
 
 export default function ArticleListPage() {
     const researcher_id = ReactSession.get("researcher_id");

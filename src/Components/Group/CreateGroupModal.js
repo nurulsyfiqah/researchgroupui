@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {BsXLg} from "react-icons/bs";
 import {toast} from "react-toastify";
-import base_url from "../../Service/serviceapi";
+import {base_url} from "../../Service/serviceapi";
 import axios from "axios";
 import emailjs from '@emailjs/browser';
 import moment from "moment";

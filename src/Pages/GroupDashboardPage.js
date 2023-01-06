@@ -4,7 +4,7 @@ import { IoPersonAddSharp as AddMemberIcon, IoAdd as AddAnnouncementIcon } from 
 import { ToastContainer, toast } from "react-toastify";
 import { ReactSession } from 'react-client-session';
 import axios from "axios";
-import base_url from "../Service/serviceapi"
+import {base_url} from "../Service/serviceapi"
 import Sidebar from "../Components/Sidebar";
 import MemberList from "../Components/Group/MemberList";
 import AddMemberModal from "../Components/Group/AddMemberModal";

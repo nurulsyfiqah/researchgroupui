@@ -26,7 +26,6 @@ export default function ArticleList({article}) {
             `${ui_url}/${username}/${article.id}`,
             '_blank' // <- This is what makes it open in a new window.
         );
-        // window.location.href = `${ui_url}/${account}/${params.id}`;
     }
 
     return (

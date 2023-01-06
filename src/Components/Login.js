@@ -4,7 +4,7 @@ import { BsFillEyeSlashFill as HidePassIcon,  BsFillEyeFill as ShowPassIcon } fr
 import { ToastContainer, toast } from "react-toastify";
 import { ReactSession } from 'react-client-session';
 import axios from "axios";
-import base_url from "../Service/serviceapi";
+import {base_url} from "../Service/serviceapi";
 import ui_url from "../Service/serviceui";
 import TeamLogo from "../Assets/Images/undraw_unlock_re_a558.svg"
 import "../Assets/Styles/component.css"
@@ -48,9 +48,7 @@ export default function Login () {
                 if (response.data.length > 0) {
                     if (response.data[0].password === input.password) {
                         // save the account data in session
-                        // ReactSession.setStoreType("localStorage");
                         ReactSession.set("account", response.data[0]);
-                        // sessionStorage.setItem('account', response.data);
                         window.location.href = `${ui_url}/home`;
                     } else {
                         toast.error("Wrong Password");

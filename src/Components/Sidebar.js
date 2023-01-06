@@ -44,10 +44,10 @@ export default function Sidebar({content}) {
                 <div className='me-4 dropdown'>
                     <div className="position-relative dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         <NotiIcon/>
-                        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {/* <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                             3
                             <span className="visually-hidden">unread messages</span>
-                        </span>
+                        </span> */}
                     </div>
                     <ul className="dropdown-menu noti_dropdown" aria-labelledby="dropdownMenuButton1">
                         <li><a className="dropdown-item noti_dropdown_item" href="#">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tempor nibh ac orci malesuada lacinia</a></li>

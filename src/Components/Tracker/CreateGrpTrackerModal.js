@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {BsXLg} from "react-icons/bs";
 import {ReactSession} from "react-client-session";
 import { toast } from 'react-toastify';
-import base_url from "../../Service/serviceapi";
+import {base_url} from "../../Service/serviceapi";
 import axios from "axios";
 import moment from 'moment';
 import { FourGMobiledataOutlined } from "@mui/icons-material";
@@ -27,11 +27,11 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
         groupId: typeof data !== 'undefined' ? data.groupId : "",
         groupName: typeof data !== 'undefined' ? data.groupName : "",
         details: typeof data !== 'undefined' ? data.details : "",
-        filePath: typeof data !== 'undefined' ? data.filePath : "",
-        subTask: typeof data !== 'undefined' ? data.subTask : "",
+        filePath: typeof data !== 'undefined' ? data.filePath :[],
+        subTask: typeof data !== 'undefined' ? data.subTask : [],
         startDate: typeof data !== 'undefined' ? data.startDate : "",
         endDate: typeof data !== 'undefined' ? data.endDate : "",
-        submissionType: typeof data !== 'undefined' ? data.submissionType : "",
+        submissionType: typeof data !== 'undefined' ? data.submissionType : ""
     });
 
     const getValue = e => {
@@ -92,6 +92,7 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
             }
 
             formData.append('tracker', JSON.stringify(input));
+            console.log(JSON.stringify(input))
             axios({
                 method: 'POST',
                 url: `${base_url}/tracker/create`,

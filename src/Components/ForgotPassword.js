@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
-import base_url from '../Service/serviceapi'
+import {base_url} from '../Service/serviceapi'
 import emailjs from "@emailjs/browser";
 import {toast} from "react-toastify";
 import { ReactSession } from "react-client-session";
@@ -16,7 +16,7 @@ export default function ForgotPassword() {
 
     const [email, setEmail] = useState("");
     const [data, setData] = useState({})
-    const [otp, setOTP] = useState(Math.floor(100000 + Math.random() * 900000));
+    const [otp, setOTP] = useState(0);
     const [otpInput, setOtpInput] = useState("")
     const [inputPassword, setInputPassword] = useState({
         password: "",
@@ -34,50 +34,45 @@ export default function ForgotPassword() {
     // step 1
     const emailHandler =(e)=>{
         setEmail(e.target.value);
-        console.log(e.target.value)
     }
 
     const stepOneHandler =()=> {
         // check if email exist
-        console.log(otp)
-        axios({
+        if (email !== "") {
+            axios({
             method: 'GET',
             url: `${base_url}/signup/getaccountbyemail?email=${email}`,
         })
             .then(function (response) {
-                if (response.data.length > 0) {
-                    setData(response.data[0])
-                    setResetOne("d-none")
-                    setResetTwo("")
+                console.log(response.data.length)
+                if (response.data.length !== 0) {
                     setError("")
+                    console.log(response.data)
+                    setData(response.data[0])
+                    axios({
+                        method: 'POST',
+                        url: `${base_url}/account/sendotpemail`,
+                        data: email,
+                        headers: {"Content-Type": "text/plain"}
+                    }).then(function (response) {
+                        if (response.status === 200) {
+                            toast.success("Email sent, please check your inbox.", {hideProgressbar: true, autoClose: 1500});
+                            setOTP(response.data)
+                            setResetOne("d-none")
+                            setResetTwo("")
+                            setError("")
+                        } else if (response.data.status === "fail") {
+                            toast.error("Oops, something went wrong. Please try again later", {hideProgressbar: true, autoClose: 1500});
+                        }
+                    })
                 } else {
                     setError("The account with the email is not exist")
                 }
-                // if (response.data.length > 0) {
-                //     const emailParams = {
-                //         service_id: "service_nc347wl",
-                //         template_id: "template_5o9lftn",
-                //         user_id: "VJgY9rNMYrcl4jBgg",
-                //         template_params: {
-                //             'to_email': email,
-                //             'to_name': account.username,
-                //             'reply_to': 'nurulsyfiqah25@gmail.com',
-                //             'otp': otp,
-                //         }
-                //     }
-                //     // send the OTP to the email
-                //     emailjs.send(emailParams.service_id, emailParams.template_id, emailParams.template_params, emailParams.user_id)
-                //         .then((result) => {
-                //             if (result.status === 200) {
-                //                 // hide reset one, display reset two
-                //                 setResetOne("d-none")
-                //                 setResetTwo("")
-                //             }
-                //         }, (error) => {
-                //             console.log(error.text);
-                //         });
-                // }
             });
+        } else {
+            setError("Please enter your email")
+        }
+        
 
     }
 
@@ -91,12 +86,18 @@ export default function ForgotPassword() {
         }
     }
     const stepTwoHandler =()=>{
-        if (otpInput == otp) {
-            setResetTwo("d-none")
-            setResetThree("")
-            setError("")
+        console.log(otpInput)
+        console.log(otp)
+        if (otpInput !== "") {
+            if (otpInput == otp) {
+                setResetTwo("d-none")
+                setResetThree("")
+                setError("")
+            } else {
+                setError("The OTP does not match")
+            }
         } else {
-            setError("The OTP did not match")
+            setError("Please enter the 6-Digit OTP number")
         }
     }
 
@@ -107,9 +108,7 @@ export default function ForgotPassword() {
             ...prev,
             [name]: value
         }));
-        console.log(inputPassword)
         validateInput(e);
-        console.log(errorPassword)
     }
 
     const validateInput = e => {

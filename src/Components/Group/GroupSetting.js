@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {FaEdit as EditIcon} from "react-icons/fa";
 import EditSettingModal from  "./EditSettingModal"
 import axios from "axios";
-import base_url from "../../Service/serviceapi";
+import {base_url} from "../../Service/serviceapi";
 import {toast} from "react-toastify";
 import moment from "moment";
 import ui_url from "../../Service/serviceui";

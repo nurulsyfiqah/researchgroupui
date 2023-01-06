@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from "axios";
-import base_url from "../../Service/serviceapi";
+import {base_url} from "../../Service/serviceapi";
 import {toast} from "react-toastify";
 import {BsXLg} from "react-icons/bs";
 

@@ -588,6 +588,12 @@ footer {
 
 /** Modal End */
 
+/** Home Page */
+.preview_website_link:hover {
+    color: var(--clr-primary)
+}
+/** Home Page End */
+
 /** Geometry Shape */
 .circle {
     width: 2em;

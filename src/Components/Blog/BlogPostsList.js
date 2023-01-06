@@ -7,7 +7,7 @@ import {ReactSession} from "react-client-session";
 import moment from "moment"
 import SharePostModal from './SharePostModal'
 import axios from "axios";
-import base_url from "../../Service/serviceapi";
+import {base_url} from "../../Service/serviceapi";
 import ui_url from "../../Service/serviceui";
 import {toast} from "react-toastify";
 

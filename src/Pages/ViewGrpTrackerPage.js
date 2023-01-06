@@ -6,7 +6,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { ReactSession } from "react-client-session";
 import {toast} from "react-toastify";
 import axios from "axios";
-import base_url from "../Service/serviceapi";
+import {base_url} from "../Service/serviceapi";
 import moment from "moment";
 import classNames from "classnames";
 
@@ -231,9 +231,9 @@ function ViewGrpTrackerComponent() {
         <div className="group_page">
             <h2 className="page_title">{tracker.title}</h2>
             <h4 className="card-subtitle mb-2"><span className="badge border border-dark text-dark">{ tracker.groupName }</span> </h4>
-            Researcher's View
+    
             {
-                group.createdById == user.id ? 
+                group.createdById === user.id ? 
                 <div className="researcher_section">
                 <div className="border m-auto p-2">
                     <div><b>Start : </b> {formatDate(tracker.startDate)}</div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import Sidebar from "../Components/Sidebar";
-import base_url from "../Service/serviceapi";
+import {base_url} from "../Service/serviceapi";
 import TrackerList from "../Components/Tracker/TrackerList";
 import CreatePerTrackerModal from "../Components/Tracker/CreatePerTrackerModal";
 import CreateGrpTrackerModal from "../Components/Tracker/CreateGrpTrackerModal";
@@ -22,6 +22,7 @@ function TrackerPageComponent() {
 
     const account = ReactSession.get("account");
     const user = ReactSession.get("user");
+    console.log(user)
     const [data, setData] = useState([]);
     const [change, setChange] = useState(0);
     const [userGroup, setUserGroup] = useState([]);

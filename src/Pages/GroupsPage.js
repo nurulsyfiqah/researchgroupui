@@ -5,7 +5,7 @@ import GroupCard from "../Components/Group/GroupCard";
 import CreateGroupCard from "../Components/Group/CreateGroupCard";
 import CreateGroupModal from "../Components/Group/CreateGroupModal";
 import Sidebar from "../Components/Sidebar";
-import base_url from "../Service/serviceapi"
+import {base_url} from "../Service/serviceapi"
 import { ReactSession } from 'react-client-session';
 
 export default function GroupsPage() {

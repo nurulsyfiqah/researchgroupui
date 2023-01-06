@@ -36,9 +36,9 @@ export default function PublicNavbar() {
                         <li className="nav-item">
                             <NavLink className="nav-link" to={`/${username}/publication`}>Publication</NavLink>
                         </li>
-                        <li className="nav-item">
+                        {/* <li className="nav-item">
                             <NavLink className="nav-link" to={`/${username}/team`}>Team</NavLink>
-                        </li>
+                        </li> */}
                         <li className="nav-item">
                             <NavLink className="nav-link" to={`/${username}/article`}>Article</NavLink>
                         </li>

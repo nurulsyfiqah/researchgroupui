@@ -2,7 +2,7 @@ import React, { useState , useEffect } from "react";
 import { Link } from 'react-router-dom';
 import {ReactSession} from "react-client-session";
 import axios from "axios";
-import base_url from "../../Service/serviceapi"
+import {base_url} from "../../Service/serviceapi"
 import { ToastContainer, toast } from "react-toastify";
 import moment from 'moment'
 import CreateGrpTrackerModal from "./CreateGrpTrackerModal";
@@ -77,8 +77,8 @@ export default function TrackerList({tracker, change}) {
             type: "",
             groupId: "",
             details: "",
-            filePath: "",
-            subTask: "",
+            filePath: [],
+            subTask: [],
             startDate: "",
             endDate: "",
         };
@@ -135,7 +135,7 @@ export default function TrackerList({tracker, change}) {
         <div key={tracker.id}>
         {
             tracker.type === "Group" || tracker.type === "group" ? 
-            <div className="card my-2">
+            <div className="card my-2" key={tracker.id}>
                 <div className="card-body">
                     <h5 className="card-title">{ tracker.title }</h5>
                     <h4 className="card-subtitle mb-2"><span className="badge border border-dark text-dark">{ tracker.groupName }</span> </h4>
@@ -167,7 +167,7 @@ export default function TrackerList({tracker, change}) {
                             let splitTask = task.split(":");
                             let checkedStatus = splitTask[1] === "1" ? true : "";
                             return (
-                            <div className="form-check">
+                            <div className="form-check" key={index}>
                                 <input className="form-check-input" type="checkbox" name="languages" defaultValue={task} defaultChecked={checkedStatus} id={`task_${index}_${splitTask[0]}`} onChange={handleChange} taskid={tracker.id} allvalue={tracker.subTask} index={index}/>
                                 <label className="form-check-label" htmlFor={`task_${index}_${splitTask[0]}`}>
                                     {splitTask[0]}

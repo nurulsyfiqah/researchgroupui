@@ -5,7 +5,7 @@ import {toast} from "react-toastify";
 import Placeholder from '../../Assets/Images/image-placeholder.jpg'
 import axios from 'axios';
 import {ReactSession} from "react-client-session";
-import base_url from "../../Service/serviceapi"
+import {base_url} from "../../Service/serviceapi"
 import {BsXLg} from "react-icons/bs";
 import Dropzone from 'react-dropzone-uploader'
 import 'react-dropzone-uploader/dist/styles.css'
@@ -592,17 +592,17 @@ export function AddAffiliationModal({hide, change}) {
     const submitHandler =()=>{
         console.log(affiliation)
 
-        axios({
-            method: 'PUT',
-            url: `${base_url}/user/updateaffiliation`,
-            data: affiliation
-        }).then(function(response) {
-            toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
-            hide()
-            change()
-        }, (error)=>{
-            console.log(error.text)
-        })
+        // axios({
+        //     method: 'PUT',
+        //     url: `${base_url}/user/updateaffiliation`,
+        //     data: affiliation
+        // }).then(function(response) {
+        //     toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
+        //     hide()
+        //     change()
+        // }, (error)=>{
+        //     console.log(error.text)
+        // })
     }
 
     return (
@@ -668,22 +668,22 @@ export function EditAffiliationModal({data, allData, hide, change}) {
 
     const submitHandler =()=>{
         console.log(user)
-        axios({
-            method: 'PUT',
-            url: `${base_url}/user/updateaffiliation`,
-            data: affiliation
-        }).then(function(response) {
-            toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
-            hide()
-            change()
-        }, (error)=>{
-            console.log(error.text)
-        })
+        // axios({
+        //     method: 'PUT',
+        //     url: `${base_url}/user/updateaffiliation`,
+        //     data: affiliation
+        // }).then(function(response) {
+        //     toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
+        //     hide()
+        //     change()
+        // }, (error)=>{
+        //     console.log(error.text)
+        // })
     }
 
     function getDifference(a1, a2) {
 
-          const results = a1.filter(({ id: id1 }) => !a2.some(({ id: id2 }) => id2 === id1));
+        const results = a1.filter(({ id: id1 }) => !a2.some(({ id: id2 }) => id2 === id1));
           
         console.log(results)
         return results;

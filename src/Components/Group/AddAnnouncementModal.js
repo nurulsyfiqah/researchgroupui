@@ -3,7 +3,7 @@ import moment  from "moment";
 import {ReactSession} from "react-client-session";
 import { Editor } from '@tinymce/tinymce-react';
 import axios from "axios";
-import base_url from "../../Service/serviceapi";
+import {base_url} from "../../Service/serviceapi";
 import {toast} from "react-toastify";
 
 export default function AddAnnouncementModal({group, hide, create}) {

@@ -4,7 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { BsFillEyeSlashFill as HidePassIcon,  BsFillEyeFill as ShowPassIcon } from "react-icons/bs";
 import moment  from "moment";
 import axios from "axios";
-import base_url from "../Service/serviceapi";
+import {base_url} from "../Service/serviceapi";
 import ui_url from "../Service/serviceui"
 import "../Assets/Styles/component.css"
 
@@ -55,15 +55,23 @@ export default function SignUp () {
         }
     }
 
+    function validateEmail(input) {
+        var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+        if (input.value.match(validRegex)) {
+          return true;
+        } else {
+            return false;
+        }
+    }
     const validateInput = e => {
         let { name, value } = e.target;
         setError(prev => {
             const stateObj = { ...prev, [name]: "" };
-
             switch (name) {
                 case "username":
                     if (!value) {
-                        stateObj[name] = "Please enter Username.";
+                        stateObj[name] = "Please enter username";
                     }
                     break;
 
@@ -85,6 +93,12 @@ export default function SignUp () {
                     }
                     break;
 
+                case "email":
+                    if (!value) {
+                        stateObj[name] = "Please enter email address";
+                    }
+                    break;
+
                 default:
                     break;
             }
@@ -100,15 +114,23 @@ export default function SignUp () {
             url: `${base_url}/signup/getaccountbyemail?email=${value}`,
         })
             .then(function (response){
-                if (response.data.length > 0) {
+                console.log(response.data)
+                if (response.data !== null) {
+                    if (response.data.length > 0) {
+                        setError(prev => ({
+                            ...prev,
+                            email: "The email had been registered"
+                        }));
+                    } else {
+                        setError(prev => ({
+                            ...prev,
+                            email: ""
+                        }));
+                    }
+                }else {
                     setError(prev => ({
                         ...prev,
-                        email: "The email had been registered."
-                    }));
-                } else {
-                    setError(prev => ({
-                        ...prev,
-                        email: ""
+                        email: "Please enter the email address"
                     }));
                 }
             }, (error) => {

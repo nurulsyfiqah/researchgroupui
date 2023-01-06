@@ -2,7 +2,7 @@ import React, {useRef, useState, useEffect} from 'react';
 import {Editor} from "@tinymce/tinymce-react";
 import moment from "moment";
 import axios from "axios";
-import base_url from "../../Service/serviceapi";
+import {base_url} from "../../Service/serviceapi";
 import {toast} from "react-toastify";
 
 export default function EditAnnouncementModal({ann, hide, edit}) {

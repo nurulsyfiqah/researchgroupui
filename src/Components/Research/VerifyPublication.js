@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from "react-router-dom"
-import base_url from "../../Service/serviceapi";
+import {base_url} from "../../Service/serviceapi";
 import { ToastContainer, toast } from "react-toastify";
 import {ReactSession} from "react-client-session";
 

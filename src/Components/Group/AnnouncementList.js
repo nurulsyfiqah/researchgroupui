@@ -4,7 +4,7 @@ import parse from 'html-react-parser';
 import moment from "moment";
 import EditAnnouncementModal from "./EditAnnouncementModal"
 import axios from "axios";
-import base_url from "../../Service/serviceapi";
+import {base_url} from "../../Service/serviceapi";
 import {toast} from "react-toastify";
 import { ReactSession } from 'react-client-session';
 
@@ -29,11 +29,7 @@ export default function AnnouncementList({edit}) {
         setGroup(response1.data)
         setAnnouncement(response2.data)
         setTracker(response3.date)
-
-        console.log(response1.data)
-        console.log(announcement)
-        console.log(tracker)
-
+        
     }
 
     useEffect(() =>{
@@ -60,7 +56,6 @@ export default function AnnouncementList({edit}) {
                 }
                 
             </div>
-            {JSON.stringify(tracker)}
             <div>
                 {
                     tracker?.map((tracker, index)=>{
@@ -87,8 +82,6 @@ function AnnouncementBody({myKey, ann, edit, group}) {
     const user = ReactSession.get("user");
     const [editAnnModal, setEditAnnModal] = useState(false)
     const [editedAnn, setEditedAnn] = useState(0)
-
-    
 
     const showEditAnnModal=()=>{
         return setEditAnnModal(true)
@@ -133,7 +126,7 @@ function AnnouncementBody({myKey, ann, edit, group}) {
                             <button className="btn btn_dark_normal btn-sm me-md-1" id={`edit_${ann.id}`} type="button" onClick={()=>showEditAnnModal()}>Edit</button>
                             <button className="btn btn-danger btn-sm" id={`del_${ann.id}`} type="button" onClick={deleteAnn}>Delete</button>
                         </div>
-                        : "" 
+                        : "No Announcement yet" 
                     }
                     
                 </div>

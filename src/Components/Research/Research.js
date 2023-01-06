@@ -4,7 +4,7 @@ import AddPublication from './AddPublication';
 import VerifyPublication from './VerifyPublication';
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
-import base_url from "../../Service/serviceapi";
+import {base_url} from "../../Service/serviceapi";
 import { ReactSession } from 'react-client-session';
 
 export default function Research() {
@@ -20,7 +20,7 @@ export default function Research() {
     const scrapePublication=()=>{   
         axios({
             method: 'GET',
-            url: `${base_url}/publication?gscLink=https://scholar.google.ca/citations?user=hKfga9oAAAAJ&userId=${user.id}` ,
+            url: `${base_url}/publication?gscLink=https://scholar.google.com/citations?user=CgN1dHoAAAAJ&userId=${user.id}` ,
           })
             .then(function (response) {
                 const data = response.data; 
