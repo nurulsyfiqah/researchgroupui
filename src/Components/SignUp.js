@@ -20,25 +20,17 @@ export default function SignUp () {
         confirmPassword: "",
         lastName: "",
         firstName: "",
-        role: "",
+        fullName: "",
         createdDate: moment().format()
     });
     const [error, setError] = useState({
+        firstName: '',
+        lastName: '',
+        fullName: '',
         email: '',
+        username: '',
         password: '',
         confirmPassword: ''
-    })
-    const [userInput, setUserInput] = useState({
-        accountId: "",
-        groupIds: [],
-        firstName: "",
-        lastName: "",
-        publishedName: "",
-        socialMedia: [],
-        about: "",
-        image: "",
-        domain: [],
-        affiliation: []
     })
 
     const onInputChange = e => {
@@ -48,35 +40,35 @@ export default function SignUp () {
             [name]: value
         }));
         validateInput(e);
-        if (name === "email") {
-            if (value !== undefined) {
-                validateUniqueEmail(value);
-              }
-        }
     }
 
-    function validateEmail(input) {
-        var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-
-        if (input.value.match(validRegex)) {
-          return true;
-        } else {
-            return false;
-        }
-    }
     const validateInput = e => {
         let { name, value } = e.target;
         setError(prev => {
             const stateObj = { ...prev, [name]: "" };
             switch (name) {
+                case "firstName":
+                    if (value === "") {
+                        stateObj[name] = "Please enter first name";
+                    }
+                    break;
+                case "lastName":
+                    if (value === "") {
+                        stateObj[name] = "Please enter last name";
+                    }
+                    break;
+                case "fullName":
+                    if (value === "") {
+                        stateObj[name] = "Please enter full name";
+                    }
+                    break;
                 case "username":
-                    if (!value) {
+                    if (value === "") {
                         stateObj[name] = "Please enter username";
                     }
                     break;
-
                 case "password":
-                    if (!value) {
+                    if (value === "") {
                         stateObj[name] = "Please enter Password.";
                     } else if (input.confirmPassword && value !== input.confirmPassword) {
                         stateObj["confirmPassword"] = "Password does not match.";
@@ -84,21 +76,18 @@ export default function SignUp () {
                         stateObj["confirmPassword"] = input.confirmPassword ? "" : error.confirmPassword;
                     }
                     break;
-
                 case "confirmPassword":
-                    if (!value) {
+                    if (value === "") {
                         stateObj[name] = "Please enter Confirm Password.";
                     } else if (input.password && value !== input.password) {
                         stateObj[name] = "Password does not match.";
                     }
                     break;
-
                 case "email":
-                    if (!value) {
+                    if (value === "") {
                         stateObj[name] = "Please enter email address";
                     }
                     break;
-
                 default:
                     break;
             }
@@ -108,34 +97,58 @@ export default function SignUp () {
     }
 
     function validateUniqueEmail(value) {
-        // const value = e.target.value;
-        axios({
-            method: 'GET',
-            url: `${base_url}/signup/getaccountbyemail?email=${value}`,
-        })
-            .then(function (response){
-                console.log(response.data)
-                if (response.data !== null) {
-                    if (response.data.length > 0) {
+        if (value.target.value === "") {
+            setError(prev => ({
+                ...prev,
+                email: "Please enter the email"
+            }));
+        } else {
+            axios({
+                method: 'GET',
+                url: `${base_url}/signup/getaccountbyemail?email=${value.target.value}`,
+            })
+                .then(function (response){
+                    console.log(response.data)
+                    if (response.data !== null) {
+                        if (response.data.length > 0) {
+                            setError(prev => ({
+                                ...prev,
+                                email: "The email had been registered"
+                            }));
+                        } 
+                    }
+                }, (error) => {
+                    console.log(error.text);
+                });
+        }
+        
+    }
+
+    function validateUniqueUsername(value) {
+        if (value.target.value === "") {
+            setError(prev => ({
+                ...prev,
+                username: "Please enter the username"
+            }));
+        } else {
+            axios({
+                method: 'GET',
+                url: `${base_url}/getaccountbyusername/${value.target.value}`,
+            })
+                .then(function (response){
+                    console.log(response.data)
+                    console.log(response.data.username !== value.target.value)
+                    if (response.data.username === value.target.value) {
                         setError(prev => ({
                             ...prev,
-                            email: "The email had been registered"
-                        }));
-                    } else {
-                        setError(prev => ({
-                            ...prev,
-                            email: ""
+                            username: "The username is not available"
                         }));
                     }
-                }else {
-                    setError(prev => ({
-                        ...prev,
-                        email: "Please enter the email address"
-                    }));
-                }
-            }, (error) => {
-                console.log(error.text);
-            });
+                }, (error) => {
+                    console.log(error.text);
+                });
+        }
+        
     }
 
     const togglePassword = () => {
@@ -157,6 +170,7 @@ export default function SignUp () {
     const submitHandler =(e)=>{
         e.preventDefault();
         setSignUpBtnDisabled(true);
+        console.log(input);
         const createAccountPromise = toast.loading("Creating account...")
         // get the email
         axios({
@@ -167,6 +181,7 @@ export default function SignUp () {
                 // warn the user if the email had been registered before
                 if (response.data.length > 0) {
                     toast.update(createAccountPromise, { render: "The email had been registered.", type: "error", isLoading: false });
+                    window.location.reload();
                 } else {
                     // if not register yet, create a new account
                     axios({
@@ -176,16 +191,15 @@ export default function SignUp () {
                     })
                         .then(function (response){
                             console.log(response.data)
-                            // set data for user document
-                            userInput.accountId = response.data.id;
-                            userInput.lastName = response.data.lastName;
-                            userInput.firstName = response.data.firstName;
-
                             // create new user
                             axios({
                                 method:'POST',
                                 url: `${base_url}/user/create`,
-                                data: userInput
+                                data: {
+                                    accountId: response.data.id,
+                                    lastName: response.data.lastName,
+                                    firstName: response.data.firstName
+                                }
                             }).then(function(response) {
                                 toast.update(createAccountPromise, { render: "Your account has been created. You will be redirected to the Login page", type: "success", isLoading: false });
                                 window.location.href = `${ui_url}/login`;
@@ -221,6 +235,7 @@ export default function SignUp () {
                           onChange={ onInputChange }
                           onBlur={ validateInput }
                       />
+                      <div>{error.firstName && <span className='text-danger'>{error.firstName}</span>}</div>
                   </div>
                   <div className="col-md-6">
                       <label htmlFor="lastName" className="form-label">Last Name*</label>
@@ -233,11 +248,26 @@ export default function SignUp () {
                           onChange={ onInputChange }
                           onBlur={ validateInput }
                       />
+                      <div>{error.lastName && <span className='text-danger'>{error.lastName}</span>}</div>
                   </div>
               </div>
+            
+            <div className="row mt-2">
+                <div className="col-md-12">
+                    <label htmlFor="fullName" className="form-label">Full Name*</label>
+                    <input
+                        className="form-control"
+                        id="fullName"
+                        name="fullName"
+                        input={ input.fullName }
+                        onChange={ onInputChange }
+                    />
+                    <div>{error.fullName && <span className='text-danger'>{error.fullName}</span>}</div>
+                </div>
+            </div>
             <div className="row mt-2">
                 <div className="col-md-6">
-                    <label htmlFor="email" className="form-label">Email</label>
+                    <label htmlFor="email" className="form-label">Email*</label>
                     <input
                         type="email"
                         className="form-control"
@@ -245,11 +275,12 @@ export default function SignUp () {
                         name="email"
                         input={ input.email }
                         onChange={ onInputChange }
-                        // onBlur={ validateUniqueEmail }
+                        onBlur={ validateUniqueEmail }
                     />
+                    <div>{error.email && <span className='text-danger'>{error.email}</span>}</div>
                 </div>
                 <div className="col-md-6">
-                    <label htmlFor="username" className="form-label">Username</label>
+                    <label htmlFor="username" className="form-label">Username*</label>
                     <input
                         type="text"
                         className="form-control"
@@ -257,13 +288,14 @@ export default function SignUp () {
                         name="username"
                         input={ input.username }
                         onChange={ onInputChange }
-                        onBlur={ validateInput }
+                        onBlur={ validateUniqueUsername }
                     />
+                    <div>{error.username && <span className='text-danger'>{error.username}</span>}</div>
                 </div>
             </div>
-            <div>{error.email && <span className='text-danger'>{error.email}</span>}</div>
+            
 
-            <label htmlFor="password" className="form-label mt-2">Password</label>
+            <label htmlFor="password" className="form-label mt-2">Password*</label>
             <div className="input-group">
               <input
                 type={passwordType}
@@ -279,7 +311,7 @@ export default function SignUp () {
             </div>
               <div> {error.password && <span className='text-danger'>{error.password}</span>}</div>
 
-            <label htmlFor="password" className="form-label mt-2">Confirm Password</label>
+            <label htmlFor="password" className="form-label mt-2">Confirm Password*</label>
             <div className="input-group">
               <input
                 type={confirmPasswordType}
