@@ -15,7 +15,7 @@ export default function Login () {
 
     const [input, setInput] = useState( {
             email : "",
-            password : ""
+            providedPassword : ""
         }
     )
 
@@ -38,27 +38,31 @@ export default function Login () {
     const submitHandler =(e)=>{
         e.preventDefault();
         // check account existence with the email
+        console.log(input)
         axios({
-            method: 'GET',
-            url: `${base_url}/signup/getaccountbyemail?email=${input.email}`,
+            method: 'POST',
+            // url: `${base_url}/signup/getaccountbyemail?email=${input.email}`,
+            url: `${base_url}/login`,
+            data: input
         })
             .then(function(response){
                 console.log(response.data)
                 // exist: check password
-                if (response.data.length > 0) {
-                    if (response.data[0].password === input.password) {
-                        // save the account data in session
-                        ReactSession.set("account", response.data[0]);
-                        window.location.href = `${ui_url}/home`;
-                    } else {
-                        toast.error("Wrong Password");
-                    }
+                if (response.data !== null) {
+                    // save the account data in session
+                    ReactSession.set("account", input);
+                    window.location.href = `${ui_url}/home`;
+                    
                 } else {
-                    toast.error("The account did not exist");
+                    toast.error("Wrong email or password");
                 }
             }, (error)=>{
                console.log(error.text)
             });
+    }
+
+    const getUser=(accountId)=>{
+      
     }
 
     return (
@@ -78,14 +82,14 @@ export default function Login () {
                 id="email"
               />
             </div>
-            <label htmlFor="password" className="form-label">Password</label>
+            <label htmlFor="providedPassword" className="form-label">Password</label>
             <div className="input-group mb-3">
               <input
                 type={passwordType}
                 className="form-control"
-                name="password"
-                id="password"
-                value={input.password}
+                name="providedPassword"
+                id="providedPassword"
+                value={input.providedPassword}
                 onChange={onInputChange}
               />
               <span className="input-group-text" onClick={togglePassword}

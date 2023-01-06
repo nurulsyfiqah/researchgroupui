@@ -16,7 +16,7 @@ export default function SignUp () {
     const [input, setInput] = useState({
         email: "",
         username: "",
-        password: "",
+        providedPassword: "",
         confirmPassword: "",
         lastName: "",
         firstName: "",
@@ -79,7 +79,7 @@ export default function SignUp () {
                 case "confirmPassword":
                     if (value === "") {
                         stateObj[name] = "Please enter Confirm Password.";
-                    } else if (input.password && value !== input.password) {
+                    } else if (input.providedPassword && value !== input.providedPassword) {
                         stateObj[name] = "Password does not match.";
                     }
                     break;
@@ -198,17 +198,19 @@ export default function SignUp () {
                                 data: {
                                     accountId: response.data.id,
                                     lastName: response.data.lastName,
-                                    firstName: response.data.firstName
+                                    firstName: response.data.firstName,
+                                    fullName: response.data.fullName
                                 }
                             }).then(function(response) {
                                 toast.update(createAccountPromise, { render: "Your account has been created. You will be redirected to the Login page", type: "success", isLoading: false });
                                 window.location.href = `${ui_url}/login`;
                             }, (error) => {
-                                console.log(error.text);
+                                toast.update(createAccountPromise, { render: "Your user account fail to be created", type: "error", isLoading: false });
                             })
 
                         }, (error)=>{
                             toast.update(createAccountPromise, { render: "Your account fail to be created", type: "error", isLoading: false });
+                            window.location.reload();
                         });
                 }
             }, (error) => {
@@ -295,14 +297,14 @@ export default function SignUp () {
             </div>
             
 
-            <label htmlFor="password" className="form-label mt-2">Password*</label>
+            <label htmlFor="providedPassword" className="form-label mt-2">Password*</label>
             <div className="input-group">
               <input
                 type={passwordType}
                 className="form-control"
-                id="password"
-                name="password"
-                value={ input.password }
+                id="providedPassword"
+                name="providedPassword"
+                value={ input.providedPassword }
                 onChange={ onInputChange }
                 onBlur={ validateInput }
               />
