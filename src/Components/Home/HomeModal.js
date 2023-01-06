@@ -1,78 +1,22 @@
 import React, {useState, useEffect} from 'react';
-import { useDropzone } from "react-dropzone"
 import { getDroppedOrSelectedFiles } from 'html5-file-selector';
 import {toast} from "react-toastify";
-import Placeholder from '../../Assets/Images/image-placeholder.jpg'
-import axios from 'axios';
 import {ReactSession} from "react-client-session";
 import {base_url} from "../../Service/serviceapi"
 import {BsXLg} from "react-icons/bs";
+import {replaceNullToEmptyString} from "../../Helper/util/util";
 import Dropzone from 'react-dropzone-uploader'
-import 'react-dropzone-uploader/dist/styles.css'
 import moment from "moment";
+import axios from 'axios';
+import 'react-dropzone-uploader/dist/styles.css'
 
 export function UploadImageModal({data, hide, change}) {
-    const account = ReactSession.get("account");
     const [image, setImage] = useState(null);
-    // const [files, setFiles] = useState([])
-    // const [loading, setLoading] = useState(false);
-    // const [selectedFile, setSelectedFile] = useState();
-    // const [isFilePicked, setIsFilePicked] = useState(false);
-
-    // const { getRootProps, getInputProps } = useDropzone({
-    //     accept: "image/*",
-    //     multiple: false,
-    //     onDrop: (acceptedFiles) => {
-    //         setFiles(
-    //             acceptedFiles.map((file) =>
-    //                 Object.assign(file, {
-    //                     preview: URL.createObjectURL(file),
-    //                 })
-    //             )
-    //         )
-    //     },
-    // })
-
-    // const images = files.map((file) => (
-    //     <div key={file.name} >
-    //         <img className="d-block mx-auto" src={file.preview} style={{ width: "50%" }} alt="preview" />
-    //         <div>Title: {file.path} ({file.size} bytes)</div>
-    //     </div>
-    // ))
 
     let modalStyle = {
         display: 'block',
         backgroundColor: 'rgba(0,0,0,0.8)'
     }
-
-    // const changeHandler = (event) => {
-    //     setSelectedFile(event.target.files[0]);
-    //     console.log(event.target.files[0])
-    //     //setIsSelected(true);
-    // };
-
-    // const uploadImageHandler=()=>{
-    //     //const files = e.target.file;
-    //     const formData = new FormData();
-    //     // formData.append('file', files);
-    //     console.log(formData)
-    //     formData.append('File', files);
-    //     // formData.append('title', files.title);
-    //     // formData.append('accountId', account.id);
-    //     // console.log(formData)
-    //     // setLoading(true);
-    //     // axios({
-    //     //     method: 'POST',
-    //     //     url: `${base_url}/user/uploadimage`,
-    //     //     data: data
-    //     // })
-    //     //     .then(function(response){
-    //     //         console.log(response.data)
-    //     //         setLoading(false);
-    //     //     }, (error) => {
-    //     //         console.log(error.text)
-    //     //     });
-    // }
 
     const getUploadParams = ({file, meta}) => {
         setImage(file)
@@ -82,11 +26,11 @@ export function UploadImageModal({data, hide, change}) {
     
       const handleChangeStatus = ({ meta }, status) => {
         console.log(status, meta)
+        console.log(meta.size)
       }
     
-      const handleSubmit = (files, allFiles) => {
+      const handleSubmit = () => {
         console.log(image)
-        // console.log(files.map(f => f.meta))
         const formData = new FormData();
         formData.append("image", image);
         formData.append("userId", data.id);
@@ -104,22 +48,11 @@ export function UploadImageModal({data, hide, change}) {
                 change()
                 toast.success("Image uploaded successfully", {autoClose:1500, hideProgressBar:true});
               });
-            // axios.put(`${base_url}/user/uploadimage`, formData, {
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data',
-            //         'Access-Control-Allow-Origin': true
-            //     }
-            // }).then((response) => {
-            //     console.log(response.data)
-            //     hide()
-            //     change()
-            //     toast.success("Image uploaded successfully", {autoClose:1500, hideProgressBar:true});
-            // })
+            
             
         } catch(error) {
             console.log(error);
         }
-        // allFiles.forEach(f => f.remove())
       }
 
       const getFilesFromEvent = e => {
@@ -142,37 +75,28 @@ export function UploadImageModal({data, hide, change}) {
                     </div>
 
                     <div className="modal-body ">
+                        <div className='mb-1'>Please upload your image file here. Make sure your image is below than 500KB</div>
                     <Dropzone
                         getUploadParams={getUploadParams}
                         onChangeStatus={handleChangeStatus}
                         onSubmit={handleSubmit}
                         accept="image/*"
                         maxFiles={1}
+                        maxSizeBytes={500000}
                         inputContent={(files, extra) => (extra.reject ? 'Only image files allowed!' : 'Select and Drop Files')}
                         submitButtonDisabled={files => files.length < 1}
                         getFilesFromEvent={getFilesFromEvent}
                         submitButtonContent="Upload"
                         styles={{
                             dropzoneReject: { borderColor: '#F19373', backgroundColor: '#F1BDAB' },
-                            inputLabel: (files, extra) => (extra.reject ? { color: '#A02800' } : {}),
+                            inputLabel: (files, extra) => (extra.reject ? { color: '#A02800' } : {color: '#388087'}),
                             submitButton: {backgroundColor: '#388087', color: '#f6f6f2'}
                         }}
-                    />
+                    >
+                    </Dropzone>
 
-                    {/* <Dropzone
-                        inputContent={null}
-                        getUploadParams={getUploadParams}
-                        onChangeStatus={handleChangeStatus}
-                        onSubmit={handleSubmit}
-                        accept="image/*"
-                        styles={{ dropzone: { minHeight: 300, maxHeight: 400, width: 'auto' } }}
-                    /> */}
                     </div>
 
-                    {/* <div className="modal-footer">
-                        <button type="button" className="btn btn-sm btn-secondary" onClick={hide}>Close</button>
-                        <button type="submit" className="btn btn-sm btn_dark">Save</button>
-                    </div> */}
                 </div>
             </div>
         </div>
@@ -360,12 +284,22 @@ export function EditDomainModal({data, hide, change}) {
 }
 
 export function EditInfoModal({data, account, hide, change}) {
-    const [acc, setAcc] = useState(account);
-    const [user, setUser] = useState(data);
+    const [acc, setAcc] = useState(replaceNullToEmptyString(account));
+    const [user, setUser] = useState(replaceNullToEmptyString(data));
     const [error, setError] = useState({
         username: '',
         email: '',
     })
+
+
+    console.log(user)
+    // replace null value to empty string for account and user
+    // Object.keys(acc).forEach(function(key) {
+    //     if(acc[key] === null) {
+    //         acc[key] = '';
+    //     }
+    // })
+
 
     const onAccChange =(e)=>{
         const { name, value } = e.target;
@@ -478,26 +412,42 @@ export function EditInfoModal({data, account, hide, change}) {
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={hide}></button>
                     </div>
                     <div className="modal-body">
+
                         <label htmlFor="username" className="form-label my-1">Username</label>
                         <div className="input-group">
-                            <input type="text" className="form-control" id="username" name="username" value={acc.username} onChange={onAccChange}/>
+                            <input type="text" className="form-control" id="username" name="username" defaultValue={acc.username} onChange={onAccChange}/>
                         </div>
                         <div className='mb-3'>{error.username && <span className='text-danger'>{error.username}</span>}</div>
-                        <label htmlFor="username" className="form-label my-1">Published Name</label>
+
+                        <label htmlFor="publishedName" className="form-label my-1">Published Name</label>
                         <div className="input-group mb-3">
-                            <input type="text" className="form-control" id="publishedName" name="publishedName" value={user.publishedName} onChange={onUserChange}/>
+                            <input type="text" className="form-control" id="publishedName" name="publishedName" defaultValue={user.publishedName} onChange={onUserChange}/>
                         </div>
-                        <label htmlFor="username" className="form-label my-1">First Name</label>
+
+                        <label htmlFor="firstName" className="form-label my-1">First Name</label>
                         <div className="input-group mb-3">
-                            <input type="text" className="form-control" id="firstName" name="firstName" value={user.firstName} onChange={onUserChange}/>
+                            <input type="text" className="form-control" id="firstName" name="firstName" defaultValue={user.firstName} onChange={onUserChange}/>
                         </div>
-                        <label htmlFor="username" className="form-label my-1">Last Name</label>
+
+                        <label htmlFor="lastName" className="form-label my-1">Last Name</label>
                         <div className="input-group mb-3">
-                            <input type="text" className="form-control" id="lastName" name="lastName" value={user.lastName} onChange={onUserChange}/>
+                            <input type="text" className="form-control" id="lastName" name="lastName" defaultValue={user.lastName} onChange={onUserChange}/>
                         </div>
-                        <label htmlFor="username" className="form-label my-1">Email</label>
+
+                        <label htmlFor="fullName" className="form-label my-1">Full Name</label>
+                        <div className="input-group mb-3">
+                            <input type="text" className="form-control" id="fullName" name="fullName" defaultValue={user.fullName} onChange={onUserChange}/>
+                        </div>
+
+                        <label htmlFor="email" className="form-label my-1">Email</label>
                         <div className="input-group">
-                            <input type="email" className="form-control" id="email" name="email" value={acc.email} onChange={onAccChange}/>
+                            <input type="email" className="form-control" id="email" name="email" defaultValue={acc.email} onChange={onAccChange}/>
+                        </div>
+                        
+                        <div className='mb-3'>{error.email && <span className='text-danger'>{error.email}</span>}</div>
+                        <label htmlFor="googlescholar" className="form-label my-1">Google Scholar Link</label>
+                        <div className="input-group">
+                            <input className="form-control" id="googleScholar" name="googleScholar" defaultValue={acc.googleScholarLink} onChange={onAccChange}/>
                         </div>
                         <div className='mb-3'>{error.email && <span className='text-danger'>{error.email}</span>}</div>
                     </div>

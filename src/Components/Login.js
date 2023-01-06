@@ -38,7 +38,6 @@ export default function Login () {
     const submitHandler =(e)=>{
         e.preventDefault();
         // check account existence with the email
-        console.log(input)
         axios({
             method: 'POST',
             // url: `${base_url}/signup/getaccountbyemail?email=${input.email}`,
@@ -46,13 +45,13 @@ export default function Login () {
             data: input
         })
             .then(function(response){
-                console.log(response.data)
+                console.log(response.data.id)
                 // exist: check password
                 if (response.data !== null) {
                     // save the account data in session
-                    ReactSession.set("account", input);
+                    ReactSession.set("account", response.data);
+                    getUser(response.data.id);
                     window.location.href = `${ui_url}/home`;
-                    
                 } else {
                     toast.error("Wrong email or password");
                 }
@@ -62,7 +61,14 @@ export default function Login () {
     }
 
     const getUser=(accountId)=>{
-      
+      axios({
+        method: 'GET',
+        url: `${base_url}/user/getuserbyaccountid/${accountId}`,
+      }).then(function(response){
+        ReactSession.set("user", response.data);
+      }, (error)=>{
+        console.log(error.text)
+      });
     }
 
     return (

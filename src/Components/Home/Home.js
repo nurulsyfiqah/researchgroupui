@@ -19,15 +19,15 @@ export default function Home() {
     const [aboutModal, setAboutModal] = useState(false)
     const [addAffiliationModal, setAddAffiliationModal] = useState(false)
     const [affiliationModal, setAffiliationModal] = useState(false)
-    const [user, setUser] = useState([]);
-    const [account, setAccount] = useState([]);
+    const [user, setUser] = useState(ReactSession.get("user"));
+    const [account, setAccount] = useState(ReactSession.get("account"));
     const [change, setChange] =useState(0);
     const [affiliation, setAffiliation] = useState([]);
 
     useEffect(() => {
         console.log("ho")
         const acc = ReactSession.get("account");
-        console.log(acc)
+        // console.log(acc)
         setAccount(acc);
         axios({
             method: 'GET',
@@ -38,12 +38,6 @@ export default function Home() {
             console.log(response.data)
         })
         console.log(user)
-        // axios({
-        //     method: 'GET',
-        //     url: `${base_url}/account/getaccountbyid/${acc.id}`,
-        // }).then(function(response){
-        //     setAccount(response.data)
-        // })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[change]);
 
@@ -107,7 +101,7 @@ export default function Home() {
                         <EditIcon className="icon_dark" onClick={() =>showImageModal()}/>
                     </div>
                     {
-                        (user !== null && user.hasOwnProperty('image')) ? <img src={`${upload_url}${user.image}`}  style={{overflow: "hidden", height: "250px", width: "auto", objectFit: "cover"}} className="img-fluid mx-auto d-block" alt="placeholder"/> : <img src={Placeholder} className="img-fluid mx-auto d-block" alt="placeholder"/>
+                        (user.image !== null) ? <img src={`${upload_url}${user.image}`}  style={{overflow: "hidden", height: "250px", width: "auto", objectFit: "cover"}} className="img-fluid mx-auto d-block" alt="placeholder"/> : <img src={Placeholder} className="img-fluid mx-auto d-block" alt="placeholder"/>
                     }
                     
                 </div>
@@ -120,7 +114,7 @@ export default function Home() {
                     <div className="card-body text-center">
                         <WebsiteIcon className="icon_dark h3"/>
                         <div className="text-bold">Preview Website</div>
-                        <div className="preview_website_link" onClick={previewWebsite} style={{cursor:"pointer"}} >{ account || account.hasOwnProperty("username") ? `${ui_url}/${account.username}` : ""  } </div>
+                        <div className="preview_website_link" onClick={previewWebsite} style={{cursor:"pointer"}} >{ account.username !== null ? `${ui_url}/${account.username}` : ""  } </div>
                         </div>
                 </div>
 
@@ -131,10 +125,10 @@ export default function Home() {
                     </div>
                     <div className="card-body">
                         {
-                            (user && user.hasOwnProperty('socialMedia')) ? 
+                            (user.socialMedia !== null) ? 
                             user.socialMedia.map((data, index)=>{
                                 return(
-                                    <div className="my-1 text-truncate" key={data}>
+                                    <div className="my-1 text-truncate" key={index}>
                                         <SocialIcon url={data} target="_blank" style={{ height: 35, width: 35 }}/>
                                         <span className="ms-3"><a href={data} target="_blank" rel='noreferrer'>{data}</a></span>
                                         {/* <span className='ms-3 ' style={{cursor:'pointer'}} onClick={view()} data-value={data}>{data}</span> */}
@@ -156,8 +150,8 @@ export default function Home() {
                     <div className="card-body">
                         <h4>
                             {
-                                user !== null && user.hasOwnProperty("domain") ? user.domain.map(data =>
-                                    <span className="badge bg-secondary m-1 text-clamping-row">{data}</span>
+                                user.domain !== null? user.domain.map((data, index) =>
+                                    <span className="badge bg-secondary m-1 text-clamping-row" key={index}>{data}</span>
                                 ) : ''
                             }
                         </h4>
@@ -191,8 +185,16 @@ export default function Home() {
                             <div className="col-md-8">{user != null && user.hasOwnProperty("lastName") ? user.lastName : ""}</div>
                         </div>
                         <div className="row my-1">
+                            <div className="col-md-4 fw-bold">Full Name</div>
+                            <div className="col-md-8">{user != null && user.hasOwnProperty("fullName") ? user.fullName : ""}</div>
+                        </div>
+                        <div className="row my-1">
                             <div className="col-md-4 fw-bold">Email</div>
                             <div className="col-md-8">{account != null && account.hasOwnProperty("email") ? account.email : ""}</div>
+                        </div>
+                        <div className="row my-1">
+                            <div className="col-md-4 fw-bold">Google Scholar</div>
+                            <div className="col-md-8">{user != null && user.hasOwnProperty("googleScholarLink") ? user.googleScholarLink : ""}</div>
                         </div>
                     </div>
                 </div>
@@ -217,7 +219,7 @@ export default function Home() {
                         <AddIcon className="icon_dark" onClick={() =>showAddAffiliationModal()} />
                     </div>
                     {
-                        user != null && user.hasOwnProperty("affiliation") ? 
+                        user.affiliation !== null ? 
                         user.affiliation.map((data, index) => {
                             function formatDate(date) {
                                 //2022-06-20T11:10:12.000+00:00
@@ -226,7 +228,7 @@ export default function Home() {
                                 return moment(d).format('Do MMMM YYYY')
                             }
                             return(
-                                <div className="p-3">
+                            <div className="p-3" key={index}>
                                 <div className="row my-1">
                                     <div className="col-md-3 fw-bold">Organization</div>
                                     <div className="col-md-9">{data.organization}</div>

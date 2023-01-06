@@ -6,7 +6,9 @@ import Home from "../Components/Home/Home";
 
 export default function HomePage() {
     const account = ReactSession.get("account");
+    const user = ReactSession.get("user");
     console.log(account)
+    console.log(user)
     return (
         <div>
             <Sidebar content={<HomePageComponent />} />
