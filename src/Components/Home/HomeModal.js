@@ -105,7 +105,7 @@ export function UploadImageModal({data, hide, change}) {
 }
 
 export function EditSocialLinkModal({data, hide, change}) {
-    const [socialList, setSocialList] = useState( data.socialMedia);
+    const [socialList, setSocialList] = useState(replaceNullToEmptyString(data.socialMedia));
     const [social, setSocial] = useState("");
     const [input, setInput] = useState(data);
 
@@ -173,7 +173,7 @@ export function EditSocialLinkModal({data, hide, change}) {
                             {
                                 socialList.length > 0 ?
                                     socialList.map((link, index) =>(
-                                        <div className="row justify-content-between">
+                                        <div className="row justify-content-between" key={`sl_${index}`}>
                                             <div key={index} className="col-8"> {link} </div>
                                             <div className="col-2"><div className="float-end" type="button" key={`${index}`} id={`${index}`} onClick={() => removeEmail(index)}> <BsXLg/> </div></div>
                                         </div>
@@ -263,9 +263,9 @@ export function EditDomainModal({data, hide, change}) {
                             {
                                 domainList.length > 0 ?
                                     domainList.map((domain, index) =>(
-                                        <div className="row justify-content-between">
+                                        <div className="row justify-content-between" key={`dl_${index}`}>
                                             <div key={index} className="col-8"> {domain} </div>
-                                            <div className="col-2"><div className="float-end" type="button" id="`${index}`" onClick={() => removeDomain(index)}> <BsXLg/> </div></div>
+                                            <div className="col-2"><div className="float-end" type="button" id={`${index}`} onClick={() => removeDomain(index)}> <BsXLg/> </div></div>
                                         </div>
                                     ))
                                     :
@@ -290,16 +290,6 @@ export function EditInfoModal({data, account, hide, change}) {
         username: '',
         email: '',
     })
-
-
-    console.log(user)
-    // replace null value to empty string for account and user
-    // Object.keys(acc).forEach(function(key) {
-    //     if(acc[key] === null) {
-    //         acc[key] = '';
-    //     }
-    // })
-
 
     const onAccChange =(e)=>{
         const { name, value } = e.target;
@@ -327,7 +317,7 @@ export function EditInfoModal({data, account, hide, change}) {
 
     function validateUniqueDetails(name, value) {
         // const value = e.target.value;
-        if (name === "username" && value !== "") {
+        if (name === "username" && value !== "" && value !== account.username) {
             axios({
                 method: 'GET',
                 url: `${base_url}/getaccountbyusername/${value}`,
@@ -382,6 +372,7 @@ export function EditInfoModal({data, account, hide, change}) {
             // update data in session
             ReactSession.set("account", acc);
             // update user
+
             axios({
                 method: 'PUT',
                 url: `${base_url}/user/update`,
@@ -447,7 +438,7 @@ export function EditInfoModal({data, account, hide, change}) {
                         <div className='mb-3'>{error.email && <span className='text-danger'>{error.email}</span>}</div>
                         <label htmlFor="googlescholar" className="form-label my-1">Google Scholar Link</label>
                         <div className="input-group">
-                            <input className="form-control" id="googleScholar" name="googleScholar" defaultValue={acc.googleScholarLink} onChange={onAccChange}/>
+                            <input className="form-control" id="googleScholar" name="googleScholarLink" defaultValue={user.googleScholarLink} onChange={onUserChange}/>
                         </div>
                         <div className='mb-3'>{error.email && <span className='text-danger'>{error.email}</span>}</div>
                     </div>
@@ -536,23 +527,22 @@ export function AddAffiliationModal({hide, change}) {
             ...prev,
             [name]: value
         }));
-        console.log(affiliation)
     }
 
     const submitHandler =()=>{
         console.log(affiliation)
 
-        // axios({
-        //     method: 'PUT',
-        //     url: `${base_url}/user/updateaffiliation`,
-        //     data: affiliation
-        // }).then(function(response) {
-        //     toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
-        //     hide()
-        //     change()
-        // }, (error)=>{
-        //     console.log(error.text)
-        // })
+        axios({
+            method: 'PUT',
+            url: `${base_url}/user/updateaffiliation`,
+            data: affiliation
+        }).then(function(response) {
+            toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
+            hide()
+            change()
+        }, (error)=>{
+            console.log(error.text)
+        })
     }
 
     return (
@@ -592,7 +582,7 @@ export function AddAffiliationModal({hide, change}) {
     )
 }
 
-export function EditAffiliationModal({data, allData, hide, change}) {
+export function EditAffiliationModal({data, allData, hide, change, index}) {
     let modalStyle = {
         display: 'block',
         backgroundColor: 'rgba(0,0,0,0.8)'
@@ -600,13 +590,20 @@ export function EditAffiliationModal({data, allData, hide, change}) {
 
     const user = ReactSession.get("user");
     console.log(allData)
-    const [affiliation, setAffiliation] = useState({
-        userId: user.id,
-        organization: '',
-        position: '',
-        startDate: '',
-        endDate: '',
-    });
+    // const [affiliation, setAffiliation] = useState({
+    //     userId: user.id,
+    //     organization: '',
+    //     position: '',
+    //     startDate: '',
+    //     endDate: '',
+    // });
+    const [affiliation, setAffiliation] = useState(data);
+
+    const updateObjectInArray = (array, id, updatedObject) => {
+        const newArray = array.filter(item => item.id !== id);
+        newArray.push(updatedObject);
+        return newArray;
+    }
 
     const onUserChange =(e)=>{
         const { name, value } = e.target;
@@ -617,18 +614,20 @@ export function EditAffiliationModal({data, allData, hide, change}) {
     }
 
     const submitHandler =()=>{
-        console.log(user)
-        // axios({
-        //     method: 'PUT',
-        //     url: `${base_url}/user/updateaffiliation`,
-        //     data: affiliation
-        // }).then(function(response) {
-        //     toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
-        //     hide()
-        //     change()
-        // }, (error)=>{
-        //     console.log(error.text)
-        // })
+        console.log(affiliation)
+        var newAff = updateObjectInArray(allData, data.id, affiliation);
+        console.log(newAff)
+        axios({
+            method: 'PUT',
+            url: `${base_url}/user/updateaffiliationlist`,
+            data: newAff
+        }).then(function(response) {
+            toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
+            hide()
+            change()
+        }, (error)=>{
+            console.log(error.text)
+        })
     }
 
     function getDifference(a1, a2) {

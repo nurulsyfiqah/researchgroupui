@@ -2,13 +2,14 @@ import React, {useEffect, useState} from 'react';
 import { Link } from 'react-router-dom';
 import { ReactSession } from 'react-client-session';
 import { FaGlobeAmericas as WebsiteIcon, FaEdit as EditIcon, FaPlus as AddIcon} from "react-icons/fa";
-import ui_url from '../../Service/serviceui';
-import Placeholder from '../../Assets/Images/image-placeholder.jpg'
 import { SocialIcon } from 'react-social-icons';
 import {UploadImageModal, EditSocialLinkModal, EditDomainModal, EditInfoModal, EditAboutModal, AddAffiliationModal ,EditAffiliationModal} from "./HomeModal"
-import axios from "axios";
 import {base_url, upload_url} from "../../Service/serviceapi";
+import {replaceNullToEmptyString} from "../../Helper/util/util";
 import moment from 'moment';
+import axios from "axios";
+import ui_url from '../../Service/serviceui';
+import Placeholder from '../../Assets/Images/image-placeholder.jpg'
 
 export default function Home() {
 
@@ -23,9 +24,9 @@ export default function Home() {
     const [account, setAccount] = useState(ReactSession.get("account"));
     const [change, setChange] =useState(0);
     const [affiliation, setAffiliation] = useState([]);
+    const [affIndex, setAffIndex] = useState(0);
 
     useEffect(() => {
-        console.log("ho")
         const acc = ReactSession.get("account");
         // console.log(acc)
         setAccount(acc);
@@ -33,7 +34,7 @@ export default function Home() {
             method: 'GET',
             url: `${base_url}/user/getuserbyaccountid/${acc.id}`,
         }).then(function(response){
-            setUser(response.data)
+            setUser(replaceNullToEmptyString(response.data))
             ReactSession.set("user", response.data);
             console.log(response.data)
         })
@@ -61,13 +62,15 @@ export default function Home() {
         return setAboutModal(true)
     }
 
-    const showAffiliationModal = (dataAff) => {
+    const showAffiliationModal = (dataAff, index) => {
         console.log(dataAff)
         setAffiliation(dataAff)
+        setAffIndex(index)
         return setAffiliationModal(true)
     }
 
-    const showAddAffiliationModal = () => {
+    const showAddAffiliationModal = (dataAff) => {
+        console.log(dataAff)
         return setAddAffiliationModal(true)
     }
 
@@ -125,7 +128,7 @@ export default function Home() {
                     </div>
                     <div className="card-body">
                         {
-                            (user.socialMedia !== null) ? 
+                            (user.socialMedia !== null || user.socialMedia.length > 0) ? 
                             user.socialMedia.map((data, index)=>{
                                 return(
                                     <div className="my-1 text-truncate" key={index}>
@@ -150,9 +153,9 @@ export default function Home() {
                     <div className="card-body">
                         <h4>
                             {
-                                user.domain !== null? user.domain.map((data, index) =>
+                                user.domain !== null || user.domain.length > 0 ? user.domain.map((data, index) =>
                                     <span className="badge bg-secondary m-1 text-clamping-row" key={index}>{data}</span>
-                                ) : ''
+                                ) : 'No domain added'
                             }
                         </h4>
                     </div>
@@ -246,7 +249,7 @@ export default function Home() {
                                     <div className="col-md-9">{formatDate(data.endDate)}</div>
                                 </div>
                                 <div className="d-grid d-md-flex justify-content-md-end me-2">
-                                    <EditIcon className="icon_dark" onClick={() =>showAffiliationModal(data)}/>
+                                    <EditIcon className="icon_dark" onClick={() =>showAffiliationModal(data, index)}/>
                                 </div>
                             </div>
                             )
@@ -260,7 +263,7 @@ export default function Home() {
                     addAffiliationModal === true ? <AddAffiliationModal hide={()=>setAddAffiliationModal(false)} change={()=>{setChange(change+1)}}/> : ''
                 }
                 {
-                    affiliationModal === true ? <EditAffiliationModal data={affiliation} allData={user.affiliation} hide={()=>setAffiliationModal(false)} change={()=>{setChange(change+1)}}/> : ''
+                    affiliationModal === true ? <EditAffiliationModal data={affiliation} allData={user.affiliation} hide={()=>setAffiliationModal(false)} change={()=>{setChange(change+1)}} index={affIndex}/> : ''
                 }
             </div>
 
