@@ -104,7 +104,7 @@ export default function Home() {
                         <EditIcon className="icon_dark" onClick={() =>showImageModal()}/>
                     </div>
                     {
-                        (user.image !== null) ? <img src={`${upload_url}${user.image}`}  style={{overflow: "hidden", height: "250px", width: "auto", objectFit: "cover"}} className="img-fluid mx-auto d-block" alt="placeholder"/> : <img src={Placeholder} className="img-fluid mx-auto d-block" alt="placeholder"/>
+                         (user.image !== null ) ? <img src={`${upload_url}${user.image}`}  style={{overflow: "hidden", height: "250px", width: "auto", objectFit: "cover"}} className="img-fluid mx-auto d-block" alt="placeholder"/> : <img src={Placeholder} className="img-fluid mx-auto d-block" alt="placeholder"/>
                     }
                     
                 </div>
@@ -128,8 +128,8 @@ export default function Home() {
                     </div>
                     <div className="card-body">
                         {
-                            (user.socialMedia !== null || user.socialMedia.length > 0) ? 
-                            user.socialMedia.map((data, index)=>{
+                            (user.socialMedia !== null) ? 
+                            user.socialMedia?.map((data, index)=>{
                                 return(
                                     <div className="my-1 text-truncate" key={index}>
                                         <SocialIcon url={data} target="_blank" style={{ height: 35, width: 35 }}/>
@@ -153,7 +153,7 @@ export default function Home() {
                     <div className="card-body">
                         <h4>
                             {
-                                user.domain !== null || user.domain.length > 0 ? user.domain.map((data, index) =>
+                                user.domain !== null > 0 ? user.domain?.map((data, index) =>
                                     <span className="badge bg-secondary m-1 text-clamping-row" key={index}>{data}</span>
                                 ) : 'No domain added'
                             }
@@ -223,7 +223,7 @@ export default function Home() {
                     </div>
                     {
                         user.affiliation !== null ? 
-                        user.affiliation.map((data, index) => {
+                        user.affiliation?.map((data, index) => {
                             function formatDate(date) {
                                 //2022-06-20T11:10:12.000+00:00
                                 moment.defaultFormat = "YYYY-MM-DDTHH:mm:ssZ";

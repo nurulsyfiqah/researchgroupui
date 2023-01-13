@@ -19,7 +19,7 @@ export default function CreateGroupModal({create, hide}) {
     const [emailList, setEmailList] = useState([
         {
             memberEmail:account.email,
-            memberName: user.lastName + ", " + user.firstName,
+            memberName: user.fullname,
             status:1,
             memberId: user.id
         }
@@ -73,6 +73,7 @@ export default function CreateGroupModal({create, hide}) {
     };
 
     const onEmojiClick = (event, emojiObject) => {
+        console.log(emojiObject)
         setChosenEmoji(emojiObject);
     };
 
@@ -95,7 +96,8 @@ export default function CreateGroupModal({create, hide}) {
         setEmailList([...emailList], {
             memberEmail:account.email,
             status:1,
-            memberId: user.id
+            memberId: user.id,
+            memberName: ''
         })
        
         params.domain = domainList
@@ -114,39 +116,6 @@ export default function CreateGroupModal({create, hide}) {
                 toast.success("Group created successfully", {autoClose: 1500,hideProgressBar: true})
                 create()
                 hide()
-                if(response){
-                    // window.location.reload(true);
-                    if (emailList.length > 0) {
-                        emailList.forEach((email, index) => {
-                            const emailParams = {
-                                service_id: "service_nc347wl",
-                                template_id: "template_a9a7mi9",
-                                user_id: "VJgY9rNMYrcl4jBgg",
-                                template_params: {
-                                    'to_email': email.memberEmail,
-                                    'reply_to': 'nurulsyfiqah25@gmail.com',
-                                    'group_name': groupName,
-                                    'creator': 'nurul',
-                                    'message': '',
-                                    'system_name': 'Research Group Management System'
-                                }
-                            }
-                            // emailjs.send(emailParams.service_id, emailParams.template_id, emailParams.template_params, emailParams.user_id)
-                            //     .then((result) => {
-                            //         if (result.status === 200) {
-                            //             count++;
-                            //             if (count >= emailList.length) {
-                            //                 toast.success("Invitations had been sent")
-                            //                 window.location.reload(false)
-                            //             }
-                            //         }
-                            //     }, (error) => {
-                            //         console.log(error.text);
-                            //     });
-                        })
-                    }
-                }
-
             })
             .catch(function (error) {
                 toast.error("Group fail to be created", {autoClose: 1500,hideProgressBar: true})

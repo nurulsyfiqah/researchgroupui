@@ -21,7 +21,7 @@ function GroupPageComponent() {
     const user = ReactSession.get("user");
     const [groups, setGroups] = useState([])
     const [showModal, setShowModal] = useState(false)
-    const [groupCreated, setGroupCreated] = useState(false)
+    const [groupCreated, setGroupCreated] = useState(0)
 
     // get list of groups from server
     useEffect(() =>{
@@ -59,7 +59,7 @@ function GroupPageComponent() {
 
         </div>
         {
-            showModal ? <CreateGroupModal create={()=>setGroupCreated(true)} hide={()=>setShowModal(false)}/> : ''
+            showModal ? <CreateGroupModal create={()=>setGroupCreated(groupCreated+1)} hide={()=>setShowModal(false)}/> : ''
         }
 
     </div>
