@@ -132,3 +132,13 @@ export function contentStatus(status) {
     }
 }
 
+export function memberRegStatus(status) {
+    switch (status.status) {
+        case 0:
+            return "Not Registered";
+        case 1:
+            return "Registered";
+        default:
+            return "Not Registered";
+    }
+}

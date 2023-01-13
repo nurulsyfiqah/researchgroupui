@@ -13,31 +13,6 @@ export default function AnnouncementList({edit, group, announcement, tracker}) {
     const user = ReactSession.get("user");
     const { groupId } = useParams();
     const [editedAnn, setEditedAnn] = useState(0)
-    // const [group, setGroup] = useState([])
-    // const [announcement, setAnnouncement] = useState([])
-    // const [tracker, setTracker] = useState([])
-
-    // const getDataFromServer= async () =>{
-    //     let group = `${base_url}/group/${groupId}`
-    //     let announcement = `${base_url}/group/announcement/${groupId}`
-    //     let tracker = `${base_url}/tracker/group/${groupId}`
-
-    //     const requestGroup = axios.get(group);
-    //     const requestAnnouncement = axios.get(announcement);
-    //     const requestTracker = axios.get(tracker);
-
-    //     const [response1, response2, response3] = await axios.all([requestGroup, requestAnnouncement, requestTracker])
-    //     setGroup(response1.data)
-    //     setAnnouncement(response2.data)
-    //     setTracker(response3.date)
-
-    //     console.log(response2.data)
-        
-    // }
-
-    // useEffect(() =>{
-    //     getDataFromServer()
-    // },[editedAnn])
 
     const editedStatus=()=>{
         setEditedAnn(editedAnn + 1);

@@ -4,11 +4,14 @@ import axios from "axios";
 import MUIDataTable from "mui-datatables";
 import {base_url} from "../../Service/serviceapi";
 import { ReactSession } from 'react-client-session';
+import {memberRegStatus} from "../../Helper/util/util"
 
 export default function MemberList({members, change}) {
     const user = ReactSession.get("user");
     const [emailList, setEmailList] = useState([]);
     const [counter, setCounter] = useState(0);
+    const mem = members.member;
+
     let input = {
         id: members.id,
         name: members.name,
@@ -19,16 +22,16 @@ export default function MemberList({members, change}) {
         createdByName: members.createdByName,
         status: 0,
     }
-    console.log(input)
-    useEffect(() => {
-        // setParam(prevState => ({
-        //     ...prevState,
-        //     'member': emailList.length > 0 ? emailList : members.member
-        // }));
-        input.member = emailList.length > 0 ? emailList : members.member;
-        console.log(counter)
 
+    // change status    
+    const updatedMemberData = mem?.map(item => Object.assign({}, item, { status: memberRegStatus(item) }));
+    console.log(updatedMemberData)
+
+    useEffect(() => {
+        input.member = emailList.length > 0 ? emailList : members.member;
     },[counter])
+
+    
 
     // datatable
     const columns = [
@@ -114,7 +117,7 @@ export default function MemberList({members, change}) {
         <div>
             <MUIDataTable
                 title={"Member List"}
-                data={members.member}
+                data={updatedMemberData}
                 columns={columns}
                 options={options}
             />

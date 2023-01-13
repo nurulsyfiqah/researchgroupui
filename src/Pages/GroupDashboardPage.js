@@ -32,17 +32,6 @@ function GroupDashboardPageComponent() {
     const [announcement, setAnnouncement] = useState([])
     const [tracker, setTracker] = useState([])
 
-    // const getDataFromServer= () =>{
-    //     axios.get(`${base_url}/group/${groupId}`).then((
-    //         response)=>{
-    //         const data = response.data;
-    //         console.log(data)
-    //         setGroup(data)
-    //     }, (error)=>{
-    //         toast.error("Something went wrong on Server")
-    //     })
-    // }
-
     const getDataFromServer= async () =>{
         let group = `${base_url}/group/${groupId}`
         let announcement = `${base_url}/group/announcement/${groupId}`
@@ -55,9 +44,7 @@ function GroupDashboardPageComponent() {
         const [response1, response2, response3] = await axios.all([requestGroup, requestAnnouncement, requestTracker])
         setGroup(response1.data)
         setAnnouncement(response2.data)
-        setTracker(response3.date)
-        console.log(response2.data)
-        
+        setTracker(response3.date)        
     }
 
     useEffect(() =>{
