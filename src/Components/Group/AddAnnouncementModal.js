@@ -6,7 +6,7 @@ import axios from "axios";
 import {base_url} from "../../Service/serviceapi";
 import {toast} from "react-toastify";
 
-export default function AddAnnouncementModal({group, hide, create}) {
+export default function AddAnnouncementModal({group, hide, edit}) {
     const account = ReactSession.get("account");
     const user = ReactSession.get("user");
     const editorRef = useRef(null);
@@ -17,7 +17,8 @@ export default function AddAnnouncementModal({group, hide, create}) {
         createdDate: moment().format(),
         createdById: user.id,
         createdByName: user.lastName + ", " + user.firstName,
-        target: ''
+        target: '',
+        status: 0
     });
 
     const onInputChange = e => {
@@ -26,6 +27,26 @@ export default function AddAnnouncementModal({group, hide, create}) {
             ...prev,
             [name]: value
         }));
+    }
+
+    const publishAnn=()=>{
+        input.groupId = group.id;
+        input.content = editorRef.current ? editorRef.current.getContent() : "";
+        input.status = 1;
+        console.log(input)
+        axios({
+            method: 'PUT',
+            url: `${base_url}/group/announcement/publish`,
+            data: input
+        })
+            .then(function(response){
+                toast.success("Successfully published Announcement", {autoClose: 1500,hideProgressBar: true})
+                edit()
+                hide()
+                //window.location.reload()
+            }, (error) => {
+                toast.error("Error in publishing Announcement", {autoClose: 1500,hideProgressBar: true})
+            })
     }
 
     const submitHandler=(e)=>{
@@ -40,8 +61,8 @@ export default function AddAnnouncementModal({group, hide, create}) {
             .then(function(response) {
                 // redirect user to edit post page
                 toast.success("Successfully create announcement", {autoClose: 1500,hideProgressBar: true})
+                edit()
                 hide()
-                create()
             }, (error) => {
                 toast.error("Error in saving", {autoClose: 1500,hideProgressBar: true})
                 console.log(error.text)
@@ -87,8 +108,9 @@ export default function AddAnnouncementModal({group, hide, create}) {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-sm btn-secondary" data-bs-dismiss="modal" onClick={hide}>Close</button>
-                            <button type="button" className="btn btn-sm btn_dark" onClick={submitHandler}>Add</button>
+                            {/* <button type="button" className="btn btn-sm btn-secondary" data-bs-dismiss="modal" onClick={hide}>Close</button> */}
+                            <button type="button" className="btn btn-sm btn-secondary" onClick={submitHandler}>Save</button>
+                            <button type="button" className="btn btn-sm btn_dark" onClick={publishAnn}>Publish</button>
                         </div>
                     </div>
                 </div>

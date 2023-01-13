@@ -121,3 +121,14 @@ export function addDetailList(item){
     
 }
 
+export function contentStatus(status) {
+    switch (status) {
+        case 0:
+            return(<span className='text-danger'>Draft</span>);
+        case 1:
+            return(<span className='text-success'>Published</span>);
+        default:
+            return(<span className='text-danger'>Draft</span>);
+    }
+}
+

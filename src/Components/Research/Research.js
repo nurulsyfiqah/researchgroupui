@@ -74,7 +74,6 @@ export default function Research() {
     return (
         <div className="my-4 py-2">
             <h2 className="page_title">Research</h2>
-            {activeTab }
             <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 
                 <li className="nav-item" role="presentation">

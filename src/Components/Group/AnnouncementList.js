@@ -7,34 +7,37 @@ import axios from "axios";
 import {base_url} from "../../Service/serviceapi";
 import {toast} from "react-toastify";
 import { ReactSession } from 'react-client-session';
+import {contentStatus} from "../../Helper/util/util";
 
-export default function AnnouncementList({edit}) {
+export default function AnnouncementList({edit, group, announcement, tracker}) {
     const user = ReactSession.get("user");
     const { groupId } = useParams();
     const [editedAnn, setEditedAnn] = useState(0)
-    const [group, setGroup] = useState([])
-    const [announcement, setAnnouncement] = useState([])
-    const [tracker, setTracker] = useState([])
+    // const [group, setGroup] = useState([])
+    // const [announcement, setAnnouncement] = useState([])
+    // const [tracker, setTracker] = useState([])
 
-    const getDataFromServer= async () =>{
-        let group = `${base_url}/group/${groupId}`
-        let announcement = `${base_url}/group/announcement/${groupId}`
-        let tracker = `${base_url}/tracker/group/${groupId}`
+    // const getDataFromServer= async () =>{
+    //     let group = `${base_url}/group/${groupId}`
+    //     let announcement = `${base_url}/group/announcement/${groupId}`
+    //     let tracker = `${base_url}/tracker/group/${groupId}`
 
-        const requestGroup = axios.get(group);
-        const requestAnnouncement = axios.get(announcement);
-        const requestTracker = axios.get(tracker);
+    //     const requestGroup = axios.get(group);
+    //     const requestAnnouncement = axios.get(announcement);
+    //     const requestTracker = axios.get(tracker);
 
-        const [response1, response2, response3] = await axios.all([requestGroup, requestAnnouncement, requestTracker])
-        setGroup(response1.data)
-        setAnnouncement(response2.data)
-        setTracker(response3.date)
+    //     const [response1, response2, response3] = await axios.all([requestGroup, requestAnnouncement, requestTracker])
+    //     setGroup(response1.data)
+    //     setAnnouncement(response2.data)
+    //     setTracker(response3.date)
+
+    //     console.log(response2.data)
         
-    }
+    // }
 
-    useEffect(() =>{
-        getDataFromServer()
-    },[editedAnn])
+    // useEffect(() =>{
+    //     getDataFromServer()
+    // },[editedAnn])
 
     const editedStatus=()=>{
         setEditedAnn(editedAnn + 1);
@@ -46,13 +49,24 @@ export default function AnnouncementList({edit}) {
             <div className="accordion accordion-flush" id="accordionFlushExample">
                 {
                     Array.isArray(announcement) ? 
+                    announcement.length > 0 ? 
                     announcement?.map((ann, index)=>{
                         return (
                             <AnnouncementBody key={index} ann={ann} edit={editedStatus} group={group}/>
                         )
                     })
+                    :
+                    <div className="card">
+                        <div className="card-body">
+                            No announcement yet
+                        </div>
+                    </div>
                     : 
-                    "There is no announcement"
+                    <div className="card">
+                        <div className="card-body">
+                            This is some text within a card body.
+                        </div>
+                    </div>
                 }
                 
             </div>
@@ -106,13 +120,48 @@ function AnnouncementBody({myKey, ann, edit, group}) {
             })
     }
 
+    // publish the announcement
+    const publishAnn=()=>{
+        ann.status = 1;
+        console.log(ann)
+        axios({
+            method: 'PUT',
+            url: `${base_url}/group/announcement/publish`,
+            data: ann
+        })
+            .then(function(response){
+                toast.success("Successfully published", {autoClose: 1500,hideProgressBar: true})
+                edit()
+                //window.location.reload()
+            }, (error) => {
+                toast.error("Error in publishing", {autoClose: 1500,hideProgressBar: true})
+            })
+    }
+
+    // unpublish the announcement
+    const unpublishAnn=()=>{
+        ann.status = 0;
+        axios({
+            method: 'PUT',
+            url: `${base_url}/group/announcement/update`,
+            data: ann
+        })
+            .then(function(response){
+                toast.success("Successfully unpublished", {autoClose: 1500,hideProgressBar: true})
+                edit()
+                //window.location.reload()
+            }, (error) => {
+                toast.error("Error in publishing", {autoClose: 1500,hideProgressBar: true})
+            })
+    }
+
     return (
         <div className="accordion-item" key={`key_${myKey}`}>
             <h2 className="accordion-header">
                 <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target={`#ann${ann.id}`} aria-expanded="false"
                         aria-controls="flush-collapseOne">
-                    {ann.title}
+                    <div>{ann.title} <span mx-2> {contentStatus(ann.status)}</span></div>
                 </button>
             </h2>
             <div id={`ann${ann.id}`} className="accordion-collapse collapse"
@@ -123,8 +172,10 @@ function AnnouncementBody({myKey, ann, edit, group}) {
                     {
                         (user.id === group.createdById) ? 
                         <div className="d-grid gap-2 d-md-flex justify-content-md-end my-1">
-                            <button className="btn btn_dark_normal btn-sm me-md-1" id={`edit_${ann.id}`} type="button" onClick={()=>showEditAnnModal()}>Edit</button>
                             <button className="btn btn-danger btn-sm" id={`del_${ann.id}`} type="button" onClick={deleteAnn}>Delete</button>
+                            <button className="btn btn_dark_normal btn-sm" id={`edit_${ann.id}`} type="button" onClick={()=>showEditAnnModal()}>Edit</button>
+                            <button className={`btn btn-secondary btn-sm me-md-1 ${ann.status === 0 ? "d-none" : ""}`} id={`unpub_${ann.id}`} type="button" onClick={()=>unpublishAnn()}>Unpublish</button>
+                            <button className={`btn btn-outline-dark btn-sm me-md-1 ${ann.status === 1 ? "d-none" : ""}`} id={`pub_${ann.id}`} type="button" onClick={()=>publishAnn()}>Publish</button>
                         </div>
                         : "No Announcement yet" 
                     }

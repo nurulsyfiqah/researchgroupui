@@ -29,22 +29,40 @@ function GroupDashboardPageComponent() {
     const [annModal, setAnnModal] = useState(false)
     const [createdAnn, setCreatedAnn] = useState(0)
 
+    const [announcement, setAnnouncement] = useState([])
+    const [tracker, setTracker] = useState([])
+
+    // const getDataFromServer= () =>{
+    //     axios.get(`${base_url}/group/${groupId}`).then((
+    //         response)=>{
+    //         const data = response.data;
+    //         console.log(data)
+    //         setGroup(data)
+    //     }, (error)=>{
+    //         toast.error("Something went wrong on Server")
+    //     })
+    // }
+
+    const getDataFromServer= async () =>{
+        let group = `${base_url}/group/${groupId}`
+        let announcement = `${base_url}/group/announcement/${groupId}`
+        let tracker = `${base_url}/tracker/group/${groupId}`
+
+        const requestGroup = axios.get(group);
+        const requestAnnouncement = axios.get(announcement);
+        const requestTracker = axios.get(tracker);
+
+        const [response1, response2, response3] = await axios.all([requestGroup, requestAnnouncement, requestTracker])
+        setGroup(response1.data)
+        setAnnouncement(response2.data)
+        setTracker(response3.date)
+        console.log(response2.data)
+        
+    }
 
     useEffect(() =>{
         getDataFromServer()
     },[createdAnn])
-
-    const getDataFromServer= () =>{
-        axios.get(`${base_url}/group/${groupId}`).then((
-            response)=>{
-            const data = response.data;
-            console.log(data)
-            setGroup(data)
-        }, (error)=>{
-            toast.error("Something went wrong on Server")
-        })
-    }
-
 
     const showAnnModal=()=>{
         return setAnnModal(true)
@@ -90,12 +108,12 @@ function GroupDashboardPageComponent() {
                     
                     {
                         
-                         <AnnouncementList edit={()=>setCreatedAnn(createdAnn + 1)}/> 
+                         <AnnouncementList edit={()=>setCreatedAnn(createdAnn + 1)} group={group} tracker={tracker} announcement={announcement}/> 
                         
                     }
 
                     {
-                        annModal === true ? <AddAnnouncementModal group={group} hide={()=>setAnnModal(false)} create={()=>setCreatedAnn(createdAnn + 1)}/> : ''
+                        annModal === true ? <AddAnnouncementModal group={group} hide={()=>setAnnModal(false)} edit={()=>setCreatedAnn(createdAnn + 1)}/> : ''
                     }
 
                 </div>
