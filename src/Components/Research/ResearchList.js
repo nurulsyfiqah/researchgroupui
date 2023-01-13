@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import EditPublicationModal from './EditPublicationModal';
 import {base_url} from "../../Service/serviceapi";
 import { toast } from 'react-toastify';
+import {addMaterialBtn, addDetailList} from "../../Helper/util/util";
 
 export default function ResearchList({publication, change}) { 
     const [modal, setModal] = useState(false);
@@ -52,17 +53,89 @@ export default function ResearchList({publication, change}) {
             <div className="card my-1" >
                 <div className="card-body">
                     <h5 className="card-title">{ publication.title!=null ? publication.title : "No Title" }</h5>
-                    <div className="card-text"> 
+                    <div className="card-text my-1"> 
                         <div> { publication.authors } </div>
                         <div> { publication.journal } </div>
+                        <div> { publication.doi !== '' ? publication.doi : ''} </div>
                         <div className="text-clamping mt-2"> { publication.description } </div>
                     </div>
+                    {
+                        publication.additionalDetails !== null ? 
+                        <div className="my-2">
+                            <div className="fw-bold">Details</div>
+                            <div className="">
+                                { addDetailList(publication.additionalDetails) }
+                            </div>
+                        </div>
+                        :
+                        ""
+                    }
+
+                    { 
+                        publication.filePath !== null ? 
+                        <div className="my-2">
+                            <div className="fw-bold">File</div>
+                            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                                { addMaterialBtn(publication.filePath, "file")}
+                            </div>
+                        </div>
+                    
+                        : "" 
+                    }
+
+                    {
+                        publication.addAddFilePath !== null ? 
+                        <div className="my-2">
+                            <div className="fw-bold">Additional File(s)</div>
+                            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                                { addMaterialBtn(publication.addAddFilePath, "file") }
+                            </div>
+                        </div>
+                        :
+                        ""
+                    }
+                    
+                    { 
+                        publication.link !== null ? 
+                        <div className="my-2">
+                            <div className="fw-bold">Link</div>
+                            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                                { addMaterialBtn(publication.link, "g_scholar") }
+                            </div>
+                        </div>
+                        : ""
+                    }
+
+                    {
+                        publication.additionalDetails !== null ?
+                        <div className="my-2">
+                            <div className="fw-bold">Additional Link(s)</div>
+                            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                            { addMaterialBtn(publication.additionalLinks, "add_link") }
+                            </div>
+                        </div>
+                        :
+                        ""
+                    }
+                    
+                    { 
+                        publication.link !== null ? 
+                        <div className="my-2">
+                            <div className="fw-bold">Link</div>
+                            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                                { addMaterialBtn(publication.link, "g_scholar") }
+                            </div>
+                        </div>
+                        : ""
+                    }
+
                     <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                         <button className="btn btn-danger btn-sm" type="button" onClick={() =>deletePub()}>Delete</button>
                         <button className="btn btn-outline-dark btn-sm" type="button" value={publication.highlighted} onClick={updateHighlight}>{ publication.highlighted ? "Highlighted" : "Highlight" }</button>
                         <button className="btn btn_dark_normal btn-sm" type="button" onClick={() =>getData()}>Edit</button>
                     </div>  
                 </div>
+                
             </div>
             {
                 modal === true ? <EditPublicationModal publication={ publication } hide={()=>setModal(false)} change={change}/> : ''

@@ -1,18 +1,24 @@
 import React, {useState} from 'react';
 import classNames from 'classnames';
-// import axios from "axios";
 import {BsXLg} from "react-icons/bs";
+import {base_url} from "../../Service/serviceapi";
+import { toast } from 'react-toastify';
+import {ReactSession} from 'react-client-session';
+import axios from 'axios';
 
-export default function AddPublication() {
+export default function AddPublication({change, active}) {
+    const user = ReactSession.get("user");
     const publicationList = [
         { value: 'Article', label: 'Article' },
         { value: 'Book', label: 'Book' },
+        { value: 'Book Review', label: 'Book Review' },
         { value: 'Chapter', label: 'Chapter' },
         { value: 'Code', label: 'Code' },
         { value: 'Conference Paper', label: 'Conference Paper' },
         { value: 'Cover Page', label: 'Cover Page' },
         { value: 'Data', label: 'Data' },
         { value: 'Experiment Findings', label: 'Experiment Findings' },
+        { value: 'Journal Issue', label: 'Journal Issue' },
         { value: 'Method', label: 'Method' },
         { value: 'Negative Results', label: 'Negative Results' },
         { value: 'Patent', label: 'Patent' },
@@ -24,40 +30,29 @@ export default function AddPublication() {
         { value: 'Technical Report', label: 'Technical Report' },
         { value: 'Thesis', label: 'Thesis' },
         { value: 'Research', label: 'Research' },
-      ]
+    ]
     
     function daysListSelect() {
-        var today = new Date();
-        var currentDay = today.getDate();
         const days = Array.from({length: 31}, (_, i) => i + 1)
     
         return (
-            <select class="form-select" name="day" id="day" onChange={getValue}>
-                <option value="">Day(Optional)</option>
+            <select className="form-select" name="day" id="day" onChange={getValue}>
+                <option value="0">Day(Optional)</option>
                 {days.map(day => {
-                    if (day === currentDay) {
-                        return <option key={day} value={day} selected>{day}</option>
-                    } else {
-                        return <option key={day} value={day}>{day}</option>
-                    }
+                    return <option key={day} value={day}>{day}</option>
                 })}
             </select>
         )
     }
     
     function monthsListSelect() {
-        var currentMonth = new Date().getMonth() + 1;
         const months = Array.from({length: 12}, (_, i) => i + 1)
     
         return (
-            <select class="form-select" name="month" id="month" onChange={getValue}>
-                <option value="">Month(Optional)</option>
+            <select className="form-select" name="month" id="month" onChange={getValue}>
+                <option value="0">Month(Optional)</option>
                 {months.map(month => {
-                    if (month === currentMonth) {
-                        return <option key={month} value={month} selected>{month}</option>
-                    } else {
-                        return <option key={month} value={month}>{month}</option>
-                    }
+                    return <option key={month} value={month}>{month}</option>
                 })}
             </select>
             
@@ -70,14 +65,10 @@ export default function AddPublication() {
         const years = Array.from({length: 92}, (_, i) => i + startYear)
     
         return (
-            <select class="form-select" name="year" id="year" onChange={getValue}>
+            <select className="form-select" name="year" id="year" onChange={getValue}>
                 <option value="">Year(Required)</option>
                 {years.reverse().map(year => {
-                    if (year === currentYear) {
-                        return <option key={year} value={year} selected>{year}</option>
-                    } else {
-                        return <option key={year} value={year}>{year}</option>
-                    }
+                    return <option key={year} value={year}>{year}</option>
                 })}
             </select>
             
@@ -115,47 +106,47 @@ export default function AddPublication() {
     const [languageIsShown, setLanguageIsShown] = useState(true);
     const [publicationType, setPublicationType] = useState('');
 
+    
     let [authorList, setAuthorList] = useState([]);
     const [author, setAuthor] = useState([]);
+    const [publicationId, setPublicationId] = useState('');
 
     const [input, setInput] = useState({
-        type: '',
-        title: '',
-        authors: '',
-        abstract: '',
-        day: '',
-        month: '',
-        year: '',
-        journalName: '',
-        value: '',
-        issue: '',
-        bookTitle: '',
-        page: '',
-        conferenceTitle: '',
-        doi: '',
-        location: '',
-        description: '',
-        relPublication: '',
-        refNo: '',
-        conferenceName: '',
-        prStatus: '',
-        reportNumber: '',
-        instution: '',
-        degree: '',
-        supervisor: '',
-        publisher: '',
-        isbn: '',
-        repoLink: '',
-        language: '',
-        filepath: null,
-        additionalDetails: [],
-        addFilePath: []
+        userId: user.id,
+        // type: '',
+        // title: '',
+        // authors: '',
+        // abstract: '',
+        // day: '',
+        // month: '',
+        // year: '',
+        // journalName: '',
+        // value: '',
+        // issue: '',
+        // bookTitle: '',
+        // page: '',
+        // conferenceTitle: '',
+        // doi: '',
+        // location: '',
+        // description: '',
+        // relPublication: '',
+        // refNo: '',
+        // conferenceName: '',
+        // prStatus: '',
+        // reportNumber: '',
+        // instution: '',
+        // degree: '',
+        // supervisor: '',
+        // publisher: '',
+        // isbn: '',
+        // repoLink: '',
+        // language: '',
+        // filepath: null,
+        // additionalDetails: [],
+        // addFilePath: []
     });
 
-    const onUploadFirstStep = (e) => { 
-        e.preventDefault();
-        setResearchDetails(true);
-    }
+    const [file, setFile] = useState(null);
 
     const additionalDetails = () => {
         console.log(input.type)
@@ -314,14 +305,9 @@ export default function AddPublication() {
         console.log(authorList)
     };
 
-    const [selectedOptions, setSelectedOptions] = useState();
-
     const getValue = e => {
-        // const {name,value} = e.target;
         const name = e.target.name;
-        // const value = e.target.value;
         const value = e.target.type === 'file' ? e.target.files : e.target.value;
-        // setInput({ [name]: value });
         setInput(prevState => ({
             ...prevState,
             [name]: value
@@ -368,71 +354,116 @@ export default function AddPublication() {
     const removeAddFile=(index) => {
         const data = [...addFiles]; 
         data.splice(index, 1)
-        setAddFiles(data)
-        
+        setAddFiles(data) 
     }
 
-    //* File handler
-    const [state, setState] = useState({
-        file: null
-    })
+    const [additionalLinks, setAdditionalLinks] = useState([]);
+
+    const addLink = () => {
+        let newfield = { title: '', url: '' }
+        setAdditionalLinks([...additionalLinks, newfield])
+    }
+
+    const removeAddLink = (index) => {
+        const data = [...additionalLinks]; 
+        data.splice(index, 1)
+        setAdditionalLinks(data)
+    }
+
+    const getAdditionalValueLink = (e, index) => {
+        const { name, value } = e.target;
+        const list = [...additionalLinks];
+        list[index][name] = value;
+        setAdditionalLinks(list);
+    }
 
     const handleFile = e => {
         console.log(e.target.files[0])
-        setState({file: e.target.files[0]})
-        console.log(state)
-        // this.setState({
-        //     file: e.target.files[0]
-        // })
-        // const reader = new FileReader();
-        // reader.onload = (e) => {
-        //     setFile(file);
-        //     setFileUrl(e.target.result);
-        // }
-        // reader.readAsDataURL(file);
+        setFile(e.target.files[0])
+        console.log(file)
     }
 
     const handleUpload = e => {
         e.preventDefault();
-        const updatedInput = {...input, author: authorList};
-        console.log(updatedInput)
-        console.log(input)
-        //* Hide first add detail section
-        setResearchDetails(true);
-        setAddDetailsSection(false);
+        const updatedInput = {...input, authors: authorList.toString()};
+        //* Upload the first page of publication detail
+        const formData = new FormData();
+        if (file !== null) {
+            formData.append('file', file);
+        } 
 
-        // additionalDetails();
-
-        // let file = state.file;
-        // let formdata = new FormData();
-        // console.log(formdata)
-        // axios({
-        //     method: 'post',
-        //     url: 'http://localhost:5000/api/upload',
-        //     data: formdata,
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data'
-        //     }
-        // }).then((response) => {
-        //     console.log(response)
-        // }).catch((error) => {
-        //     console.log(error)
-        // })
+        formData.append('input', JSON.stringify(updatedInput));
+        console.log(JSON.stringify(updatedInput))
+        console.log([...formData])
+        axios({
+            method: 'POST',
+            url: `${base_url}/publication/addpublicationmanually`,
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Access-Control-Allow-Origin': '*',
+            }
+        }).then(function (response) {
+            setPublicationId(response.data.id);
+            console.log(response.data.id);
+            toast.success("Successfully add the publication", {autoClose: 1500,hideProgressBar: true});
+            setResearchDetails(true);
+            setAddDetailsSection(false);
+            change();
+        },(error) => {
+            toast.error("Error creating the task", {autoClose: 1500,hideProgressBar: true});
+     
+        })
+  
     }
 
     const handleUploadEnd = e => {
         input.addFilePath = addFiles;
         input.additionalDetails = additionalFields;
+        input.additionalLinks = additionalLinks;
         console.log(input)
+
+        //* Upload the second page of publication detail
+        const formData = new FormData();
+        if (addFiles.length > 0) {
+            for(const file of addFiles) {
+                formData.append('files', file.file);
+                formData.append('description', file.description);
+            }
+        } else {
+            // formData.append('files', []);
+            // formData.append('description', []);
+        }
+        
+        formData.append('additionaldetails', additionalFields.length > 0 ? JSON.stringify(additionalFields) : "");
+        formData.append('additionallinks', additionalLinks.length > 0 ? JSON.stringify(additionalLinks) : "");
+        formData.append('publicationid', publicationId);
+        console.log([...formData])
+        axios({
+            method: 'PUT',
+            url: `${base_url}/publication/addadditionaldetailpublicationmanually`,
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Access-Control-Allow-Origin': '*',
+            }
+        }).then(function (response) {
+            toast.success("Successfully add the publication", {autoClose: 1500,hideProgressBar: true})
+            active();
+        },(error) => {
+            toast.error("Error creating the task", {autoClose: 1500,hideProgressBar: true})
+     
+        })
+
     }
 
     return (
         <div>
             <div className={classNames('add-step-one-publication', { 'd-none': researchDetails })}>
-                <label className="my-1 fw-bold">Type of publication</label>
+                <label className="my-1 fw-bold">Type of publication*</label>
                 {/* <Select name="type" options={publicationList} onChange={handleSelect} isSearchable={true}/> */}
-                <select class="form-select" name="type" onChange={getValue}>
-                    <option value="" selected>Open this select menu</option>
+                <select className="form-select my-1" name="type" onChange={getValue}  defaultValue={'DEFAULT'} required>
+                    <option value="DEFAULT" disabled>Open this select menu</option>
                     {
                         publicationList.map((item, index) => {
                             return (
@@ -441,23 +472,26 @@ export default function AddPublication() {
                         })
                     }
                 </select>
-                <label className="my-1 fw-bold">Title</label>
-                <input class="form-control my-1" id="title" name="title" onChange={getValue}/>
+                <label className="my-1 fw-bold">Title*</label>
+                <input className="form-control my-1" id="title" name="title" onChange={getValue}/>
+
+                <label className="my-1 fw-bold">Subtitle</label>
+                <input className="form-control my-1" id="subtitle" name="subtitle" onChange={getValue}/>
 
                 <label className="my-1 fw-bold">File</label>
-                <input className="form-control my-1" type="file" id="file" name="file" onChange={getValue}/>
-                {/* <button type="button" class="btn btn-sm my-1 btn-primary" onClick={handleUpload}>Submit</button> */}
+                <input className="form-control my-1" type="file" id="file" name="file" onChange={handleFile}/>
+                {/* <button type="button" className="btn btn-sm my-1 btn-primary" onClick={handleUpload}>Submit</button> */}
                 {/* <div className="card my-1">
                     <div className="card-body p-2" style={{height: '5em'}}>
                         <div className="border d-flex align-items-center justify-content-center h-100">
                             Add your Publication here
                         </div>
-                        <input class="form-control" type="file" id="file" />
+                        <input className="form-control" type="file" id="file" />
                     </div>
                 </div> */}
 
                 <label className="my-1 fw-bold">Description</label>
-                <textarea class="form-control" rows="2" name="description" id="description" onChange={getValue}></textarea>
+                <textarea className="form-control" rows="2" name="description" id="description" onChange={getValue}></textarea>
 
                 <label className="my-1 fw-bold">Authors</label>
                 <div className="author_list">
@@ -474,14 +508,14 @@ export default function AddPublication() {
                             <div className='small'>No added author yet</div>
                     }
                 </div>
-                <div className="input-group input-group-sm my-1">
+                <div className="input-group my-1">
                     <input type="text" className="form-control" name="author" id="author" onChange={authorUpdate} value={author}/>
                     <button className="btn btn-outline-dark" type="button" onClick={authorListUpdate}>Add</button>
                 </div>
 
 
                 <label className="my-1 fw-bold">Date</label>
-                <div class="input-group my-1">
+                <div className="input-group my-1">
                     { daysListSelect() }
                     { monthsListSelect() }
                     { yearsListSelect() }
@@ -489,10 +523,10 @@ export default function AddPublication() {
                 </div>
 
                 <label className="my-1 fw-bold">DOI</label>
-                <input class="form-control my-1" id="doi" name="doi" onChange={getValue}/>
+                <input className="form-control my-1" id="doi" name="doi" onChange={getValue}/>
 
-                <div class="d-grid gap-2 my-3 d-md-flex justify-content-md-end">
-                    <button className="btn btn_dark_normal btn-sm" type="button" onClick={handleUpload} >Upload</button>
+                <div className="d-grid gap-2 my-3 d-md-flex justify-content-md-end">
+                    <button className="btn btn_dark_normal btn-sm" type="button" onClick={handleUpload} >Submit</button>
                 </div>
             </div>
                     
@@ -502,20 +536,20 @@ export default function AddPublication() {
                 
                 <div className={classNames({ 'd-none': abstractIsShown })}>
                     <label className="my-1 fw-bold">Abstract</label>
-                    <textarea class="form-control" rows="5"></textarea>
+                    <textarea className="form-control" rows="5"></textarea>
                 </div>
 
                 <div className={classNames({ 'd-none': prStatusIsShown })}> 
                     <label className="my-1 fw-bold">Peer-review Status</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="prStatus" id="flexRadioDefault1" />
-                        <label class="form-check-label" htmlFor="flexRadioDefault1">
+                    <div className="form-check">
+                        <input className="form-check-input" type="radio" name="prStatus" id="flexRadioDefault1" />
+                        <label className="form-check-label" htmlFor="flexRadioDefault1">
                             Yes
                         </label>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="prStatus" id="flexRadioDefault2"/>
-                        <label class="form-check-label" htmlFor="flexRadioDefault2">
+                    <div className="form-check">
+                        <input className="form-check-input" type="radio" name="prStatus" id="flexRadioDefault2"/>
+                        <label className="form-check-label" htmlFor="flexRadioDefault2">
                             No
                         </label>
                     </div>
@@ -523,21 +557,21 @@ export default function AddPublication() {
 
                 <div className={classNames({ 'd-none': journalNameIsShown })}>
                     <label className="my-1 fw-bold">Journal Name</label>
-                    <input class="form-control my-1" id="name" />
+                    <input className="form-control my-1" id="name" />
                 </div>
 
-                <div class="row">
+                <div className="row">
                     <div className={classNames('col',{ 'd-none': valueIsShown })}>
                         <label className="my-1 fw-bold">Volume</label>
-                        <input class="form-control my-1" id="volume" />
+                        <input className="form-control my-1" id="volume" />
                     </div>
                     <div className={classNames('col',{ 'd-none': issueIsShown })}>
                         <label className="my-1 fw-bold">Issue</label>
-                        <input class="form-control my-1" id="issue" />
+                        <input className="form-control my-1" id="issue" />
                     </div>
                     <div  className={classNames('col',{ 'd-none': pageIsShown })}>
                         <label className="my-1 fw-bold">Page</label>
-                        <input class="form-control my-1" id="page" />
+                        <input className="form-control my-1" id="page" />
                     </div>
                 </div>
 
@@ -546,12 +580,12 @@ export default function AddPublication() {
                 {  /** Book */ }
                 <div className={classNames({ 'd-none': isbnIsShown })}>
                     <label className="my-1 fw-bold">ISBN</label>
-                    <input class="form-control my-1" id="isbn" />
+                    <input className="form-control my-1" id="isbn" />
                 </div>
 
                 <div className={classNames({ 'd-none': publisherIsShown })}>
                     <label className="my-1 fw-bold">Publisher</label>
-                    <input class="form-control my-1" id="publisher" />
+                    <input className="form-control my-1" id="publisher" />
                 </div>
             
                 {  /** Book End */ }
@@ -559,27 +593,27 @@ export default function AddPublication() {
                 {  /** Chapter */ }
                 <div className={classNames({ 'd-none': bookTitleIsShown })}>
                     <label className="my-1 fw-bold">Book Title</label>
-                    <input class="form-control my-1" id="book_title" />
+                    <input className="form-control my-1" id="book_title" />
                 </div>
                 
                 {/* <div className={classNames({ 'd-none': pageIsShown })}>
                     <label className="my-1 fw-bold">Page</label>
-                    <input class="form-control my-1" id="page" />
+                    <input className="form-control my-1" id="page" />
                 </div> */}
 
                 {/* <div className={classNames({ 'd-none': doiIsShown })}>
                     <label className="my-1 fw-bold">DOI</label>
-                    <input class="form-control my-1" id="doi" />
+                    <input className="form-control my-1" id="doi" />
                 </div> */}
 
                 {/* <div className={classNames({ 'd-none': isbnIsShown })}>
                     <label className="my-1 fw-bold">ISBN</label>
-                    <input class="form-control my-1" id="isbn" />
+                    <input className="form-control my-1" id="isbn" />
                 </div> */}
 
                 {/* <div className={classNames({ 'd-none': publisherIsShown })}>
                     <label className="my-1 fw-bold">Publisher</label>
-                    <input class="form-control my-1" id="publisher" />
+                    <input className="form-control my-1" id="publisher" />
                 </div>     */}
 
                 {  /** Chapter End */ }
@@ -587,32 +621,32 @@ export default function AddPublication() {
                 {  /** Code */ }
                 <div className={classNames({ 'd-none': descriptionIsShown })}> 
                     <label className="my-1 fw-bold">Description</label>
-                    <textarea class="form-control" rows="5"></textarea>
+                    <textarea className="form-control" rows="5"></textarea>
                 </div>
                 
                 {/* <div className={classNames({ 'd-none': doiIsShown })}> 
                     <label className="my-1 fw-bold">DOI</label>
-                    <input class="form-control my-1" id="doi" />
+                    <input className="form-control my-1" id="doi" />
                 </div> */}
                 
                 <div className={classNames({ 'd-none': repoLinkIsShown })}> 
                     <label className="my-1 fw-bold">Repository Link</label>
-                    <input class="form-control my-1" id="link" />
+                    <input className="form-control my-1" id="link" />
                 </div>
 
                 <div className={classNames({ 'd-none': languageIsShown })}> 
                     <label className="my-1 fw-bold">Language</label>
-                    <input class="form-control my-1" id="language" />
+                    <input className="form-control my-1" id="language" />
                 </div>
 
                 <div className={classNames({ 'd-none': relPublicationIsShown })}> 
                     <label className="my-1 fw-bold">Related Publication</label>
-                    <input class="form-control my-1" id="rel_publication" />
+                    <input className="form-control my-1" id="rel_publication" />
                 </div>
 
                 <div className={classNames({ 'd-none': doiIsShown })}>
                     <label className="my-1 fw-bold">DOI</label>
-                    <input class="form-control my-1" id="doi" />
+                    <input className="form-control my-1" id="doi" />
                 </div>
             
                 {  /** Code End */ }
@@ -661,11 +695,34 @@ export default function AddPublication() {
                    <button className="btn btn-sm btn_dark" type="button" onClick={addFile}>Add File</button>
                 </div>
 
+                <label className="my-1 fw-bold">Additional Links</label>
+                    {additionalLinks.map((input, index) => { 
+                        return (
+                            <div className="row" key={index}>
+                                <div className="col-5 my-1">
+                                    <input className="form-control" name='title' placeholder='Title' value={additionalLinks[index].title} onChange={e => getAdditionalValueLink(e, index)}/>
+                                </div>
+                                <div className="col-6 my-1">
+                                <input className="form-control"  name='link' placeholder='Link' value={additionalLinks[index].link} onChange={e => getAdditionalValueLink(e, index)}/>
+                                </div>
+                                <div className="col-1 my-1">
+                                    <div className="float-end" type="button" onClick={() => removeAddLink(index)}> <BsXLg/> </div>
+                                </div>
+                            </div>
+                        )
+
+                    } )}
+
+                    <div className="d-grid my-2">
+                        <button className="btn btn-sm btn_dark" type="button" onClick={addLink}>Add Link</button>
+                    </div>
+
                 <div className={classNames('d-grid gap-2 my-3 d-md-flex justify-content-md-end')}>
-                    <button className="btn btn-outline-secondary btn-sm" type="button">Skip</button>
+                    <button className="btn btn-outline-secondary btn-sm" type="button" onClick={active()}>Skip</button>
                     <button className="btn btn_dark_normal btn-sm" type="button" onClick={handleUploadEnd}>Add</button>
                 </div>
             </div>
+
 
             {/* <div className={classNames('add-step-three-details',{ 'd-none': successSection })}>
             <div className="card">

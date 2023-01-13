@@ -7,7 +7,7 @@ import { ChangeCircle } from '@mui/icons-material';
 
 export default function EditPublicationModal({publication, hide, change}) {
 
-    let [authorList, setAuthorList] = useState( publication.hasOwnProperty("authors")  ? publication.authors.split(","): []);
+    let [authorList, setAuthorList] = useState( publication.authors !== null? publication.authors.split(","): []);
     const [author, setAuthor] = useState([]);
 
     let modalStyle = {
@@ -84,6 +84,8 @@ export default function EditPublicationModal({publication, hide, change}) {
         filePath:publication.hasOwnProperty("filePath") ? '' : '',
         addFilePath:publication.hasOwnProperty("add_file") ? [] : [],
         additionalDetails:publication.hasOwnProperty("additionalDetails") ? publication.additionalDetails !== null ? publication.additionalDetails  :  [] : [],
+        additionalLinks:publication.hasOwnProperty("additionalLinks") ? publication.additionalLinks !== null ? publication.additionalLinks :  [] : [],
+        addAddFilePath:publication.hasOwnProperty("addAddFilePath") ? publication.addAddFilePath !== null ? publication.addAddFilePath :  [] : [],
     });
 
     const authorListUpdate = () => {
@@ -205,7 +207,7 @@ export default function EditPublicationModal({publication, hide, change}) {
     // End of Additional Details
 
     // Additional File Section */
-    const [addFiles, setAddFiles] = useState([]);
+    const [addFiles, setAddFiles] = useState(input.addAddFilePath);
 
     const addFile = () => {
         let newfield = { description: '', file: '' }
@@ -226,7 +228,29 @@ export default function EditPublicationModal({publication, hide, change}) {
         setAddFiles(data)
         
     }
-    // Endo of Additional File Section */
+    // End of Additional File Section */
+
+    // Additional Link
+    const [additionalLinks, setAdditionalLinks] = useState(input.additionalLinks);
+    console.log(input.addAddFilePath);
+    const addLink = () => {
+        let newfield = { title: '', url: '' }
+        setAdditionalLinks([...additionalLinks, newfield])
+    }
+
+    const removeAddLink = (index) => {
+        const data = [...additionalLinks]; 
+        data.splice(index, 1)
+        setAdditionalLinks(data)
+    }
+
+    const getAdditionalValueLink = (e, index) => {
+        const { name, value } = e.target;
+        const list = [...additionalLinks];
+        list[index][name] = value;
+        setAdditionalLinks(list);
+    }
+    // End of Additional Link
 
     function submit() {
         input.authors = authorList.toString();
@@ -236,6 +260,9 @@ export default function EditPublicationModal({publication, hide, change}) {
 
         const formData = new FormData();
         formData.append('publication', input);
+        input.addFilePath = addFiles;
+        input.additionalDetails = additionalFields;
+        input.additionalLinks = additionalLinks;
         // formData.append('files',addFiles)
         console.log([...formData])  
           
@@ -261,7 +288,7 @@ export default function EditPublicationModal({publication, hide, change}) {
     return (
         <div className="modal show fade" data-bs-backdrop="static" data-bs-keyboard="false"
              aria-labelledby="staticBackdropLabel" aria-hidden="true" style={modalStyle} key={publication.id}>
-            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="staticBackdropLabel">Edit Details</h5>
@@ -343,7 +370,9 @@ export default function EditPublicationModal({publication, hide, change}) {
 
                     {/* Additional Details Section */}
                     <label className="my-1 fw-bold">Additional Details</label>
-                    {additionalFields.map((input, index) => { 
+                    {
+                    (additionalFields !== null && additionalFields !== undefined) ?
+                    additionalFields.map((input, index) => { 
                         return (
                             <div className="row" key={index}>
                                 <div className="col-5 my-1">
@@ -358,7 +387,10 @@ export default function EditPublicationModal({publication, hide, change}) {
                             </div>
                         )
 
-                    } )}
+                    } )
+                    :
+                    ""
+                    }
 
                     <div className="d-grid my-2">
                         <button className="btn btn-sm btn_dark" type="button" onClick={addDetails}>Add Details</button>
@@ -369,7 +401,9 @@ export default function EditPublicationModal({publication, hide, change}) {
                     {/* Additional File Section */}
                     <label className="my-1 fw-bold">Additional Files</label>
 
-                    {addFiles.map((file, index) => {
+                    {
+                    (addFiles !== null && addFiles !== null) ?
+                    addFiles.map((file, index) => {
                         return (
                             <div className="row mt-2" key={index}>
                                 <div className="col-11 my-1">
@@ -383,12 +417,42 @@ export default function EditPublicationModal({publication, hide, change}) {
                                 </div>
                             </div>
                         )
-                    })}
+                    })
+                    :
+                    ""
+                    }
                     
                     <div className="d-grid my-2">
                         <button className="btn btn-sm btn_dark" type="button" onClick={addFile}>Add File</button>
                     </div>
                     {/* End of Additional File Section */}
+
+                    {/* Additional Link Section */}
+                    <label className="my-1 fw-bold">Additional Links</label>
+                    {
+                        (additionalLinks !== null && additionalLinks !== undefined) ?
+                        additionalLinks.map((link, index) => {
+                            return (
+                            <div className="row" key={index}>
+                                <div className="col-5 my-1">
+                                    <input className="form-control" name='title' value={additionalLinks[index].title} onChange={e => getAdditionalValueLink(e, index)}/>
+                                </div>
+                                <div className="col-6 my-1">
+                                <input className="form-control"  name='url' value={additionalLinks[index].url} onChange={e => getAdditionalValueLink(e, index)}/>
+                                </div>
+                                <div className="col-1 my-1">
+                                    <div className="float-end" type="button" onClick={() => removeAddLink(index)}> <BsXLg/> </div>
+                                </div>
+                            </div>
+                            )
+                        })
+                        :
+                        ""
+                    }
+                    <div className="d-grid my-2">
+                        <button className="btn btn-sm btn_dark" type="button" onClick={addLink}>Add Link</button>
+                    </div>
+                    {/* Additional Link Section End */}
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-sm btn-secondary" onClick={hide}>Close</button>
