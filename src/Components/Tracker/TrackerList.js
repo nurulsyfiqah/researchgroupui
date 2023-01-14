@@ -133,8 +133,7 @@ export default function TrackerList({tracker, change}) {
 
     return (
         <div key={tracker.id}>
-        {
-            tracker.type === "Group" || tracker.type === "group" ? 
+        { /* Group Tracker */ tracker.type === "Group" || tracker.type === "group" ? 
             <div className="card my-2" key={tracker.id}>
                 <div className="card-body">
                     <h5 className="card-title">{ tracker.title }</h5>
@@ -143,7 +142,6 @@ export default function TrackerList({tracker, change}) {
                     <p className="card-text">{ tracker.details }</p>
                     <div>Start Date: { tracker.startDate != null ? moment(tracker.startDate).format('DD/MM/YYYY') : "-"} </div>
                     <div>End Date: { tracker.endDate != null ? moment(tracker.endDate).format('DD/MM/YYYY') : "-"} </div>
-                    <div>Number of Member Completed: 0/5</div>
                     <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                     <Link to={`/tracker/${tracker.id}`}>
                         <button className="btn btn_dark_normal btn-sm me-md-2" type="button">View</button>
@@ -152,7 +150,7 @@ export default function TrackerList({tracker, change}) {
                     </div>
                 </div>
             </div>
-            :
+            : /* Group Tracker End */ /* Personal Tracker */
             <div className="card my-2" key={tracker.id}>
             <div className="card-body">
                 <h5 className="card-title">{ tracker.title }</h5>
@@ -179,7 +177,7 @@ export default function TrackerList({tracker, change}) {
                         "No Subtask"
                         :
                         ""
-                    }
+                    /* Personal Tracker End */}
                 </div>
                 <div className="mt-2">Start Date: { tracker.startDate != null ? moment(tracker.startDate).format('DD/MM/YYYY') : "-"} </div>
                 <div>End Date: { tracker.startDate != null ? moment(tracker.endDate).format('DD/MM/YYYY') : "-"} </div>

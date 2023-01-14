@@ -22,7 +22,6 @@ function TrackerPageComponent() {
 
     const account = ReactSession.get("account");
     const user = ReactSession.get("user");
-    console.log(user)
     const [data, setData] = useState([]);
     const [change, setChange] = useState(0);
     const [userGroup, setUserGroup] = useState([]);
@@ -48,9 +47,9 @@ function TrackerPageComponent() {
 
     const getDataFromServer = () => {
         console.log(user.id)
-        axios.get(`${base_url}/tracker/all/${user.id}`).then((
-            response)=>{
-            console.log(data)
+        axios.get(`${base_url}/tracker/all/${user.id}`)
+        .then((response)=>{
+            console.log(response.data)
             setData(response.data)
         }, (error)=>{
             toast.error("Something went wrong on Server")

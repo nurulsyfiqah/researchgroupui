@@ -31,7 +31,7 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
         subTask: typeof data !== 'undefined' ? data.subTask : [],
         startDate: typeof data !== 'undefined' ? data.startDate : "",
         endDate: typeof data !== 'undefined' ? data.endDate : "",
-        submissionType: typeof data !== 'undefined' ? data.submissionType : ""
+        submissionType: typeof data !== 'undefined' ? data.submissionType : "text"
     });
 
     const getValue = e => {
@@ -52,7 +52,6 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
                 groupName: group
             }))
         }
-        console.log(input)
     } 
 
     const getFiles = e => {
@@ -111,18 +110,18 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
                 hide();
             })
         } else if (action === "edit") {
-            axios({
-                method: 'PUT',
-                url: `${base_url}/tracker/update`,
-                data: input,
-            }).then(function(response) {
-                toast.success("Successfully update the task", {autoClose: 1500,hideProgressBar: true})
-                hide();
-                change();
-            }, (error) => {
-                toast.error("Error updating the task", {autoClose: 1500,hideProgressBar: true})
-                hide();
-            })
+            // axios({
+            //     method: 'PUT',
+            //     url: `${base_url}/tracker/update`,
+            //     data: input,
+            // }).then(function(response) {
+            //     toast.success("Successfully update the task", {autoClose: 1500,hideProgressBar: true})
+            //     hide();
+            //     change();
+            // }, (error) => {
+            //     toast.error("Error updating the task", {autoClose: 1500,hideProgressBar: true})
+            //     hide();
+            // })
         }
     }
 
@@ -148,7 +147,7 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
             <div className="modal-content">
             <div className="modal-header">
                 <h5 className="modal-title" id="staticBackdropLabel">{ action === "create" ? "Add Task" : "Edit Task" }</h5>
-                <button type="button" class="btn-close" onClick={hide}></button>
+                <button type="button" className="btn-close" onClick={hide}></button>
             </div>
             <div className="modal-body">
                 
@@ -159,7 +158,7 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
             <div className="my-2 input-group-sm">
                 <label className="fw-bold">Group</label>
                 {/* <input className="form-control" id="groupId" name="groupId" onChange={getValue} value={ input.type }/> */}
-                <select class="form-select" id="groupId" name="groupId" onChange={getValue}>
+                <select className="form-select" id="groupId" name="groupId" onChange={getValue}>
                     <option value={input.groupId}>{input.groupName}</option>
                     {
                        typeof group !== 'undefined' ? group.map((item, index) => {
@@ -222,7 +221,7 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
             </div>
             <div className="my-2 input-group-sm">
                 <label className="fw-bold">Type of Submission</label>
-                <select class="form-select" name="submissionType" onChange={getValue}>
+                <select className="form-select" name="submissionType" onChange={getValue}>
                     <option value="text">Text</option>
                     <option value="file">Files (i.e.: .pdf, .jpeg, .png)</option>
                 </select>

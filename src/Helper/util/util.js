@@ -142,3 +142,8 @@ export function memberRegStatus(status) {
             return "Not Registered";
     }
 }
+
+export function getFileName (filePath) {
+    const decodedPath = decodeURIComponent(filePath);
+    return decodedPath.split(/[\\/]/).pop();
+}
