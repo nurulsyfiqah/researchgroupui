@@ -43,7 +43,7 @@ export default function WebPage() {
 
     return (
         <div>
-            <ToastContainer/>
+             <ToastContainer />
             {
                 user ? <WebComponent account={account} user={user} /> : "loading..."
             }

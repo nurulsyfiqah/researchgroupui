@@ -1,4 +1,5 @@
 import React from 'react';
+import FileViewer from 'react-file-viewer-extended';
 
 export function replaceNullToEmptyString(value) {
     try {
@@ -146,4 +147,93 @@ export function memberRegStatus(status) {
 export function getFileName (filePath) {
     const decodedPath = decodeURIComponent(filePath);
     return decodedPath.split(/[\\/]/).pop();
+}
+
+export function image_placeholder () {
+    return "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox%3D'0 0 200 150'%2F%3E";
+}
+
+export function base64toFile(base64, name) {
+    if (base64 !== null && base64 !== "") {
+        var ext = name.split('.').pop();
+        // if (ext === "pdf") {
+        //     // console.log("data:application/"+ ext + ";base64,"  + base64)
+        //     // return "data:application/"+ ext + ";base64,"  + base64;
+        //     const data = atob(base64);
+        //     const blob = new Blob([data], {type: "application/"+ ext});
+        //     const url = URL.createObjectURL(blob);
+        //     return url;
+        // } else if (ext === "jpg" || ext === "png" || ext === "jpeg" || ext === "gif") {
+        //     return "data:image/"+ ext + ";base64,"  + base64;
+        // }
+        var byteCharacters = atob(base64);
+        var byteNumbers = new Array(byteCharacters.length);
+        for (var i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        var byteArray = new Uint8Array(byteNumbers);
+        // create a Blob from the byte array
+        var blob = new Blob([byteArray], { type: "application/"+ext+"" });
+        // create an object URL from the Blob
+        var url = URL.createObjectURL(blob);
+        return url;
+    } else {
+        return image_placeholder();
+    }
+}
+
+export function base64toImage(base64, name) {
+    if (base64 !== null && base64 !== "") {
+        var ext = name.split('.').pop();
+        return "data:image/"+ ext + ";base64,"  + base64;
+    } else {
+        return image_placeholder();
+    }
+}
+
+export function isObjectExist(obj, key) {
+    // check if object is not null and not undefined
+    if (obj !== null && obj !== undefined && obj !== "") {
+        // check if object has the key
+        if (obj.hasOwnProperty(key)) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+export function isObjectValueEqual(obj, key, value) {
+    // check if object has the key
+    if (obj.hasOwnProperty(key)) {
+        // check if object key value is equal to the value
+        if (obj[key] === value) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+export function isObjectExistAndNotEqual(obj, key, value) {
+    // check if object is not null and not undefined
+    if (obj !== null && obj !== undefined && obj !== "") {
+        // check if object has the key
+        if (obj.hasOwnProperty(key)) {
+            // check if object key value is not equal to the value
+            if (obj[key] !== value) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
 }

@@ -13,6 +13,7 @@ export default function SignUp () {
     const [passwordType, setPasswordType] = useState("password");
     const [confirmPasswordType, setConfirmPasswordType] = useState("password");
     const [signUpBtnDisabled, setSignUpBtnDisabled] = useState(false);
+    const [disableBtn, setDisableBtn] = useState(false);
     const [input, setInput] = useState({
         email: "",
         username: "",
@@ -136,13 +137,13 @@ export default function SignUp () {
                 url: `${base_url}/getaccountbyusername/${value.target.value}`,
             })
                 .then(function (response){
-                    console.log(response.data)
-                    console.log(response.data.username !== value.target.value)
-                    if (response.data.username === value.target.value) {
-                        setError(prev => ({
-                            ...prev,
-                            username: "The username is not available"
-                        }));
+                    if (response.data[0].hasOwnProperty("username")) {
+                        if (response.data[0].username.trim() === value.target.value.trim()) {
+                            setError(prev => ({
+                                ...prev,
+                                username: "The username is not available"
+                            }));
+                        }
                     }
                 }, (error) => {
                     console.log(error.text);

@@ -63,7 +63,7 @@ function TrackerPageComponent() {
 
     return (
         <div className="group_page">
-            <ToastContainer/>
+             <ToastContainer />
             <h2 className="page_title">Tracker</h2>
 
             <div className="d-grid gap-2 d-md-flex justify-content-md-start mb-3">
@@ -73,8 +73,8 @@ function TrackerPageComponent() {
             
             {
                 data.length > 0 ?
-                    data.map((d)=>(
-                        <TrackerList tracker={d} change={()=>{setChange(change+1)}}/>
+                    data.map((d, index)=>(
+                        <TrackerList tracker={d} change={()=>{setChange(change+1)}} index={index}/>
                     ))
                     :
                     <div className="card mt-4">
@@ -86,7 +86,7 @@ function TrackerPageComponent() {
 
             {/* <CreatePerTrackerModal hide={()=>setShowCreatePerModal(false)}/> */}
             {
-                showCreatePerModal ? <CreatePerTrackerModal hide={()=>setShowCreatePerModal(false)} action="create"/> : ''
+                showCreatePerModal ? <CreatePerTrackerModal hide={()=>setShowCreatePerModal(false)} action="create" change={()=>{setChange(change+1)}}/> : ''
             }
             {
                 showCreateGrpModal ? <CreateGrpTrackerModal  hide={()=>setShowCreateGrpModal(false)} action="create" change={()=>{setChange(change+1)}} group={userGroup} /> : ''

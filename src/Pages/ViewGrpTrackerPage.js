@@ -5,13 +5,16 @@ import moment from "moment";
 import classNames from "classnames";
 import axios from "axios";
 import parse from 'html-react-parser';
+import _ from 'lodash';
+import FileViewer from 'react-file-viewer-extended';
 import {ToastContainer, toast} from "react-toastify";
 import {useParams } from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react';
 import { ReactSession } from "react-client-session";
 import {base_url} from "../Service/serviceapi";
-import { getFileName } from "../Helper/util/util";
+import { getFileName, isObjectExist, base64toFile} from "../Helper/util/util";
 import { FaTrashAlt as TrashIcon } from "react-icons/fa";
+
 
 
 export default function ViewGrpTrackerPage() {
@@ -71,8 +74,10 @@ function ViewGrpTrackerComponent() {
     let [showSubmittedText, setShowSubmittedText] = useState(false);
     let [showFileContainer, setShowFileContainer] = useState(false);
     let [showSubmittedFile, setShowSubmittedFile] = useState(false);
+    let [cancelBtn, setCancelBtn] = useState(false);
+    let [submitBtn, setSubmitBtn] = useState(false);
+    let [editBtn,setEditBtn] = useState(false);
     let [files, setFiles] = useState([]);
-
 
     const [num, setNum] = useState(0)
     const [deno, setDeno] = useState(1)
@@ -88,7 +93,12 @@ function ViewGrpTrackerComponent() {
         }).then((response)=>{
             console.log(response.data)
             setTracker(response.data)
-            response.data.submittedTasks !== null ? setSubmission(getUserSubmittedTasks(response.data)) : []
+
+            let submittedTasks = getUserSubmittedTasks(response.data);
+            if (isObjectExist(submittedTasks, "text")) {
+                setSubmission(submittedTasks)
+            }
+            // setSubmission(getUserSubmittedTasks(response.data))
             response.data.submittedTasks !== null ? setNum(response.data.submittedTasks.length) : setNum(0)
             getGroupByTrackerId(response.data.groupId)
             setGroupSubmissionDetails(response.data.submittedTasks)
@@ -116,35 +126,45 @@ function ViewGrpTrackerComponent() {
     
     const getUserSubmittedTasks = (tracker) => {
         let subTasks = tracker.submittedTasks;
-        let obj = subTasks.find(o => o.userId === user.id);
-        if (tracker.submissionType == "text" && obj.hasOwnProperty("text")) {
-            if (obj.text == "" || obj.text == null) {
-                setShowTextContainer(true)
-                setShowFileContainer(false)
-            } else {
-                setShowSubmittedText(true)
-                setShowSubmittedFile(false)
-            }
-        } 
+        let obj = subTasks?.find(o => o.userId === user.id);
 
-        if (tracker.submissionType == "file" && obj.hasOwnProperty("file")) {
-            if (obj.file == [] && obj.file == null) {
-                setShowFileContainer(true)
-                setShowTextContainer(false)
+        if (isObjectExist(tracker, "submissionType") && tracker.submissionType === "text") {
+            // if member submission not exist 
+            if (isObjectExist(obj, "text")) {
+                // submission exist and not empty
+                if (obj.text !== null && obj.text !== "") {
+                    setShowSubmittedText(true)
+                    setEditBtn(true)
+                } else {
+                    setShowTextContainer(true)
+                    setSubmitBtn(true)
+                }
             } else {
-                setShowSubmittedFile(true)
-                setShowSubmittedText(false)
+                setShowTextContainer(true)
+                setSubmitBtn(true)
             }
+        } else {
         }
 
-        console.log(obj)
-        console.log(tracker.submissionType == "text" && obj.hasOwnProperty("text"))
-        console.log(tracker.submissionType == "file" && obj.hasOwnProperty("file"))
+        if (isObjectExist(tracker, "submissionType") && tracker.submissionType === "file") {
+            if((isObjectExist(obj, "file"))) {
+                if(obj.file.length > 0 && obj.file !== null) {
+                    setShowSubmittedFile(true)
+                    setEditBtn(true)
+                } else {
+                    setShowFileContainer(true)
+                    setSubmitBtn(true)
+                }                
+            } else {
+                setShowFileContainer(true)
+                setSubmitBtn(true)
+            }
+        }
+                                                                             
         return obj;
     }
 
     useEffect(()=>{
-        console.log("useEffect")
         getDataFromServer();
     },[counter])
 
@@ -182,6 +202,53 @@ function ViewGrpTrackerComponent() {
                 sort: true,
             }
         },
+        {   name: "file",
+            label: "Material", 
+            options: {
+            customBodyRender: (value, tableMeta, updateValue) => {
+                console.log(value)
+                // file submission
+                if (value !== null && value !== undefined && value.length > 0) {
+                    if (value.length > 0 && value[0].hasOwnProperty("fileBinary")) {
+                        return (
+                            <ul>
+                                {value?.map((item, index) => {
+                                    return <li key={index}><a href={base64toFile(item.fileBinary.data, item.filename)} target="_blank">{item.filename}</a></li>
+                                })}
+                            </ul>
+                            );
+                    } else {
+                        // text submission
+                        return (
+                            <div>
+                                <div className="btn btn-sm btn_dark_normal" data-bs-toggle="modal" data-bs-target="#exampleModal">View</div>
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Submission</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                           { parse(value)}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-sm btn_dark_normal">Save changes</button>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                            </div>
+                        );
+                    }
+                    
+                  } 
+                }
+                
+            }
+          }
+        ,
         {
             name: "memberId",
             label: "Member ID",
@@ -219,7 +286,6 @@ function ViewGrpTrackerComponent() {
     const handleFileChange = (e) => {
         const files = e.target.files;
         setSubmissionFile(files);
-        console.log(files)
     }
 
     const removeFile=(index) => {
@@ -229,23 +295,34 @@ function ViewGrpTrackerComponent() {
     }
 
     const submitHandler=()=>{
-        
         var submissionText = editorRef.current ? editorRef.current.getContent() : "";
         submission.text = submissionText;
         submission.submittedTime = moment(new Date()).format("YYYY-MM-DDTHH:mm:ssZ");
         tracker.submittedTasks = [submission];
         let formdata = new FormData();
+        
         formdata.append("trackerId", tracker.id);
         formdata.append("submission", JSON.stringify(submission));
-        // formdata.append("file", submissionFile);
-        
+
+        // new file
         if (submissionFile.length > 0) {
             for(const files of submissionFile) {
                 formdata.append('files', files);
             }
         } 
-        console.log(submissionFile)
+        if (files.length > 0) {
+            formdata.append('binaryFiles', JSON.stringify(files))
+        }
+        
+        // old file (base64)
+        // if (files.length > 0) {
+        //     for (const file of files) {
+        //         formdata.append('binaryFiles', file.filename);
+        //     }
+        // }
 
+        // remove file from submission
+        submission.file = [];
         console.log([...formdata])
         axios({
             method: 'POST',
@@ -256,46 +333,71 @@ function ViewGrpTrackerComponent() {
                 'Access-Control-Allow-Origin': '*',
             }
         }).then(function (response) {
+            
+            if (tracker.submissionType === "text") {
+                setShowTextContainer(false)
+                setShowSubmittedText(true)
+            } else if (tracker.submissionType === "file") {
+                setShowFileContainer(false)
+                setShowSubmittedFile(true)
+            }
+            setCancelBtn(false)
+            setEditBtn(true)
+            setSubmitBtn(false)
             toast.success("Submission Successful", {autoClose:1500, hideProgressBar:true})
             setCounter(counter+1)
-            
         }, (error)=>{
             console.log(error)
             toast.error("Submission Failed", {autoClose:1500, hideProgressBar:true})
         })
     }
 
-    const membersSubmissionStat = (groupSubmission) => {
+    
+    const membersSubmissionStat = (groupSubmission, submissionType) => {
         let data = [];
         groupMembers?.map((member) => {
             groupSubmission?.map((submission) => {
-                if (member.memberId === submission.userId) {
-                    let obj = {
-                        memberName: member.memberName !== "" ?  member.memberName : "Not registered yet",
-                        submission: (submission.text !== "" || submission.file.length !== 0) ? "Submitted" : "Not Submitted",
-                        date: formatDateUTC(submission.submittedTime) ,
-                        memberId: member.memberId,
-                        memberEmail: member.memberEmail
+                console.log(submission)
+                if (member.memberId !== user.id) {
+                    if (member.memberId === submission.userId && member.memberId !== user.id) {
+                        let obj = {
+                            memberName: member.memberName !== "" ?  member.memberName : "Not registered yet",
+                            submission: (submission.text !== "" || submission.file.length !== 0) ? "Submitted" : "Not Submitted",
+                            date: formatDateUTC(submission.submittedTime) ,
+                            memberId: member.memberId,
+                            memberEmail: member.memberEmail,
+                            file: submissionType === "file" ? (submission.userId == member.memberId ? submission.file : "") : (submission.userId == member.memberId ? submission.text : ""),
+                            text: submission.userId == member.memberId ? submission.text : "",
+                            type: submissionType
+                        }
+                        data.push(obj)
                     }
-                    data.push(obj)
-                }
-                else {
-                    let obj = {
-                        memberName: member.memberName !== "" ?  member.memberName : "Not registered yet",
-                        submission: "Not Submitted",
-                        date: "-",
-                        memberId: member.memberId,
-                        memberEmail: member.memberEmail
+                    else {
+                        let obj = {
+                            memberName: member.memberName !== "" ?  member.memberName : "Not registered yet",
+                            submission: "Not Submitted",
+                            date: "-",
+                            memberId: member.memberId,
+                            memberEmail: member.memberEmail,
+                            file: submissionType === "file" ? (submission.userId == member.memberId ? submission.file : "") : (submission.userId == member.memberId ? submission.text : ""),
+                            text: submission.userId == member.memberId ? submission.text : "",
+                            type: submissionType
+                            
+                        }
+                        data.push(obj)
                     }
-                    data.push(obj)
                 }
             })
         })
-       
+        console.log(data)
         return data;
     }
 
     const editSubmitted = () => {
+        setEditBtn(false)
+        setCancelBtn(true)
+        setSubmitBtn(true)
+        setFiles(submission.file)
         if (tracker.submissionType == "text") {
             setShowTextContainer(true)
             setShowSubmittedText(false)
@@ -305,11 +407,12 @@ function ViewGrpTrackerComponent() {
             setShowFileContainer(true)
             setShowSubmittedFile(false)
         }
-        // setShowTextContainer(true);
-        // setShowSubmittedText(false);
     }
 
     const cancelEdittingSubmittedText = () => {
+        setCancelBtn(false)
+        setSubmitBtn(false)
+        setEditBtn(true)
         if (tracker.submissionType == "text") {
             setShowTextContainer(false);
             setShowSubmittedText(true);
@@ -323,10 +426,11 @@ function ViewGrpTrackerComponent() {
         
     }
 
-    membersSubmissionStat(groupSubmissionDetails);
+    // membersSubmissionStat(groupSubmissionDetails);
+
     return (
         <div className="group_page">
-            <ToastContainer />
+             <ToastContainer />
             <div className="d-flex justify-content-between">
                 <div>
                     <h2 className="page_title">{tracker.title}</h2>
@@ -349,14 +453,14 @@ function ViewGrpTrackerComponent() {
                             <div className="progress-bar" role="progressbar"  style={{width: `${calculatePercentage(num, deno)}%`}}  aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
+                    <p className="card-text">{ tracker.details }</p>
                 </div>
                 <hr/>
                 <div className="border mx-auto my-2 p-2">
                     <h5 className="fw-bold">Submission Status</h5>
                     
                     <MUIDataTable
-                        title={"Task Submission Status"}
-                        data={membersSubmissionStat(groupSubmissionDetails)}
+                        data={membersSubmissionStat(groupSubmissionDetails, tracker.submissionType)}
                         columns={columns}
                         options={options}
                     />
@@ -399,7 +503,7 @@ function ViewGrpTrackerComponent() {
                             { files.length > 0 ? files.map((file, index) => {
                                 return (
                                     <div className="d-flex justify-content-between my-2" key={index}>
-                                        <div>{getFileName(file)}</div>
+                                        <div>{file.filename}</div>
                                         <div>
                                             <button type="button" className="btn btn-danger btn-sm" onClick={() => removeFile(file)}><TrashIcon/></button>
                                         </div>
@@ -414,7 +518,7 @@ function ViewGrpTrackerComponent() {
                             <Editor
                                     apiKey='x7k4pqsvh2rl4d7d9unpa60781ojvrfvyhzpiqduu29dbfm1'
                                     onInit={(evt, editor) => editorRef.current = editor}
-                                    initialValue={ submission !== null ? submission.hasOwnProperty('text') ? submission.text : '' : ''}
+                                    initialValue={ submission ? submission.hasOwnProperty('text') ? submission.text : '' : ''  }
                                     init={{
                                         height: 300,
                                         menubar: false,
@@ -440,29 +544,30 @@ function ViewGrpTrackerComponent() {
                      <div className="submitted_task_container">
                      { tracker.submissionType === 'file' ?
                         <div className={`my-3 ${showSubmittedFile ? "" : "d-none"}`}>
-                            { submission !== null ? submission.hasOwnProperty('file') ? submission.file.map((file, index) => {
+                            { showSubmittedFile ?  submission.file?.map((file, index) => {
+                                // console.log(base64toFile(file.fileBinary.data,file.filename))
                                 return (
                                     <div>
-                                        <a href={file} download>-- {getFileName(file)}</a>
+                                        <a href={ file.fileBinary.data ? base64toFile(file.fileBinary.data,file.filename) : ''} download>-- {file.filename}</a>
                                     </div>
                                 )
-                                }) : '' : ''
+                                }) : ''
                              }
                         </div>
                         : 
                         <div className={`my-1 ${showSubmittedText ? "" : "d-none"}`}>
                             <div className="submitted_text">
-                                    { submission !== null ? submission.hasOwnProperty('text') ? parse(submission.text) : '' : ''}
+                                    { showSubmittedText?  parse(submission.text) : '' }
                             </div>
                         </div>
                    /** End of Member submisssion Section */  }
                      </div>
                    {/* End of Submitted Task Section */}
-                   <div className={`d-flex justify-content-md-end my-2 ${showFileContainer || showTextContainer ? "" : "d-none" }`}  >
-                        <button type="button" className={`btn btn-sm btn-secondary me-md-2 ${(submission.text !== null && submission.text !== "") || submission.file !== null ? "" : "d-none"}`} onClick={cancelEdittingSubmittedText}>Cancel</button>
-                        <button type="button" className="btn btn-sm btn_dark" onClick={submitHandler}>Submit</button>
+                   <div className={`d-flex justify-content-md-end my-2`}  >
+                        <button type="button" className={`btn btn-sm btn-secondary me-md-2 ${ cancelBtn ? "" : "d-none" }`} onClick={cancelEdittingSubmittedText}>Cancel</button>
+                        <button type="button" className={`btn btn-sm btn_dark ${ submitBtn ? "" : "d-none" }`} onClick={submitHandler}>Submit</button>
                     </div>
-                    <div className={`d-flex justify-content-md-end my-2 ${showSubmittedFile || showSubmittedText ? "" : "d-none" }`}>
+                    <div className={`d-flex justify-content-md-end my-2 ${ editBtn ? "" : "d-none" }`}>
                         <button type="button" className="btn btn-sm btn_dark" onClick={editSubmitted}>Edit</button>
                     </div>
                 </div>

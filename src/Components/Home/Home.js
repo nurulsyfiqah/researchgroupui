@@ -6,10 +6,10 @@ import { SocialIcon } from 'react-social-icons';
 import {UploadImageModal, EditSocialLinkModal, EditDomainModal, EditInfoModal, EditAboutModal, AddAffiliationModal ,EditAffiliationModal} from "./HomeModal"
 import {base_url, upload_url} from "../../Service/serviceapi";
 import {replaceNullToEmptyString} from "../../Helper/util/util";
+import { image_placeholder,base64toFile, base64toImage} from '../../Helper/util/util';
 import moment from 'moment';
 import axios from "axios";
 import ui_url from '../../Service/serviceui';
-import Placeholder from '../../Assets/Images/image-placeholder.jpg'
 
 export default function Home() {
 
@@ -17,7 +17,7 @@ export default function Home() {
     const [socialLinkModal, setSocialLinkModal] = useState(false)
     const [domainModal, setDomainModal] = useState(false)
     const [infoModal, setInfoModal] = useState(false)
-    const [aboutModal, setAboutModal] = useState(false)
+    const [aboutModal, setAboutModal] = useState("")
     const [addAffiliationModal, setAddAffiliationModal] = useState(false)
     const [affiliationModal, setAffiliationModal] = useState(false)
     const [user, setUser] = useState(ReactSession.get("user"));
@@ -25,7 +25,7 @@ export default function Home() {
     const [change, setChange] =useState(0);
     const [affiliation, setAffiliation] = useState([]);
     const [affIndex, setAffIndex] = useState(0);
-
+    
     useEffect(() => {
         const acc = ReactSession.get("account");
         // console.log(acc)
@@ -41,7 +41,7 @@ export default function Home() {
         console.log(user)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[change]);
-
+    console.log(user)
     const showImageModal = () => {
         return setImageModal(true)
     }
@@ -74,22 +74,6 @@ export default function Home() {
         return setAddAffiliationModal(true)
     }
 
-    const replaceURL=(url)=>{
-        console.log(url)
-        if (url === "" || url === undefined) {
-            return Placeholder
-        } else {
-            url = url.replace("C:\\Users\\user\\", "http://127.0.0.1:8081/")
-            // var PREFIX = "C:\\Users\\user\\";
-            // if (url.startsWith(PREFIX)) {
-            // // PREFIX is exactly at the beginning
-            // url = url.slice(PREFIX.length);
-            // }
-            console.log(url)
-            return url
-        }
-    }
-
     const previewWebsite = () => {
         return window.open(`${ui_url}/${account.username}`, '_blank');
     }
@@ -104,7 +88,7 @@ export default function Home() {
                         <EditIcon className="icon_dark" onClick={() =>showImageModal()}/>
                     </div>
                     {
-                         (user.image !== null ) ? <img src={`${upload_url}${user.image}`}  style={{overflow: "hidden", height: "250px", width: "auto", objectFit: "cover"}} className="img-fluid mx-auto d-block" alt="placeholder"/> : <img src={Placeholder} className="img-fluid mx-auto d-block" alt="placeholder"/>
+                         (user.image.length > 0 ) ? <img src={base64toImage(user.imageBinary.data, user.image)}  style={{overflow: "hidden", height: "250px", width: "auto", objectFit: "cover"}} className="img-fluid mx-auto d-block" alt="placeholder"/> : <img src={image_placeholder()} className="img-fluid mx-auto d-block" alt="placeholder"/>
                     }
                     
                 </div>

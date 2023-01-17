@@ -14,7 +14,7 @@ export default function ViewPublicationPage() {
 function ViewPublicationPageComponent() {
     return (
         <div className="">
-            <ToastContainer/>
+             <ToastContainer />
             <ViewPublication />
         </div>
     )

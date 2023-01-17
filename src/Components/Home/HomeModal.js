@@ -37,8 +37,9 @@ export function UploadImageModal({data, hide, change}) {
         console.log(formData)
         try {
             axios({
-                method: 'put',
-                url: `${base_url}/user/uploadimage`,
+                method: 'POST',
+                // url: `${base_url}/user/uploadimage`,
+                url: `${base_url}/user/image/add`,
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -46,7 +47,7 @@ export function UploadImageModal({data, hide, change}) {
               }).then((response)=>{
                 hide()
                 change()
-                toast.success("Image uploaded successfully", {autoClose:1500, hideProgressBar:true});
+                toast.success("Image uploaded successfully", {autoClose:1500, hideProgressBar:true,  transition: Slide});
               });
             
             

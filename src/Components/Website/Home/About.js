@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import SubscriptionModal from '../Subscription/SubscriptionModal';
-import Placeholder from '../../../Assets/Images/image-placeholder.jpg'
 import axios from 'axios';
 import { SocialIcon } from 'react-social-icons';
 import { base_url, upload_url } from '../../../Service/serviceapi';
+import { image_placeholder } from '../../../Helper/util/util';
 
 export default function About({account, user}) {
 
@@ -70,7 +70,7 @@ export default function About({account, user}) {
                 <div className="col-md-3 mb-1">
                 <div className="">
                     <img
-                        src= {user.image !== "" ? `${upload_url}${user.image}` : Placeholder}
+                        src= {user.image !== "" ? `${upload_url}${user.image}` : image_placeholder()}
                         alt="user_image"
                         className="img-fluid mx-auto d-inline-block align-text-top my-1 nav_logo d-block"
                         style={{overflow: "hidden", height: "190px", width: "150px", objectFit: "cover"}}

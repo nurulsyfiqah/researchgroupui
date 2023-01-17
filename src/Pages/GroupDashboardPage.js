@@ -58,7 +58,7 @@ function GroupDashboardPageComponent() {
 
     return (
         <div className="group_page container">
-            <ToastContainer hideProgressBar autoClose={1500}/>
+            <ToastContainer hideProgressBar autoClose={1500}    />
             <h1 className="page_title">{ group.name }</h1>
             <p>{ group.description }</p>
             <nav>

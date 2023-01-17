@@ -8,7 +8,7 @@ export default function ForgotPasswordPage() {
     return (
         <div className="d-flex flex-column justify-content-between">
             <div>
-                <ToastContainer />
+                 <ToastContainer  />
                 <BasicHeader />
                 <ForgotPassword />
             </div>

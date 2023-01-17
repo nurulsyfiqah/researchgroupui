@@ -82,6 +82,9 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
 
     const submit = () => { 
         input.subTask = subtasks;
+        if (input.submissionType === '') {
+            input.submissionType = 'text';
+        }
         console.log(input)
 
         if (action === "create") {
@@ -221,7 +224,7 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
             </div>
             <div className="my-2 input-group-sm">
                 <label className="fw-bold">Type of Submission</label>
-                <select className="form-select" name="submissionType" onChange={getValue}>
+                <select className="form-select" name="submissionType" onChange={getValue} defaultValue="text">
                     <option value="text">Text</option>
                     <option value="file">Files (i.e.: .pdf, .jpeg, .png)</option>
                 </select>

@@ -171,7 +171,7 @@ export default function CreatePerTrackerModal({data, hide, change, action}) {
                 {
                     input.subTask.length > 0 ?
                         input.subTask.map((task, index) =>(
-                            <div className="row justify-content-between">
+                            <div className="row justify-content-between" key={`sub_${index}`}>
                                 <div key={index} className="col-8"> { removeAfterColon(task) } </div>
                                 <div className="col-2"><div className="float-end" type="button" onClick={() => removeSubtask(index)}> <BsXLg/> </div></div>
                             </div>

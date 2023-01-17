@@ -8,13 +8,14 @@ import moment from 'moment'
 import CreateGrpTrackerModal from "./CreateGrpTrackerModal";
 import CreatePerTrackerModal from "./CreatePerTrackerModal";
 
-export default function TrackerList({tracker, change}) {
+export default function TrackerList({tracker, change, index}) {
     const account = ReactSession.get("account");
     const user = ReactSession.get("user");
     const [modal, setModal] = useState(false);
     const [personalModal, setPersonalModal] = useState(false);
     const [userGroup, setUserGroup] = useState([]);
     const [data, setData] = useState([]);
+    const [subtask, setSubtask] = useState(tracker.subTask)
 
     const getData = (e) => {
         if (e.target.value === "personal") {
@@ -40,8 +41,6 @@ export default function TrackerList({tracker, change}) {
         response: [],
       });
     
-    const [subtask, setSubtask] = useState([])
-
     const removeSubtask = (index) => {
         // const list = [...subtasks];
         // const list2 = [...subtasksTemp];
@@ -52,24 +51,12 @@ export default function TrackerList({tracker, change}) {
         // input.subTask = list2;
     };
 
-    const handleChange = (e) => {
+    const handleChkChange = (e) => {
         // Destructuring
-        const { value, checked} = e.target;
+        // const { value, checked} = e.target;
         const index = e.target.getAttribute('index');
         const taskid = e.target.getAttribute('taskid');
-        const subtasks  = e.target.getAttribute('allvalue');
-        const subtaskArr = subtasks.split(",");
-        console.log(subtaskArr)
-        setSubtask(subtaskArr);
-        console.log(subtask)
-        // setSubtask(task => {
-        //     console.log(task)
-        //     const modifiedValue = subtasks.split(",");
-        //     console.log(modifiedValue);
-        //     return modifiedValue;
-        // });
 
-        
         let input = {
             id: taskid,
             userId: "",
@@ -81,35 +68,43 @@ export default function TrackerList({tracker, change}) {
             subTask: [],
             startDate: "",
             endDate: "",
-        };
-        // console.log(`${value} is ${checked}`);
-         
-        // Case 1 : The user checks the box
+        };      
+        
+        const { value } = e.target;
+        
+        console.log(subtask)
 
-        // if (checked) {
-        //     const list = [...subtask];
-        //     const str = value.split(':')[0]
-        //     list.splice(index, 1, `${str}:1`);
-        //     setSubtask(list)
-        //     console.log(subtask)
-        // }
-        // // Case 2  : The user unchecks the box
-        // else {
-        //     const list = [...subtask];
-        //     const str = value.split(':')[0]
-        //     list.splice(index, 1, `${str}:0`);
-        //     setSubtask(list)
-        //     console.log(subtask)
-        // }
-        // axios({
-        //     method: 'PUT',
-        //     url: `${base_url}/tracker/updatetask`,
-        //     data: input,
-        // }).then(function(response) {
-        //     toast.success("Successfully update the task", {autoClose: 1500,hideProgressBar: true})
-        // }, (error) => {
-        //     toast.error("Error updating the task", {autoClose: 1500,hideProgressBar: true})
-        // })
+        let newSubtask = [...subtask];
+        if (e.target.checked) {
+            newSubtask = newSubtask.map(item => {
+                console.log(item)
+                if (item.startsWith(value)) {
+                    return `${value}:1`;
+                }
+                return item;
+            });
+        } else {
+            newSubtask = newSubtask.map(item => {
+                if (item.startsWith(value)) {
+                    return `${value}:0`;
+                }
+                return item;
+            });
+        }
+        setSubtask(newSubtask);
+        console.log(newSubtask);
+        input.subTask = newSubtask;
+        console.log(input);
+
+        axios({
+            method: 'PUT',
+            url: `${base_url}/tracker/personal/update`,
+            data: input,
+        }).then(function(response) {
+            toast.success("Successfully update the task", {autoClose: 1500,hideProgressBar: true})
+        }, (error) => {
+            toast.error("Error updating the task", {autoClose: 1500,hideProgressBar: true})
+        })
 
       };
 
@@ -132,7 +127,7 @@ export default function TrackerList({tracker, change}) {
     // })
 
     return (
-        <div key={tracker.id}>
+        <div key={`tr_${index}`}>
         { /* Group Tracker */ tracker.type === "Group" || tracker.type === "group" ? 
             <div className="card my-2" key={tracker.id}>
                 <div className="card-body">
@@ -164,12 +159,19 @@ export default function TrackerList({tracker, change}) {
                         tracker.subTask.map((task, index) => {
                             let splitTask = task.split(":");
                             let checkedStatus = splitTask[1] === "1" ? true : "";
+                            const isChecked = subtask.find(item => item.startsWith(task))?.endsWith('1');
+                            console.log(isChecked)
                             return (
                             <div className="form-check" key={index}>
-                                <input className="form-check-input" type="checkbox" name="languages" defaultValue={task} defaultChecked={checkedStatus} id={`task_${index}_${splitTask[0]}`} onChange={handleChange} taskid={tracker.id} allvalue={tracker.subTask} index={index}/>
-                                <label className="form-check-label" htmlFor={`task_${index}_${splitTask[0]}`}>
-                                    {splitTask[0]}
-                                </label>
+                                 <input
+                                    className="form-check-input"        
+                                    type="checkbox"
+                                    value={splitTask[0]}
+                                    checked={isChecked}
+                                    onChange={handleChkChange}
+                                    taskid={tracker.id}
+                                />
+                                <label className={isChecked ? 'text-decoration-line-through' : ''}>{splitTask[0]}</label>
                             </div>
                         )
                         })

@@ -135,7 +135,7 @@ export default function EditPostBody() {
 
     return (
         <div className="p-3">
-            <ToastContainer autoClose={1000}/>
+            <ToastContainer autoClose={1000}    />
             <div className="row title-section mb-2">
                 <div className="col-md-8 form-floating mb-3">
                     <input type="text" className="form-control post-title-input" id="title" placeholder="Title" name="title" onChange={setTitleHandler} value={title}/>

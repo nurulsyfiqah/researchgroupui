@@ -9,6 +9,7 @@ import BlogPostsList from "../Components/Blog/BlogPostsList";
 import {base_url} from "../Service/serviceapi"
 import ui_url from "../Service/serviceui"
 import "../Assets/Styles/component.css"
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function BlogPage() {
     return (
@@ -72,7 +73,7 @@ function BlogComponent() {
 
     return (
         <div className="">
-            <ToastContainer/>
+             <ToastContainer />
             <h1 className="page_title mt-2">Blog</h1>
 
             <nav>

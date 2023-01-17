@@ -17,7 +17,7 @@ function ResearchPageComponent() {
 
     return (
         <div className="">
-            <ToastContainer/>
+             <ToastContainer />
             <Research />            
         </div>
     )
