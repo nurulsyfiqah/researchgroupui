@@ -15,18 +15,23 @@ export default function WebPage() {
     ReactSession.set("researcherusername", username);
 
     const getAccountFromServer=()=>{
-        axios.get(`${base_url}/getaccountbyusername/${username}`).then((response)=>{
-            setAccount(response.data);
-            getUserFromServer(response.data.id);
+        axios.get(`${base_url}/getaccountbyusername/${username}`)
+        .then((response)=>{
+            const data = response.data[0];
+            console.log(data)
+            setAccount(data);
+            getUserFromServer(data.id);
         }, (error)=>{
             toast.error("Something went wrong on Server")
         })
     }
 
     const getUserFromServer=(account_id)=>{
-        axios.get(`${base_url}/user/getuserbyaccountid/${account_id}`).then((response)=>{
+        axios.get(`${base_url}/user/getuserbyaccountid/${account_id}`)
+        .then((response)=>{
+            const data = response.data;
             setUser(response.data);
-            console.log(response.data)
+            console.log(data)
             ReactSession.set("researcher_id", response.data.id);
         }, (error)=>{
             toast.error("Something went wrong on Server")

@@ -156,16 +156,7 @@ export function image_placeholder () {
 export function base64toFile(base64, name) {
     if (base64 !== null && base64 !== "") {
         var ext = name.split('.').pop();
-        // if (ext === "pdf") {
-        //     // console.log("data:application/"+ ext + ";base64,"  + base64)
-        //     // return "data:application/"+ ext + ";base64,"  + base64;
-        //     const data = atob(base64);
-        //     const blob = new Blob([data], {type: "application/"+ ext});
-        //     const url = URL.createObjectURL(blob);
-        //     return url;
-        // } else if (ext === "jpg" || ext === "png" || ext === "jpeg" || ext === "gif") {
-        //     return "data:image/"+ ext + ";base64,"  + base64;
-        // }
+
         var byteCharacters = atob(base64);
         var byteNumbers = new Array(byteCharacters.length);
         for (var i = 0; i < byteCharacters.length; i++) {
