@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import {base_url} from "../../Service/serviceapi";
 import { ReactSession } from 'react-client-session';
+import { isObjectExist } from '../../Helper/util/util';
 
 export default function Research() {
 
@@ -21,24 +22,26 @@ export default function Research() {
 
     // get the scraped data from the google scholar
     const scrapePublication=()=>{   
-        axios({
+    console.log(isObjectExist(user, "googleScholarLink"))
+        if (isObjectExist(user, "googleScholarLink")) {axios({
             method: 'GET',
             url: `${base_url}/publication?gscLink=${user.googleScholarLink}&userId=${user.id}` ,
           })
             .then(function (response) {
                 const data = response.data; 
                 setPublications(data);
+                console.log(data)
             }, (error) => {
                 toast.error("Something went wrong on Server")
             })
+        }
+        
     }
 
     useEffect(() => {
         console.log("useEffect triggered")
-        if (user.googleScholarLink === null || user.googleScholarLink === "") {
-            scrapePublication()
-            setgsLink(true)
-        } 
+        scrapePublication()
+        setgsLink(true)
     }, []);
 
     function removePublication(id){

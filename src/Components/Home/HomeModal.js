@@ -4,7 +4,7 @@ import {toast} from "react-toastify";
 import {ReactSession} from "react-client-session";
 import {base_url} from "../../Service/serviceapi"
 import {BsXLg} from "react-icons/bs";
-import {replaceNullToEmptyString} from "../../Helper/util/util";
+import { isObjectExist } from "../../Helper/util/util";
 import Dropzone from 'react-dropzone-uploader'
 import moment from "moment";
 import axios from 'axios';
@@ -106,7 +106,7 @@ export function UploadImageModal({data, hide, change}) {
 }
 
 export function EditSocialLinkModal({data, hide, change}) {
-    const [socialList, setSocialList] = useState(replaceNullToEmptyString(data.socialMedia));
+    const [socialList, setSocialList] = useState(isObjectExist(data, "socialMedia") ? data.socialMedia : []);
     const [social, setSocial] = useState("");
     const [input, setInput] = useState(data);
 
@@ -195,8 +195,7 @@ export function EditSocialLinkModal({data, hide, change}) {
 }
 
 export function EditDomainModal({data, hide, change}) {
-    console.log(data)
-    const [domainList, setDomainList] = useState(data !== null ? data.domain : null);
+    const [domainList, setDomainList] = useState(isObjectExist(data, "domain") ? data.domain : []);
     const [domain, setDomain] = useState("");
     const [input, setInput] = useState(data);
 
@@ -285,8 +284,8 @@ export function EditDomainModal({data, hide, change}) {
 }
 
 export function EditInfoModal({data, account, hide, change}) {
-    const [acc, setAcc] = useState(replaceNullToEmptyString(account));
-    const [user, setUser] = useState(replaceNullToEmptyString(data));
+    const [acc, setAcc] = useState((account));
+    const [user, setUser] = useState((data));
     const [error, setError] = useState({
         username: '',
         email: '',
@@ -365,6 +364,7 @@ export function EditInfoModal({data, account, hide, change}) {
     const submitHandler =()=>{
         // update account
         console.log(acc)
+        console.log(user)
         axios({
             method: 'PUT',
             url: `${base_url}/account/update`,
@@ -373,8 +373,8 @@ export function EditInfoModal({data, account, hide, change}) {
             // update data in session
             ReactSession.set("account", acc);
             // update user
-
-            axios({
+            
+            axios({ 
                 method: 'PUT',
                 url: `${base_url}/user/update`,
                 data: user

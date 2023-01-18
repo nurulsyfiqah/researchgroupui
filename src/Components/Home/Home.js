@@ -5,7 +5,7 @@ import { FaGlobeAmericas as WebsiteIcon, FaEdit as EditIcon, FaPlus as AddIcon} 
 import { SocialIcon } from 'react-social-icons';
 import {UploadImageModal, EditSocialLinkModal, EditDomainModal, EditInfoModal, EditAboutModal, AddAffiliationModal ,EditAffiliationModal} from "./HomeModal"
 import {base_url, upload_url} from "../../Service/serviceapi";
-import {replaceNullToEmptyString} from "../../Helper/util/util";
+import {isObjectExist, replaceNullToEmptyString} from "../../Helper/util/util";
 import { image_placeholder,base64toFile, base64toImage} from '../../Helper/util/util';
 import moment from 'moment';
 import axios from "axios";
@@ -34,14 +34,21 @@ export default function Home() {
             method: 'GET',
             url: `${base_url}/user/getuserbyaccountid/${acc.id}`,
         }).then(function(response){
-            setUser(replaceNullToEmptyString(response.data))
-            ReactSession.set("user", response.data);
-            console.log(response.data)
+            const data = response.data;
+            // data = replaceNullToEmptyString(data);
+            // data.groupsId = replaceNullValToEmptyArray(data.groupsId);
+            // data.socialMedia = replaceNullValToEmptyArray(data.socialMedia);
+            // data.domain = replaceNullValToEmptyArray(data.domain);
+            setUser(data);
+            ReactSession.set("user", data);
+            console.log(data)
         })
         console.log(user)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[change]);
+
     console.log(user)
+
     const showImageModal = () => {
         return setImageModal(true)
     }
@@ -88,7 +95,7 @@ export default function Home() {
                         <EditIcon className="icon_dark" onClick={() =>showImageModal()}/>
                     </div>
                     {
-                         (user.image.length > 0 ) ? <img src={base64toImage(user.imageBinary.data, user.image)}  style={{overflow: "hidden", height: "250px", width: "auto", objectFit: "cover"}} className="img-fluid mx-auto d-block" alt="placeholder"/> : <img src={image_placeholder()} className="img-fluid mx-auto d-block" alt="placeholder"/>
+                         (isObjectExist(user,"image")) ? <img src={base64toImage(user.imageBinary.data, user.image)}  style={{overflow: "hidden", height: "250px", width: "auto", objectFit: "cover"}} className="img-fluid mx-auto d-block" alt="placeholder"/> : <img src={image_placeholder()} className="img-fluid mx-auto d-block" alt="placeholder"/>
                     }
                     
                 </div>
@@ -112,7 +119,7 @@ export default function Home() {
                     </div>
                     <div className="card-body">
                         {
-                            (user.socialMedia !== null) ? 
+                            (isObjectExist(user,"socialMedia")) ? 
                             user.socialMedia?.map((data, index)=>{
                                 return(
                                     <div className="my-1 text-truncate" key={index}>
@@ -137,7 +144,7 @@ export default function Home() {
                     <div className="card-body">
                         <h4>
                             {
-                                user.domain !== null > 0 ? user.domain?.map((data, index) =>
+                                isObjectExist(user,"domain") ? user.domain?.map((data, index) =>
                                     <span className="badge bg-secondary m-1 text-clamping-row" key={index}>{data}</span>
                                 ) : 'No domain added'
                             }
@@ -157,32 +164,33 @@ export default function Home() {
                     <div className="card-body">
                         <div className="row my-1">
                             <div className="col-md-4 fw-bold">Username</div>
-                            <div className="col-md-8">{account != null && account.hasOwnProperty("username") ? account.username : ""}</div>
+                            <div className="col-md-8">{ isObjectExist(account,"username")  ? account.username : ""}</div>
                         </div>
                         <div className="row my-1">
                             <div className="col-md-4 fw-bold">Published Name</div>
-                            <div className="col-md-8">{user != null && user.hasOwnProperty("publishedName") ? user.publishedName : ""}</div>
+                            <div className="col-md-8">{ isObjectExist(user,"publishedName") ? user.publishedName : ""}</div>
                         </div>
                         <div className="row my-1">
                             <div className="col-md-4 fw-bold">First Name</div>
-                            <div className="col-md-8">{user != null && user.hasOwnProperty("firstName") ? user.firstName: ""}</div>
+                            <div className="col-md-8">{ isObjectExist(user,"firstName") ? user.firstName: ""}</div>
                         </div>
                         <div className="row my-1">
                             <div className="col-md-4 fw-bold">Last Name</div>
-                            <div className="col-md-8">{user != null && user.hasOwnProperty("lastName") ? user.lastName : ""}</div>
+                            <div className="col-md-8">{ isObjectExist(user,"lastName") ? user.lastName : ""}</div>
                         </div>
                         <div className="row my-1">
                             <div className="col-md-4 fw-bold">Full Name</div>
-                            <div className="col-md-8">{user != null && user.hasOwnProperty("fullName") ? user.fullName : ""}</div>
+                            <div className="col-md-8">{ isObjectExist(user,"fullName") ? user.fullName : ""}</div>
                         </div>
                         <div className="row my-1">
                             <div className="col-md-4 fw-bold">Email</div>
-                            <div className="col-md-8">{account != null && account.hasOwnProperty("email") ? account.email : ""}</div>
+                            <div className="col-md-8">{ isObjectExist(account,"email")  ? account.email : ""}</div>
                         </div>
                         <div className="row my-1">
                             <div className="col-md-4 fw-bold">Google Scholar</div>
-                            <div className="col-md-8">{user != null && user.hasOwnProperty("googleScholarLink") ? user.googleScholarLink : ""}</div>
+                            <div className="col-md-8">{ isObjectExist(user,"googleScholarLink") ? user.googleScholarLink : "Please update your Google Scholar Profile Link"}</div>
                         </div>
+
                     </div>
                 </div>
                 {
@@ -194,7 +202,7 @@ export default function Home() {
                         <EditIcon className="icon_dark" onClick={() =>showAboutModal()} />
                     </div>
                     <div className="card-body">
-                        { user != null && user.hasOwnProperty("about") ? user.about : '' }
+                        { isObjectExist(user,"about") ? user.about : '' }
                     </div>
                 </div>
                 {
@@ -206,7 +214,7 @@ export default function Home() {
                         <AddIcon className="icon_dark" onClick={() =>showAddAffiliationModal()} />
                     </div>
                     {
-                        user.affiliation !== null ? 
+                        isObjectExist(user,"affiliation") ? 
                         user.affiliation?.map((data, index) => {
                             function formatDate(date) {
                                 //2022-06-20T11:10:12.000+00:00

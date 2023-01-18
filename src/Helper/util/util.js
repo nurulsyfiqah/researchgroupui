@@ -1,7 +1,7 @@
 import React from 'react';
 import FileViewer from 'react-file-viewer-extended';
 
-export function replaceNullToEmptyString(value) {
+export function replaceNullToEmptyArray(value) {
     try {
         Object.keys(value).forEach(function(key) {
             if(value[key] === null) {
@@ -12,10 +12,27 @@ export function replaceNullToEmptyString(value) {
     } catch(error) {
         return value;
     }
-        
-    
-
 }
+
+export function replaceNullToEmptyString(value) {
+    try {
+        Object.keys(value).forEach(function(key) {
+            if(value[key] === null) {
+                value[key] = "";
+            }
+        })
+        return value;
+    } catch(error) {
+        return value;
+    }
+}
+
+export function replaceNullValToEmptyArray(value) {
+    if(value === null) {
+        value = [];
+    }
+}
+
 
 export function addMaterialBtn(item, type, index){
     if(item !== null) {
