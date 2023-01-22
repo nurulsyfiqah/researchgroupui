@@ -25,7 +25,10 @@ export default function Research() {
     console.log(isObjectExist(user, "googleScholarLink"))
         if (isObjectExist(user, "googleScholarLink")) {axios({
             method: 'GET',
-            url: `${base_url}/publication?gscLink=${user.googleScholarLink}&userId=${user.id}` ,
+            url: `${base_url}/publication?gscLink=${user.googleScholarLink}&userId=${user.id}`, 
+            headers: {
+                'user-agent': 'chrome/109.0.5414.75'
+            }
           })
             .then(function (response) {
                 const data = response.data; 
@@ -40,8 +43,8 @@ export default function Research() {
 
     useEffect(() => {
         console.log("useEffect triggered")
-        // scrapePublication()
-        // setgsLink(true)
+        scrapePublication()
+        setgsLink(true)
     }, []);
 
     function removePublication(id){
