@@ -16,10 +16,6 @@ const base_url = "https://resgm.herokuapp.com"
 //     }
 // }
 
-// const upload_url = "http://localhost:8081/Documents/FYP workspace/upload/"
+const upload_url="http://localhost:8081/Documents/FYP workspace/upload/"
 
-// const base_url="http://localhost:8080"
-
-// const upload_url="http://localhost:8081/Documents/FYP workspace/upload/"
-
-export default base_url
+export {base_url, upload_url}
