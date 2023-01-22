@@ -1,12 +1,12 @@
 // const base_url = "http://localhost:8080"
 // const base_url = "https://resgm.herokuapp.com"
 
-let base_url;
-if (process.env.IS_HEROKU === 'true') {
-    base_url = "https://resgm.herokuapp.com"
-} else {
-    base_url =  "http://localhost:8080"
-}
+// let base_url;
+// if (process.env.IS_HEROKU === 'true') {
+//     base_url = "https://resgm.herokuapp.com"
+// } else {
+//     base_url =  "http://localhost:8080"
+// }
 
 function base_url() {
     if (process.env.IS_HEROKU === 'true') {
