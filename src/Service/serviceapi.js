@@ -8,6 +8,14 @@ if (process.env.IS_HEROKU === 'true') {
     base_url =  "http://localhost:8080"
 }
 
+function base_url() {
+    if (process.env.IS_HEROKU === 'true') {
+        return "https://resgm.herokuapp.com"
+    } else {
+        return "http://localhost:8080"
+    }
+}
+
 // const upload_url = "http://localhost:8081/Documents/FYP workspace/upload/"
 
 // const base_url="http://localhost:8080"
