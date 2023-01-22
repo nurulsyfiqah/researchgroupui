@@ -12,6 +12,7 @@ import ui_url from "../../Service/serviceui";
 
 export default function EditPostBody() {
     const account = ReactSession.get("account");
+    const user = ReactSession.get("user");
     const editorRef = useRef(null);
     const [title, setTitle] = useState("");
     const { blogId } = useParams();
@@ -33,13 +34,13 @@ export default function EditPostBody() {
 
     let params = {
         id: blogId,
-        userId: "",
+        userId: user.id,
         title: "",
         date:  moment().format(),
         status: 0,
         content: editorRef.current ? editorRef.current.getContent() : "",
         imagePath: "",
-        category: "testing",
+        category: "",
         keyword: [],
         commentOption: 0,
     }
@@ -87,7 +88,7 @@ export default function EditPostBody() {
     const savePost=() =>  {
         //setInput({...input, [input.content]: editorRef.current.getContent()});
         //params = input;
-        params.userId = account.id
+        params.userId = user.id
         params.title = title
         params.content = editorRef.current ? editorRef.current.getContent() : "";
         console.log(params)

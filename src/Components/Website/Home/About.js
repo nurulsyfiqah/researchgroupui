@@ -3,7 +3,7 @@ import SubscriptionModal from '../Subscription/SubscriptionModal';
 import axios from 'axios';
 import { SocialIcon } from 'react-social-icons';
 import { base_url, upload_url } from '../../../Service/serviceapi';
-import { image_placeholder, base64toImage } from '../../../Helper/util/util';
+import { image_placeholder, base64toImage, addMaterialBtn, isObjectExist, addDetailList } from '../../../Helper/util/util';
 
 export default function About({account, user}) {
 
@@ -13,7 +13,7 @@ export default function About({account, user}) {
     const getHighlightedPublicationsFromServer = () => {
         axios({
             method: 'GET',
-            url: `${base_url}/publication/highlightedpublication/${user.id}`,
+            url: `${base_url}/publication/highlighted/${user.id}`,
         }).then((response) => {
             setHighlightedPublications(response.data);
         }, (error) => {
@@ -24,40 +24,6 @@ export default function About({account, user}) {
     useEffect(() => {
         getHighlightedPublicationsFromServer();
     }, [])
-   
-    const materialBtn=(item, type)=>{
-        if ((item !== null || item !== undefined || item !== "") && type === "file") {
-            var ext = item.split('.').pop();
-            if(ext === "pdf"){
-                return(
-                    <a href={`${item}`} target="_blank" rel="noreferrer" className="btn btn_dark btn-sm">PDF</a>
-                )
-            } else if(ext === "pptx" || ext === "ppt"){
-                return(
-                    <a href={`${item}`} target="_blank" rel="noreferrer" className="btn btn_dark btn-sm" download={true}>ppt</a>
-                )
-            } else if(ext === "docx" || ext === "doc"){
-                return(
-                    <a href={`${item}`} target="_blank" rel="noreferrer" className="btn btn_dark btn-sm" download={true}>doc</a>
-                )
-            } else if(ext === "xlsx" || ext === "xls"){
-                return(
-                    <a href={`${item}`} target="_blank" rel="noreferrer" className="btn btn_dark btn-sm" download={true}>xls</a>
-                )
-            } else if(ext === "png" || ext === "jpg" || ext === "jpeg"){
-                return(
-                    <a href={`${item}`} target="_blank" rel="noreferrer" className="btn btn_dark btn-sm" download={true}>img</a>
-                )
-            }
-
-        } else if ((item !== null || item !== undefined || item !== "") && type === "g_scholar") {
-            return(
-                <a href={`${item}`} target="_blank" rel="noreferrer" className="btn btn_dark btn-sm">Google Scholar</a>
-            )
-        } else {
-            return null
-        }
-    }
 
     const setSubModal=()=>{
         setShow(true);
@@ -116,9 +82,83 @@ export default function About({account, user}) {
                                             <h5 className="card-title">{item.title}</h5>
                                             <p className="card-text text-clamping">{item.pubAbstract}</p>
 
-                                            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
-                                                { materialBtn(item.filePath, "file") }
-                                                { materialBtn(item.link, "g_scholar") }
+                                            <div className="row">
+                                            {
+                                                isObjectExist(item, "additionalDetails") ? 
+                                                <div className="my-1 col-md-6">
+                                                    <div className="fw-bold">Details</div>
+                                                    <div className="">
+                                                        <ul>
+                                                        { addDetailList(item.additionalDetails) }
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                :
+                                                ""
+                                            }
+
+                                            { 
+                                                isObjectExist(item, "filePath") ? 
+                                                <div className="my-1 col-md-6">
+                                                    <div className="fw-bold">File</div>
+                                                    <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                                                        <ul>
+                                                        { addMaterialBtn(item.file, "file", item.filePath)}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            
+                                                : "" 
+                                            }
+
+                                            {
+                                                isObjectExist(item, "addAddFilePath")? 
+                                                <div className="my-1 col-md-6">
+                                                    <div className="fw-bold">Additional File(s)</div>
+                                                    <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                                                        <ul>
+                                                        { addMaterialBtn(item.addAddFilePath, "file") }
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                :
+                                                ""
+                                            }
+                                            
+                                            { 
+                                                isObjectExist(item, "link")? 
+                                                <div className="my-1 col-md-6">
+                                                    <div className="fw-bold">Link</div>
+                                                    <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                                                        <ul>{ addMaterialBtn(item.link, "g_scholar") }</ul>
+                                                    </div>
+                                                </div>
+                                                : ""
+                                            }
+
+                                            {
+                                                isObjectExist(item, "additionalLinks") ?
+                                                <div className="my-1 col-md-6">
+                                                    <div className="fw-bold">Additional Link(s)</div>
+                                                    <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                                                        <ul>{ addMaterialBtn(item.additionalLinks, "add_link") }</ul>
+                                                    
+                                                    </div>
+                                                </div>
+                                                :
+                                                ""
+                                            }
+                                            
+                                            { 
+                                                isObjectExist(item, "link") ? 
+                                                <div className="my-1 col-md-6">
+                                                    <div className="fw-bold">Link</div>
+                                                    <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                                                        <ul>{ addMaterialBtn(item.link, "g_scholar") }</ul>
+                                                    </div>
+                                                </div>
+                                                : ""
+                                            }
                                             </div>
                                         </div>
                                     </div>

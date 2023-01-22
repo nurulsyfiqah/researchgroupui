@@ -5,15 +5,18 @@ import axios from "axios";
 import { ReactSession } from 'react-client-session';
 import { ToastContainer, toast } from "react-toastify";
 import {base_url} from "../../Service/serviceapi"
+import { useParams } from "react-router-dom";
 
 export default function ArticleListPage() {
     const researcher_id = ReactSession.get("researcher_id");
     const [posts, setPosts] = useState([]);
     const user = ReactSession.get("user");
-    console.log(user);
-    const getArticleFromServer=()=>{
-        // axios.get(`${base_url}/blog/getpostsbyuserid?userId=${researcher_id}`).then((
-        axios.get(`${base_url}/blog/getpostsbyuserid?userId=63b7b81c9ab53d4a60ba7a1b`).then((
+    const { username } = useParams();
+
+    console.log(username);
+    const getArticleFromServer=(userid)=>{
+        axios.get(`${base_url}/blog/${researcher_id}`).then((
+        // axios.get(`${base_url}/blog/getpostsbyuserid?userId=63b7b81c9ab53d4a60ba7a1b`).then((
             response)=>{
             const data = response.data;
             console.log(data)
@@ -23,8 +26,25 @@ export default function ArticleListPage() {
         })
     }
 
+    const getUserByUsername = () => {
+        axios.get(`${base_url}/account/${username}`)
+        .then((response) => {
+            const data = response.data;
+            axios.get(`${base_url}/user/account/${data}`).then((
+                response)=>{
+                const data = response.data;
+                getArticleFromServer(data.id);
+            }, (error)=>{
+                toast.error("Something went wrong on Server")
+            })
+        }, (error) => {
+            toast.error("Something went wrong on Server")
+        })
+    }
+
     useEffect(()=>{
-        getArticleFromServer();
+        getUserByUsername();
+        // getArticleFromServer();
     },[])
 
     return (
@@ -39,7 +59,7 @@ export default function ArticleListPage() {
                             <ArticleList article={p}/>
                         ))
                         :
-                        <div class="card"><div class="card-body">There is no post published</div></div>
+                        <div className="card"><div className="card-body">There is no post published</div></div>
                 }
                 </div>
             </div>

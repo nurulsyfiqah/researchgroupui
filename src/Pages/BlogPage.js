@@ -41,6 +41,7 @@ function BlogComponent() {
     // When user clicks New Post, the data for the post will be sent to db, return post id
     const createPost=(e) => {
         e.preventDefault();
+        console.log(params)
         axios({
             method: 'POST',
             url: `${base_url}/blog/create`,
@@ -57,7 +58,7 @@ function BlogComponent() {
 
     const getPostsFromServer=()=>{
 
-        axios.get(`${base_url}/blog/getpostsbyuserid?userId=${account.id}`).then((
+        axios.get(`${base_url}/blog/all/${user.id}`).then((
             response)=>{
             const data = response.data;
             console.log(data)
@@ -95,7 +96,7 @@ function BlogComponent() {
 
                 <div className="tab-pane fade show active" id="nav-post" role="tabpanel"
                      aria-labelledby="nav-home-tab">
-                    <button className="btn btn-sm btn_dark mt-3 mb-2" onClick={ createPost } > <Link to="/blog/create" > New Post</Link></button>
+                    <button className="btn btn-sm btn_dark mt-3 mb-2" onClick={ createPost } > New Post</button>
                     {
                         posts.length > 0 ?
                             posts.map((post)=>(

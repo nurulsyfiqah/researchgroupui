@@ -6,13 +6,21 @@ import {BsXLg} from "react-icons/bs";
 import {base_url} from "../../Service/serviceapi";
 import { toast } from 'react-toastify';
 import { publicationTypeData} from '../../Data/PublicationType';
-import {isObjectExist } from "../../Helper/util/util";
+import {isObjectExist, base64toFile } from "../../Helper/util/util";
+import { FaTrashAlt as TrashIcon } from "react-icons/fa";
 
 export default function EditPublicationModal({publication, hide, change}) {
 
     let [authorList, setAuthorList] = useState( publication.authors !== null? publication.authors.split(","): []);
     const [author, setAuthor] = useState([]);
     const [input, setInput] = useState(publication);
+    const [uploadedAddFile, setUploadedAddFile] = useState(publication.addAddFilePath);
+    const [uploadedFile, setUploadedFile] = useState(input.file);
+    const [additionalFields, setAdditionalFields] = useState(input.additionalDetails)
+    const [additionalLinks, setAdditionalLinks] = useState(input.additionalLinks);
+    const [addFiles, setAddFiles] = useState(null);
+    const [file, setFile] = useState(null);
+
     console.log(input)
     // const [input, setInput] = useState({
     //     id: isObjectExist(publication, "id") ? publication.id : '' ,
@@ -80,7 +88,6 @@ export default function EditPublicationModal({publication, hide, change}) {
             name = actionMeta;
             value = selectedOptions;
         }
-        console.log(name + " - " + value)
 
         setInput(prevState => ({
             ...prevState,
@@ -91,7 +98,6 @@ export default function EditPublicationModal({publication, hide, change}) {
             document.querySelectorAll('div.details')
         );
         
-        console.log(allWithClass)
         allWithClass.forEach(element => {
             console.log(value==='Journal article')
             if (value==='Book'||value==='Book chapter'||value==='Book review'||value==='Dictionary entry'||value==='Encyclopedia entry'||value==='Edited book') {
@@ -178,7 +184,7 @@ export default function EditPublicationModal({publication, hide, change}) {
         return (
             <select className="form-select" name="day" id="day" onChange={getValue}>
                 <option value="">Day(Optional)</option>
-                {days.map(day => {
+                {days?.map(day => {
                     if (day === currentDay) {
                         return <option key={day} value={day} selected>{day}</option>
                     } else {
@@ -202,7 +208,7 @@ export default function EditPublicationModal({publication, hide, change}) {
         return (
             <select className="form-select" name="month" id="month" onChange={getValue}>
                 <option value="">Month(Optional)</option>
-                {months.map(month => {
+                {months?.map(month => {
                     if (month === currentMonth) {
                         return <option key={month} value={month} selected>{month}</option>
                     } else {
@@ -227,7 +233,7 @@ export default function EditPublicationModal({publication, hide, change}) {
         return (
             <select className="form-select" name="year" id="year" onChange={getValue}>
                 <option value="">Year(Required)</option>
-                {years.reverse().map(year => {
+                {years.reverse()?.map(year => {
                     if (year === currentYear) {
                         return <option key={year} value={year} selected>{year}</option>
                     } else {
@@ -239,11 +245,14 @@ export default function EditPublicationModal({publication, hide, change}) {
         )
     }
     // Additional Details 
-    const [additionalFields, setAdditionalFields] = useState(input.additionalDetails)
 
     const addDetails = () => {
         let newfield = { title: '', value: '' }
-        setAdditionalFields([...additionalFields, newfield])
+        if (additionalFields !== null) {
+            setAdditionalFields([...additionalFields, newfield])
+        } else {
+            setAdditionalFields([newfield])
+        }
     }
 
     const removeAdditionalField=(index) => {
@@ -262,12 +271,6 @@ export default function EditPublicationModal({publication, hide, change}) {
     // End of Additional Details
 
     // Additional File Section */
-    const [addFiles, setAddFiles] = useState(input.addAddFilePath);
-
-    const addFile = () => {
-        let newfield = { description: '', file: '' }
-        setAddFiles([...addFiles, newfield])
-    }
 
     const getAddFile = (e, index) => {
         const name = e.target.name;
@@ -281,16 +284,42 @@ export default function EditPublicationModal({publication, hide, change}) {
         const data = [...addFiles]; 
         data.splice(index, 1)
         setAddFiles(data)
-        
+    }
+
+    const removeUploadedAddFile=(index) => {
+        const data = [...uploadedAddFiles]; 
+        data.splice(index, 1)
+        setUploadedAddFiles(data)
+    }
+
+    const addFile = () => {
+        let newfield = { description: '', file: '' }
+        if (addFiles !== null) {
+            setAddFiles([...addFiles, newfield])
+        } else {
+            setAddFiles([newfield])
+        }
+    }
+
+    const handleFileChange=(e) => {
+        setFile(e.target.files[0])
+    }
+
+    const removeUploadedFile=() => {
+        setUploadedFile(null)
     }
     // End of Additional File Section */
 
     // Additional Link
-    const [additionalLinks, setAdditionalLinks] = useState(input.additionalLinks);
-    console.log(input.addAddFilePath);
+
     const addLink = () => {
-        let newfield = { title: '', url: '' }
-        setAdditionalLinks([...additionalLinks, newfield])
+        let newfield = { title: '', link: '' }
+        
+        if (additionalLinks !== null) {
+            setAdditionalLinks([...additionalLinks, newfield])
+        } else {
+            setAdditionalLinks([newfield])
+        }
     }
 
     const removeAddLink = (index) => {
@@ -310,33 +339,47 @@ export default function EditPublicationModal({publication, hide, change}) {
     function submit() {
         input.authors = authorList.toString();
         input.additionalDetails = additionalFields;
+        
         // input.addFilePath = addFiles;
-        console.log(input)
-
+        console.log(uploadedAddFile)
+        console.log(addFiles)
         const formData = new FormData();
-        formData.append('publication', input);
-        input.addFilePath = addFiles;
+        formData.append('publication', JSON.stringify(input));
+        if (file !== null) {
+            formData.append('file', file)
+        }
+
+        if (addFiles !== null) {
+            for(const file of addFiles) {
+                formData.append('files', file.file);
+                formData.append('description', file.description);
+            }
+        }
+
+        
+        // input.addAddFilePath = addFiles;
         input.additionalDetails = additionalFields;
         input.additionalLinks = additionalLinks;
         // formData.append('files',addFiles)
+        console.log(input)
+        console.log(uploadedAddFile)
         console.log([...formData])  
-          
 
-        // axios({
-        //     method: 'PUT',
-        //     url: `${base_url}/publication/editpublication`,
-        //     data: formData,
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data',
-        //         'Access-Control-Allow-Origin': '*'
-        //     }
-        // }).then(function(response) {
-        //     toast.success("Successfully updated publication", {autoClose: 1500,hideProgressBar: true})
-        //     change();
-        //     hide();
-        // }, (error) => {
-        //     toast.error("Error updating publication", {autoClose: 1500,hideProgressBar: true})
-        // })
+        axios({
+            method: 'PUT',
+            url: `${base_url}/publication/edit`,
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Access-Control-Allow-Origin': '*'
+            }
+        }).then(function(response) {
+            toast.success("Successfully updated publication", {autoClose: 1500,hideProgressBar: true})
+            change();
+            hide();
+        }, (error) => {
+            toast.error("Error updating publication", {autoClose: 1500,hideProgressBar: true})
+        })
 
     }
 
@@ -366,7 +409,7 @@ export default function EditPublicationModal({publication, hide, change}) {
                         <div className="author_list">
                             {
                                 authorList.length > 0 ?
-                                    authorList.map((author, index) =>(
+                                    authorList?.map((author, index) =>(
                                         <div className="row justify-content-between">
                                             <div key={index} className="col-8"> {author} </div>
                                             <div className="col-2"><div className="float-end" type="button" onClick={() => removeAuthor(index)}> <BsXLg/> </div></div>
@@ -463,42 +506,35 @@ export default function EditPublicationModal({publication, hide, change}) {
                             <input className="form-control my-1" id="custodion" name="custodion" onChange={getValue} />
                         </div>
 
-
-                        {/* <div className={classNames({ 'd-none': journalNameIsShown })}>
-                            <label className="my-1 fw-bold">Journal Name</label>
-                            <input className="form-control my-1" id="name" name="journal" defaultValue={ publication.journal } onChange={getValue} />
-                        </div>
-
-                    <div className="row">
-                        <div className={classNames('col',{ 'd-none': valueIsShown })}>
-                            <label className="my-1 fw-bold">Volume</label>
-                            <input className="form-control my-1" id="volume" name="volume" defaultValue={ publication.volume } onChange={getValue} />
-                        </div>
-                        <div className={classNames('col',{ 'd-none': issueIsShown })}>
-                            <label className="my-1 fw-bold">Issue</label>
-                            <input className="form-control my-1" id="issue" name="issue" defaultValue= { publication.issue } onChange={getValue} />
-                        </div>
-                        <div  className={classNames('col',{ 'd-none': pageIsShown })}>
-                            <label className="my-1 fw-bold">Page</label>
-                            <input className="form-control my-1" id="page" name="page" defaultValue={ publication.page } onChange={getValue} />
-                        </div>
-                    </div>
-
-                    <label className="my-1 fw-bold">DOI (Optional)</label>
-                    <input className="form-control my-1" id="doi" name="doi" onChange={getValue} defaultValue={ publication.doi }/> */}
+                        <label className="my-1 fw-bold">File</label>
+                        {   // display uploaded file
+                            uploadedFile !== null ? 
+                            <div className="my-1">
+                                <div className="d-flex justify-content-between my-2">
+                                    <div>{input.filePath}</div>
+                                    <div>
+                                        <button type="button" className="btn btn-danger btn-sm" onClick={() => removeUploadedFile()}><TrashIcon/></button>
+                                    </div>
+                                </div>
+                            </div>
+                            :
+                            <div class="input-group my-1">
+                                <input type="file" class="form-control" name="file" onChange={handleFileChange}/>
+                            </div>
+                        }
 
                     {/* Additional Details Section */}
                     <label className="my-1 fw-bold">Additional Details</label>
                     {
                     (additionalFields !== null && additionalFields !== undefined) ?
-                    additionalFields.map((input, index) => { 
+                    additionalFields?.map((input, index) => { 
                         return (
                             <div className="row" key={index}>
                                 <div className="col-5 my-1">
-                                    <input className="form-control" name='title' value={additionalFields[index].title} onChange={e => getAdditionalValue(e, index)}/>
+                                    <input className="form-control" name='title' value={additionalFields[index].title} placeholder="Title" onChange={e => getAdditionalValue(e, index)}/>
                                 </div>
                                 <div className="col-6 my-1">
-                                <input className="form-control"  name='value' value={additionalFields[index].value} onChange={e => getAdditionalValue(e, index)}/>
+                                <input className="form-control"  name='value' value={additionalFields[index].value} placeholder="Description" onChange={e => getAdditionalValue(e, index)}/>
                                 </div>
                                 <div className="col-1 my-1">
                                     <div className="float-end" type="button" onClick={() => removeAdditionalField(index)}> <BsXLg/> </div>
@@ -520,9 +556,9 @@ export default function EditPublicationModal({publication, hide, change}) {
                     {/* Additional File Section */}
                     <label className="my-1 fw-bold">Additional Files</label>
 
-                    {
-                    (addFiles !== null && addFiles !== null) ?
-                    addFiles.map((file, index) => {
+                    { // upload a new additional files
+                    (addFiles !== null && addFiles !== undefined) ?
+                    addFiles?.map((file, index) => {
                         return (
                             <div className="row mt-2" key={index}>
                                 <div className="col-11 my-1">
@@ -540,6 +576,18 @@ export default function EditPublicationModal({publication, hide, change}) {
                     :
                     ""
                     }
+
+                    {/* Display uploaded files */}
+                    { (uploadedAddFile !== null && uploadedAddFile !== undefined) ? uploadedAddFile?.map((file, index) => {
+                        return (
+                            <div className="d-flex justify-content-between my-2" key={index}>
+                                <div>{file.filename}</div>
+                                <div>
+                                    <button type="button" className="btn btn-danger btn-sm" onClick={() => removeUploadedAddFile(file)}><TrashIcon/></button>
+                                </div>
+                            </div>
+                        )
+                    }) : ""}                    
                     
                     <div className="d-grid my-2">
                         <button className="btn btn-sm btn_dark" type="button" onClick={addFile}>Add File</button>
@@ -550,14 +598,14 @@ export default function EditPublicationModal({publication, hide, change}) {
                     <label className="my-1 fw-bold">Additional Links</label>
                     {
                         (additionalLinks !== null && additionalLinks !== undefined) ?
-                        additionalLinks.map((link, index) => {
+                        additionalLinks?.map((link, index) => {
                             return (
                             <div className="row" key={index}>
                                 <div className="col-5 my-1">
-                                    <input className="form-control" name='title' value={additionalLinks[index].title} onChange={e => getAdditionalValueLink(e, index)}/>
+                                    <input className="form-control" name='title' value={additionalLinks[index].title} onChange={e => getAdditionalValueLink(e, index)} placeholder="Title"/>
                                 </div>
                                 <div className="col-6 my-1">
-                                <input className="form-control"  name='url' value={additionalLinks[index].url} onChange={e => getAdditionalValueLink(e, index)}/>
+                                    <input className="form-control"  name='link' value={additionalLinks[index].link} onChange={e => getAdditionalValueLink(e, index)} placeholder="Link"/>
                                 </div>
                                 <div className="col-1 my-1">
                                     <div className="float-end" type="button" onClick={() => removeAddLink(index)}> <BsXLg/> </div>
@@ -575,7 +623,7 @@ export default function EditPublicationModal({publication, hide, change}) {
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-sm btn-secondary" onClick={hide}>Close</button>
-                        <button type="submit" className="btn btn-sm btn_dark" onClick={ submit }>Save</button>
+                        <button type="submit" className="btn btn-sm btn_dark" onClick={ submit }>Update</button>
                     </div>
                 </div>
             </div>
