@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import EditPublicationModal from './EditPublicationModal';
 import {base_url} from "../../Service/serviceapi";
 import { toast } from 'react-toastify';
-import {addMaterialBtn, addDetailList} from "../../Helper/util/util";
+import {addMaterialBtn, addDetailList, displayExcelFile, isObjectExist} from "../../Helper/util/util";
 
 export default function ResearchList({publication, change}) { 
     const [modal, setModal] = useState(false);
@@ -41,8 +41,8 @@ export default function ResearchList({publication, change}) {
             url:  `${base_url}/publication/updatehighlight?highlight=${highlight}&publicationId=${publication.id}`,
         })
         .then(function(response){
-            toast.success("Publication highlighted successfully", {autoClose:1500, hideProgressBar:true});
             change();
+            toast.success("Publication highlighted successfully", {autoClose:1500, hideProgressBar:true});
         }, (error) => {
             toast.error("Error in highlighting publication", {autoClose:1500, hideProgressBar:true});
         })
@@ -54,17 +54,20 @@ export default function ResearchList({publication, change}) {
                 <div className="card-body">
                     <h5 className="card-title">{ publication.title!=null ? publication.title : "No Title" }</h5>
                     <div className="card-text my-1"> 
-                        <div> { publication.authors } </div>
+                        <div className="fst-italic fw-light"> { publication.authors } </div>
                         <div> { publication.journal } </div>
                         <div> { publication.doi !== '' ? publication.doi : ''} </div>
                         <div className="text-clamping mt-2"> { publication.description } </div>
                     </div>
+                    <div className="row">
                     {
-                        publication.additionalDetails !== null ? 
-                        <div className="my-2">
+                        isObjectExist(publication, "additionalDetails") ? 
+                        <div className="my-1 col-md-6">
                             <div className="fw-bold">Details</div>
                             <div className="">
+                                <ul>
                                 { addDetailList(publication.additionalDetails) }
+                                </ul>
                             </div>
                         </div>
                         :
@@ -72,11 +75,13 @@ export default function ResearchList({publication, change}) {
                     }
 
                     { 
-                        publication.filePath !== null ? 
-                        <div className="my-2">
+                        isObjectExist(publication, "filePath") ? 
+                        <div className="my-1 col-md-6">
                             <div className="fw-bold">File</div>
                             <div className="d-grid gap-2 d-md-flex justify-content-md-start">
-                                { addMaterialBtn(publication.filePath, "file")}
+                                <ul>
+                                { addMaterialBtn(publication.file, "file", publication.filePath)}
+                                </ul>
                             </div>
                         </div>
                     
@@ -84,11 +89,13 @@ export default function ResearchList({publication, change}) {
                     }
 
                     {
-                        publication.addAddFilePath !== null ? 
-                        <div className="my-2">
+                        isObjectExist(publication, "addAddFilePath")? 
+                        <div className="my-1 col-md-6">
                             <div className="fw-bold">Additional File(s)</div>
                             <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                                <ul>
                                 { addMaterialBtn(publication.addAddFilePath, "file") }
+                                </ul>
                             </div>
                         </div>
                         :
@@ -96,22 +103,23 @@ export default function ResearchList({publication, change}) {
                     }
                     
                     { 
-                        publication.link !== null ? 
-                        <div className="my-2">
+                        isObjectExist(publication, "link")? 
+                        <div className="my-1 col-md-6">
                             <div className="fw-bold">Link</div>
                             <div className="d-grid gap-2 d-md-flex justify-content-md-start">
-                                { addMaterialBtn(publication.link, "g_scholar") }
+                                <ul>{ addMaterialBtn(publication.link, "g_scholar") }</ul>
                             </div>
                         </div>
                         : ""
                     }
 
                     {
-                        publication.additionalDetails !== null ?
-                        <div className="my-2">
+                        isObjectExist(publication, "additionalLinks") ?
+                        <div className="my-1 col-md-6">
                             <div className="fw-bold">Additional Link(s)</div>
                             <div className="d-grid gap-2 d-md-flex justify-content-md-start">
-                            { addMaterialBtn(publication.additionalLinks, "add_link") }
+                                <ul>{ addMaterialBtn(publication.additionalLinks, "add_link") }</ul>
+                            
                             </div>
                         </div>
                         :
@@ -119,15 +127,16 @@ export default function ResearchList({publication, change}) {
                     }
                     
                     { 
-                        publication.link !== null ? 
-                        <div className="my-2">
+                        isObjectExist(publication, "link") ? 
+                        <div className="my-1 col-md-6">
                             <div className="fw-bold">Link</div>
                             <div className="d-grid gap-2 d-md-flex justify-content-md-start">
-                                { addMaterialBtn(publication.link, "g_scholar") }
+                                <ul>{ addMaterialBtn(publication.link, "g_scholar") }</ul>
                             </div>
                         </div>
                         : ""
                     }
+                    </div>
 
                     <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                         <button className="btn btn-danger btn-sm" type="button" onClick={() =>deletePub()}>Delete</button>

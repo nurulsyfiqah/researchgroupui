@@ -21,11 +21,12 @@ export default function BlogPage() {
 
 function BlogComponent() {
     const account = ReactSession.get("account");
+    const user = ReactSession.get("user");
     const [change, setChange] = useState(0);
     const [posts, setPosts] = useState([]);
     
     const params = {
-        userId: account.id,
+        userId: user.id,
         title: "",
         date:  moment().format(),
         status: 0,

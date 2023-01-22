@@ -38,7 +38,6 @@ export function UploadImageModal({data, hide, change}) {
         try {
             axios({
                 method: 'POST',
-                // url: `${base_url}/user/uploadimage`,
                 url: `${base_url}/user/image/add`,
                 data: formData,
                 headers: {
@@ -535,7 +534,7 @@ export function AddAffiliationModal({hide, change}) {
 
         axios({
             method: 'PUT',
-            url: `${base_url}/user/updateaffiliation`,
+            url: `${base_url}/user/user/affiliation/update`,
             data: affiliation
         }).then(function(response) {
             toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
@@ -620,7 +619,7 @@ export function EditAffiliationModal({data, allData, hide, change, index}) {
         console.log(newAff)
         axios({
             method: 'PUT',
-            url: `${base_url}/user/updateaffiliationlist`,
+            url: `${base_url}/user/user/affiliation/updatelist`,
             data: newAff
         }).then(function(response) {
             toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
@@ -645,7 +644,7 @@ export function EditAffiliationModal({data, allData, hide, change, index}) {
         console.log(diff)
         axios({
             method: 'PUT',
-            url: `${base_url}/user/updatedelaffiliation`,
+            url: `${base_url}/user/affiliation/delete`,
             data: diff
         }).then(function(response) {
             toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})

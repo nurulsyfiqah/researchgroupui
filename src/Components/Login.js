@@ -41,7 +41,10 @@ export default function Login () {
         axios({
             method: 'POST',
             url: `${base_url}/login`,
-            data: input
+            data: input,
+            headers: {
+              'Access-Control-Allow-Origin': '*'
+          }
         })
             .then(function(response){
                 console.log(response)
@@ -49,7 +52,7 @@ export default function Login () {
                 if (response.status == 200) {
                     // save the account data in session
                     ReactSession.set("account", response.data);
-                    getUser(response.data.id);                    
+                    getUser(response.data.id);     
                 } else {
                     toast.error("Wrong email or password", {hideProgressBar:true, autoClose: 2000});
                 }
@@ -61,10 +64,11 @@ export default function Login () {
     const getUser=(accountId)=>{
       axios({
         method: 'GET',
-        url: `${base_url}/user/getuserbyaccountid/${accountId}`,
+        url: `${base_url}/user/account/${accountId}`,
       }).then(function(response){
+        
         ReactSession.set("user", response.data);
-        toast.success("Login successfully", {hideProgressBar:true, autoClose: 2000 });
+        toast.success("Login successful", {hideProgressBar:true, autoClose: 2000 });
         window.location.href = `${ui_url}/home`;
       }, (error)=>{
         console.log(error.text)

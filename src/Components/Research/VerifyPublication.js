@@ -14,7 +14,7 @@ export default function VerifyPublication({publication, change, user, removepub}
         console.log(publication)
         axios({
             method: 'PUT',
-            url: `${base_url}/user/rejectedpublication`,
+            url: `${base_url}/user/publication/reject`,
             data: publication,
           })
             .then(function (response) {

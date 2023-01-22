@@ -9,9 +9,11 @@ import {base_url} from "../../Service/serviceapi"
 export default function ArticleListPage() {
     const researcher_id = ReactSession.get("researcher_id");
     const [posts, setPosts] = useState([]);
-
+    const user = ReactSession.get("user");
+    console.log(user);
     const getArticleFromServer=()=>{
-        axios.get(`${base_url}/blog/getpostsbyuserid?userId=${researcher_id}`).then((
+        // axios.get(`${base_url}/blog/getpostsbyuserid?userId=${researcher_id}`).then((
+        axios.get(`${base_url}/blog/getpostsbyuserid?userId=63b7b81c9ab53d4a60ba7a1b`).then((
             response)=>{
             const data = response.data;
             console.log(data)

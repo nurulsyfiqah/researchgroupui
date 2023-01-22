@@ -27,7 +27,7 @@ export default function WebPage() {
     }
 
     const getUserFromServer=(account_id)=>{
-        axios.get(`${base_url}/user/getuserbyaccountid/${account_id}`)
+        axios.get(`${base_url}/user/account/${account_id}`)
         .then((response)=>{
             const data = response.data;
             setUser(response.data);

@@ -17,7 +17,7 @@ export default function Research() {
     
     const account = ReactSession.get("account");
     const user = ReactSession.get("user");
-    let [activeTab, setActiveTab] = useState('');
+    let [activeTab, setActiveTab] = useState('research_tab');
     console.log(activeTab)
 
     // get the scraped data from the google scholar
@@ -40,8 +40,8 @@ export default function Research() {
 
     useEffect(() => {
         console.log("useEffect triggered")
-        scrapePublication()
-        setgsLink(true)
+        // scrapePublication()
+        // setgsLink(true)
     }, []);
 
     function removePublication(id){
@@ -74,6 +74,12 @@ export default function Research() {
         setActiveTab(tab.target.value);
     };
 
+    const tab = (e) => {
+        console.log(e)
+        setActiveTab(e);
+        console.log(activeTab)
+    }
+    
     return (
         <div className="my-4 py-2">
             <h2 className="page_title">Research</h2>
@@ -116,7 +122,7 @@ export default function Research() {
 
                 <div className={`tab-pane fade  add_research_container ${(activeTab === "add_tab" ? "show active" : "")}`} id="pills-add-research" role="tabpanel"
                      aria-labelledby="pills-profile-tab">
-                    <AddPublication change={()=>{setChange(change+1)}} active={()=>{setActiveTab("research_tab")}}/>
+                    <AddPublication change={()=>{setChange(change+1)}} active={()=>{tab('research_tab')}}/>
                 </div>
 
                 <div className={`tab-pane fade ${(activeTab === "verify_tab" ? "show active" : "")}`} id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">

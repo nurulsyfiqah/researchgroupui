@@ -32,7 +32,7 @@ export default function Home() {
         setAccount(acc);
         axios({
             method: 'GET',
-            url: `${base_url}/user/getuserbyaccountid/${acc.id}`,
+            url: `${base_url}/user/account/${acc.id}`,
         }).then(function(response){
             const data = response.data;
             // data = replaceNullToEmptyString(data);
