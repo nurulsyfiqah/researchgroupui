@@ -30,7 +30,6 @@ export function UploadImageModal({data, hide, change}) {
       }
     
       const handleSubmit = () => {
-        console.log(image)
         const formData = new FormData();
         formData.append("image", image);
         formData.append("userId", data.id);
