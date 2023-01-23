@@ -31,7 +31,7 @@ export default function Research() {
             axios({
             method: 'POST',
             // url: `${base_url}/publication?gscLink=${user.googleScholarLink}&userId=${user.id}`
-            url: `${base_url}/publication`,
+            url: `${base_url}/publication/scrape/author`,
             data: formdata,
             headers: {
                 'Content-Type': 'multipart/form-data'
