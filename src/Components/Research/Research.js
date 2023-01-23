@@ -23,7 +23,7 @@ export default function Research() {
     const scrapePublication=()=>{   
     console.log(user.id)
 
-        formdata = new FormData();
+        const formdata = new FormData();
         formdata.append("gscLink", user.googleScholarLink);
         formdata.append("userId", user.id);
         if (isObjectExist(user, "googleScholarLink")) {

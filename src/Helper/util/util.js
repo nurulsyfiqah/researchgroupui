@@ -35,7 +35,6 @@ export function replaceNullValToEmptyArray(value) {
 
 
 export function addMaterialBtn(item, type, name, index){
-    console.log(item)
     if(item !== null) {
         if ((item !== undefined || item !== "") && type === "file") {
             /* For additional files (comes in array)*/
