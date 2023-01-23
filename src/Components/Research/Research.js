@@ -18,17 +18,15 @@ export default function Research() {
     const account = ReactSession.get("account");
     const user = ReactSession.get("user");
     let [activeTab, setActiveTab] = useState('research_tab');
-    console.log(activeTab)
 
     // get the scraped data from the google scholar
     const scrapePublication=()=>{   
-    console.log(isObjectExist(user, "googleScholarLink"))
-        if (isObjectExist(user, "googleScholarLink")) {axios({
+    console.log(user.id)
+
+        if (isObjectExist(user, "googleScholarLink")) {
+            axios({
             method: 'GET',
-            url: `${base_url}/publication?gscLink=${user.googleScholarLink}&userId=${user.id}`, 
-            headers: {
-                'user-agent': 'chrome/109.0.5414.75'
-            }
+            url: `${base_url}/publication?gscLink=${user.googleScholarLink}&userId=${user.id}`
           })
             .then(function (response) {
                 const data = response.data; 
@@ -38,7 +36,6 @@ export default function Research() {
                 toast.error("Something went wrong on Server")
             })
         }
-        
     }
 
     useEffect(() => {

@@ -46,7 +46,7 @@ export function UploadImageModal({data, hide, change}) {
               }).then((response)=>{
                 hide()
                 change()
-                toast.success("Image uploaded successfully", {autoClose:1500, hideProgressBar:true,  transition: Slide});
+                toast.success("Image uploaded successfully", {autoClose:1500, hideProgressBar:true});
               });
             
             
