@@ -32,6 +32,9 @@ export default function Research() {
             // url: `${base_url}/publication?gscLink=${user.googleScholarLink}&userId=${user.id}`
             url: `${base_url}/publication`,
             data: formdata,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
           })
             .then(function (response) {
                 const data = response.data; 
