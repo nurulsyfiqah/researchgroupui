@@ -26,14 +26,15 @@ export default function Research() {
         const formdata = new FormData();
         formdata.append("gscLink", user.googleScholarLink);
         formdata.append("userId", user.id);
+        console.log([...formdata])
         if (isObjectExist(user, "googleScholarLink")) {
             axios({
-            method: 'GET',
+            method: 'POST',
             // url: `${base_url}/publication?gscLink=${user.googleScholarLink}&userId=${user.id}`
             url: `${base_url}/publication`,
             data: formdata,
             headers: {
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': 'multipart/form-data'
             }
           })
             .then(function (response) {
