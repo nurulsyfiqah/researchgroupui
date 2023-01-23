@@ -23,10 +23,15 @@ export default function Research() {
     const scrapePublication=()=>{   
     console.log(user.id)
 
+        formdata = new FormData();
+        formdata.append("gscLink", user.googleScholarLink);
+        formdata.append("userId", user.id);
         if (isObjectExist(user, "googleScholarLink")) {
             axios({
             method: 'GET',
-            url: `${base_url}/publication?gscLink=${user.googleScholarLink}&userId=${user.id}`
+            // url: `${base_url}/publication?gscLink=${user.googleScholarLink}&userId=${user.id}`
+            url: `${base_url}/publication`,
+            data: formdata,
           })
             .then(function (response) {
                 const data = response.data; 
