@@ -172,10 +172,10 @@ export default function Home() {
                             <div className="col-md-4 fw-bold">Last Name</div>
                             <div className="col-md-8">{ isObjectExist(user,"lastName") ? user.lastName : ""}</div>
                         </div>
-                        <div className="row my-1">
+                        {/* <div className="row my-1">
                             <div className="col-md-4 fw-bold">Full Name</div>
                             <div className="col-md-8">{ isObjectExist(user,"fullName") ? user.fullName : ""}</div>
-                        </div>
+                        </div> */}
                         <div className="row my-1">
                             <div className="col-md-4 fw-bold">Email</div>
                             <div className="col-md-8">{ isObjectExist(account,"email")  ? account.email : ""}</div>

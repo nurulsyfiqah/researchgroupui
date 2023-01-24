@@ -415,10 +415,10 @@ export function EditInfoModal({data, account, hide, change}) {
                             <input type="text" className="form-control" id="lastName" name="lastName" defaultValue={user.lastName} onChange={onUserChange}/>
                         </div>
 
-                        <label htmlFor="fullName" className="form-label my-1">Full Name</label>
+                        {/* <label htmlFor="fullName" className="form-label my-1">Full Name</label>
                         <div className="input-group mb-3">
                             <input type="text" className="form-control" id="fullName" name="fullName" defaultValue={user.fullName} onChange={onUserChange}/>
-                        </div>
+                        </div> */}
 
                         <label htmlFor="email" className="form-label my-1">Email</label>
                         <div className="input-group">

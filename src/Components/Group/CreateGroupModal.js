@@ -19,7 +19,7 @@ export default function CreateGroupModal({create, hide}) {
     const [emailList, setEmailList] = useState([
         {
             memberEmail:account.email,
-            memberName: user.fullname,
+            memberName: user.firstName + " " + user.lastName,
             status:1,
             memberId: user.id
         }

@@ -58,11 +58,11 @@ export default function SignUp () {
                         stateObj[name] = "Please enter last name";
                     }
                     break;
-                case "fullName":
-                    if (value === "") {
-                        stateObj[name] = "Please enter full name";
-                    }
-                    break;
+                // case "fullName":
+                //     if (value === "") {
+                //         stateObj[name] = "Please enter full name";
+                //     }
+                //     break;
                 case "username":
                     if (value === "") {
                         stateObj[name] = "Please enter username";
