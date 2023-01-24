@@ -29,11 +29,9 @@ function GroupPageComponent() {
     }, [groupCreated])
 
     const getAllGroupsFromServer = ()=>{
-        console.log("user id "+user.id)
         axios.get(`${base_url}/group/member/${user.id}`).then(
             (response)=>{
                 setGroups(response.data)
-                console.log(response.data)
                 //toast.info("All Group loaded from Server !!",{position:"top-right"})
             },
             (error)=>{

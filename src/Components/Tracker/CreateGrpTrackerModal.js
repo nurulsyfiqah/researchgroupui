@@ -56,7 +56,6 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
 
     const getFiles = e => {
         setFiles(e.target.files)
-        console.log(files)
     }
 
     const subtasksUpdate = () => {
@@ -65,7 +64,6 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
         } else {
             alert('Please enter a task')
         }
-        console.log(subtasks)
         setSubtask([]);
     };
 
@@ -77,7 +75,6 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
         const list = [...subtasks];
         list.splice(index, 1);
         setSubtasks(list);
-        console.log(subtasks)
     };
 
     const submit = () => { 
@@ -85,7 +82,6 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
         if (input.submissionType === '') {
             input.submissionType = 'text';
         }
-        console.log(input)
 
         if (action === "create") {
             const formData = new FormData();
@@ -94,7 +90,6 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
             }
 
             formData.append('tracker', JSON.stringify(input));
-            console.log(JSON.stringify(input))
             axios({
                 method: 'POST',
                 url: `${base_url}/tracker/create`,

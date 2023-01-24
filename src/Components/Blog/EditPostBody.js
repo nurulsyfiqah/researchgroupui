@@ -53,7 +53,6 @@ export default function EditPostBody() {
 
     const getPostFromServer=()=>{
         axios.get(`${base_url}/blog/edit/${blogId}`).then(response => {
-            console.log("server "+response.data.content)
             // setInput(response.data)
             params.userId = response.data.userId
             params.title = response.data.title
@@ -91,7 +90,6 @@ export default function EditPostBody() {
         params.userId = user.id
         params.title = title
         params.content = editorRef.current ? editorRef.current.getContent() : "";
-        console.log(params)
         axios({
             method: 'PUT',
             url: `${base_url}/blog/update`,
@@ -100,7 +98,6 @@ export default function EditPostBody() {
             .then(function(response) {
                 // redirect user to edit post page
                 toast.success("Successfully saved", {autoClose: 1500,hideProgressBar: true})
-                console.log("successfully save"+response.data.toString)
             }, (error) => {
                 toast.error("Error in saving", {autoClose: 1500,hideProgressBar: true})
                 console.log(error.text)

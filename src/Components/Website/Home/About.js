@@ -17,7 +17,6 @@ export default function About({account, user}) {
         }).then((response) => {
             setHighlightedPublications(response.data);
         }, (error) => {
-            console.log(error)
         })
     }
 
@@ -27,7 +26,6 @@ export default function About({account, user}) {
 
     const setSubModal=()=>{
         setShow(true);
-        console.log(show);
     }
 
     return (

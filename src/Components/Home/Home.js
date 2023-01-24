@@ -41,13 +41,9 @@ export default function Home() {
             // data.domain = replaceNullValToEmptyArray(data.domain);
             setUser(data);
             ReactSession.set("user", data);
-            console.log(data)
         })
-        console.log(user)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[change]);
-
-    console.log(user)
 
     const showImageModal = () => {
         return setImageModal(true)
@@ -70,14 +66,12 @@ export default function Home() {
     }
 
     const showAffiliationModal = (dataAff, index) => {
-        console.log(dataAff)
         setAffiliation(dataAff)
         setAffIndex(index)
         return setAffiliationModal(true)
     }
 
     const showAddAffiliationModal = (dataAff) => {
-        console.log(dataAff)
         return setAddAffiliationModal(true)
     }
 

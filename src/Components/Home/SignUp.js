@@ -109,7 +109,6 @@ export default function SignUp () {
                 url: `${base_url}/signup/getaccountbyemail?email=${value.target.value}`,
             })
                 .then(function (response){
-                    console.log(response.data)
                     if (response.data !== null) {
                         if (response.data.length > 0) {
                             setError(prev => ({
@@ -171,7 +170,6 @@ export default function SignUp () {
     const submitHandler =(e)=>{
         e.preventDefault();
         setSignUpBtnDisabled(true);
-        console.log(input);
         const createAccountPromise = toast.loading("Creating account...")
         // get the email
         axios({
@@ -191,7 +189,6 @@ export default function SignUp () {
                         data: input
                     })
                         .then(function (response){
-                            console.log(response.data)
                             // create new user
                             axios({
                                 method:'POST',

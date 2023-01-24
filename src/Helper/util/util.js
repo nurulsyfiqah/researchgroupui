@@ -105,11 +105,9 @@ export function addMaterialBtn(item, type, name, index){
 }
 
 export function displayExcelFile(binaryData, fileName) {
-    console.log(binaryData);
     try {
         
         let fileType = "";
-    console.log(fileName);
     if(fileName.endsWith('.xlsx')) {
         fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     }else if(fileName.endsWith('.xls')){
@@ -120,34 +118,11 @@ export function displayExcelFile(binaryData, fileName) {
         fileType = "application/msword";
     }
 
-    // Create a new Blob from the binary data
-    // const file = new Blob(["hello download"], { type: "text/plain" });
-    // // Create a new FileReader
-    // var reader = new FileReader();
-    // // Read the file as binary data
-    // reader.readAsArrayBuffer(file);
-    // // Handle the load event
-    // reader.onload = function() {
-    //   // Get the binary data
-    //   var binaryData = new Uint8Array(reader.result);
-    //   // Create a new Blob with the binary data
       var blob = new Blob(['SGVsbG8gV29ybGQh'], { type: "text/plain" });
     //   // Create a new object URL for the blob
       var url = URL.createObjectURL(blob);
-    //   console.log(blob);
-      console.log(url);
       
-    //   // Create a new anchor element
-    //   var a = document.createElement("a");
-    //   // Set the href of the anchor element to the object URL
-    //   a.href = url;
-    //   // Set the download attribute of the anchor element to the file name
-    //   a.download = fileName;
-    //   // Click the anchor element
-    //   a.click();
-    //   // Revoke the object URL
-    //   URL.revokeObjectURL(url);
-    // };
+
     } catch (e) {
         console.log("not binary")
     }

@@ -4,7 +4,6 @@ import moment from  'moment'
 
 export default function ViewArticle({post}) {
 
-    console.log(post.content)
     function formatDate1(date) {
         //2022-06-20T11:10:12.000+00:00
         moment.defaultFormat = "YYYY-MM-DDTHH:mm:ssZ";

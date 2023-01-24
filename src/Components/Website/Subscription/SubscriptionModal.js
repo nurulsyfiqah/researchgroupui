@@ -12,13 +12,11 @@ export default function SubscriptionModal({account, user, hide}) {
     }
 
     const submitHandler = () => {
-        console.log(email);
         axios({
             method: 'GET',
             url: `${base_url}/subscribe/updatesubscription?userId=${user.id}&email=${email}`,
         })
         .then((response) => {
-            console.log(response);
             toast.success("Subscribed successfully", {autoClose: 1500, hideProgressBar: true});
             hide()
         }, (error) => {

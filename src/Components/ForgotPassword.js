@@ -44,10 +44,10 @@ export default function ForgotPassword() {
             url: `${base_url}/signup/getaccountbyemail?email=${email}`,
         })
             .then(function (response) {
-                console.log(response.data.length)
+                // console.log(response.data.length)
                 if (response.data.length !== 0) {
                     setError("")
-                    console.log(response.data)
+                    // console.log(response.data)
                     setData(response.data[0])
                     axios({
                         method: 'POST',
@@ -86,8 +86,6 @@ export default function ForgotPassword() {
         }
     }
     const stepTwoHandler =()=>{
-        console.log(otpInput)
-        console.log(otp)
         if (otpInput !== "") {
             if (otpInput == otp) {
                 setResetTwo("d-none")
@@ -155,7 +153,6 @@ export default function ForgotPassword() {
         // update new password in the database
         data.providedPassword = inputPassword.password;
         data.password = "";
-        console.log(data)
         axios({
             method: 'PUT',
             url: `${base_url}/resetpassword`,

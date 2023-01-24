@@ -41,7 +41,6 @@ function BlogComponent() {
     // When user clicks New Post, the data for the post will be sent to db, return post id
     const createPost=(e) => {
         e.preventDefault();
-        console.log(params)
         axios({
             method: 'POST',
             url: `${base_url}/blog/create`,
@@ -49,7 +48,6 @@ function BlogComponent() {
         })
             .then(function(response) {
                 // redirect user to edit post page
-                console.log(response)
                 window.location.href = `${ui_url}/blog/edit/${response.data.id}`;
             }, (error) => {
                 console.log(error.text)
@@ -61,7 +59,6 @@ function BlogComponent() {
         axios.get(`${base_url}/blog/all/${user.id}`).then((
             response)=>{
             const data = response.data;
-            console.log(data)
             setPosts(data)
         }, (error)=>{
             toast.error("Something went wrong on Server")

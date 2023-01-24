@@ -6,7 +6,6 @@ import { ReactSession } from 'react-client-session';
 import TimeAgo from 'react-timeago'
 
 export default function ArticleList({article}) {
-    console.log(article)
     const username = ReactSession.get("researcherusername");
 
     function removeTags(str) {

@@ -13,13 +13,11 @@ export default function ArticleListPage() {
     const user = ReactSession.get("user");
     const { username } = useParams();
 
-    console.log(username);
     const getArticleFromServer=(userid)=>{
         axios.get(`${base_url}/blog/${researcher_id}`).then((
         // axios.get(`${base_url}/blog/getpostsbyuserid?userId=63b7b81c9ab53d4a60ba7a1b`).then((
             response)=>{
             const data = response.data;
-            console.log(data)
             setPosts(data)
         }, (error)=>{
             toast.error("Something went wrong on Server")

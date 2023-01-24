@@ -47,7 +47,6 @@ export default function Login () {
           }
         })
             .then(function(response){
-                console.log(response)
                 // exist: check password
                 if (response.status == 200) {
                     // save the account data in session

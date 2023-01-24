@@ -99,7 +99,6 @@ function AnnouncementBody({myKey, ann, edit, group}) {
     // publish the announcement
     const publishAnn=()=>{
         ann.status = 1;
-        console.log(ann)
         axios({
             method: 'PUT',
             url: `${base_url}/group/announcement/publish`,
@@ -130,8 +129,6 @@ function AnnouncementBody({myKey, ann, edit, group}) {
                 toast.error("Error in publishing", {autoClose: 1500,hideProgressBar: true})
             })
     }
-    console.log(ann)
-    console.log(user)
     if (ann.createdById === user.id && (ann.status === 0 || ann.status === 1)) {
     return (
         <div className="accordion-item" key={`key_${myKey}`}>

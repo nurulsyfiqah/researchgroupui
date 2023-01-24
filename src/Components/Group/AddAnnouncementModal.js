@@ -33,7 +33,6 @@ export default function AddAnnouncementModal({group, hide, edit}) {
         input.groupId = group.id;
         input.content = editorRef.current ? editorRef.current.getContent() : "";
         input.status = 1;
-        console.log(input)
         axios({
             method: 'PUT',
             url: `${base_url}/group/announcement/publish`,

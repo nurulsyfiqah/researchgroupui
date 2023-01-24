@@ -25,7 +25,6 @@ export default function Research() {
         const formdata = new FormData();
         formdata.append("gscLink", user.googleScholarLink);
         formdata.append("userId", user.id);
-        console.log([...formdata])
         if (isObjectExist(user, "googleScholarLink")) {
             axios({
             method: 'POST',
@@ -39,7 +38,6 @@ export default function Research() {
             .then(function (response) {
                 const data = response.data; 
                 setPublications(data);
-                console.log(data)
             }, (error) => {
                 toast.error("Something went wrong on Server")
             })
@@ -47,9 +45,8 @@ export default function Research() {
     }
 
     useEffect(() => {
-        console.log("useEffect triggered")
-        // scrapePublication()
-        // setgsLink(true)
+        scrapePublication()
+        setgsLink(true)
     }, []);
 
     function removePublication(id){
@@ -70,7 +67,6 @@ export default function Research() {
         axios.get(`${base_url}/publication/all?id=${user.id}`).then((
             response)=>{
             const data = response.data;
-            console.log(data)
             setPub(data)
         }, (error)=>{
             toast.error("Something went wrong on Server")
@@ -78,14 +74,11 @@ export default function Research() {
     }
 
     const changeActiveTab = (tab) => {
-        console.log(tab.target.value + " - " + activeTab)
         setActiveTab(tab.target.value);
     };
 
     const tab = (e) => {
-        console.log(e)
         setActiveTab(e);
-        console.log(activeTab)
     }
     
     return (

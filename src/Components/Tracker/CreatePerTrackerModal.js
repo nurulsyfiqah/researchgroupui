@@ -41,17 +41,12 @@ export default function CreatePerTrackerModal({data, hide, change, action}) {
             ...prevState,
             [name]: value
         }))
-        console.log(input)
     }
 
     const subtasksUpdate = () => {
-        console.log(subtask)
         count++;
         if (subtask !== '') {
-            // setSubtasks([...subtasks, subtask])
             setSubtasksTemp([...subtasksTemp, subtask])
-            // input.subTask = subtasksTemp;            
-            // console.log(input.subTask)
         } else {
             alert('Please enter a task')
         }
@@ -60,7 +55,6 @@ export default function CreatePerTrackerModal({data, hide, change, action}) {
 
     useEffect(() => {
         input.subTask = subtasksTemp;  
-        console.log(input.subTask)
         setSubtask([]);
     }, [subtasksTemp]);
 
@@ -90,12 +84,7 @@ export default function CreatePerTrackerModal({data, hide, change, action}) {
     }
 
     const submit = () => {  
-        // for (let i = 0; i < subtasks.length; i++) {
-        //     setSubtasksTemp([...subtasksTemp, subtasks[i] + ":0"])
-        // }
-        // console.log(subtasks)
         input.subTask = subtasksTemp;
-        console.log(input)
 
         if (action === "create") {
             axios({

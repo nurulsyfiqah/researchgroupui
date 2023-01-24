@@ -29,7 +29,6 @@ export default function TrackerList({tracker, change, index}) {
     const getUserGroup = () => {
         axios.get(`${base_url}/group/member/${user.id}`).then((
             response)=>{
-            console.log(response.data)
             setUserGroup(response.data)
         }, (error)=>{
             toast.error("Something went wrong on Server")
@@ -42,18 +41,10 @@ export default function TrackerList({tracker, change, index}) {
       });
     
     const removeSubtask = (index) => {
-        // const list = [...subtasks];
-        // const list2 = [...subtasksTemp];
-        // // list.splice(index, 1);
-        // list2.splice(index, 1);
-        // // setSubtasks(list);
-        // setSubtasksTemp(list2);
-        // input.subTask = list2;
     };
 
     const handleChkChange = (e) => {
         // Destructuring
-        // const { value, checked} = e.target;
         const index = e.target.getAttribute('index');
         const taskid = e.target.getAttribute('taskid');
 
@@ -72,12 +63,10 @@ export default function TrackerList({tracker, change, index}) {
         
         const { value } = e.target;
         
-        console.log(subtask)
 
         let newSubtask = [...subtask];
         if (e.target.checked) {
             newSubtask = newSubtask.map(item => {
-                console.log(item)
                 if (item.startsWith(value)) {
                     return `${value}:1`;
                 }
@@ -92,9 +81,7 @@ export default function TrackerList({tracker, change, index}) {
             });
         }
         setSubtask(newSubtask);
-        console.log(newSubtask);
         input.subTask = newSubtask;
-        console.log(input);
 
         axios({
             method: 'PUT',
@@ -160,7 +147,6 @@ export default function TrackerList({tracker, change, index}) {
                             let splitTask = task.split(":");
                             let checkedStatus = splitTask[1] === "1" ? true : "";
                             const isChecked = subtask.find(item => item.startsWith(task))?.endsWith('1');
-                            console.log(isChecked)
                             return (
                             <div className="form-check" key={index}>
                                  <input

@@ -10,12 +10,10 @@ export default function ResearchList({publication, change}) {
     const [modal, setModal] = useState(false);
 
     const getData = () => {
-        console.log(publication)
         setModal(true)
     }
 
     const deletePub = () => {
-        console.log(publication.id)
         axios({
             method: 'DELETE',
             url:  `${base_url}/publication/delete/${publication.id}`,

@@ -9,7 +9,6 @@ import { ReactSession } from 'react-client-session';
 
 export default function WebPage() {
     const { username } = useParams();
-    console.log(username)
     const [account, setAccount] = useState(null);
     const [user, setUser] = useState(null);
     ReactSession.set("researcherusername", username);
@@ -18,7 +17,6 @@ export default function WebPage() {
         axios.get(`${base_url}/getaccountbyusername/${username}`)
         .then((response)=>{
             const data = response.data[0];
-            console.log(data)
             setAccount(data);
             getUserFromServer(data.id);
         }, (error)=>{
@@ -31,7 +29,6 @@ export default function WebPage() {
         .then((response)=>{
             const data = response.data;
             setUser(response.data);
-            console.log(data)
             ReactSession.set("researcher_id", response.data.id);
         }, (error)=>{
             toast.error("Something went wrong on Server")

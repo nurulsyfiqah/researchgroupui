@@ -42,7 +42,6 @@ export default function CreateGroupModal({create, hide}) {
     const domainListUpdate = () => {
         setDomainList([...domainList, domain])
         setDomain("")
-        console.log(domainList)
     };
 
     const removeDomain = (index) => {
@@ -63,7 +62,6 @@ export default function CreateGroupModal({create, hide}) {
             memberId: ""
         }])
         setEmail([])
-        console.log(emailList)
     };
 
     const removeEmail = (index) => {
@@ -73,7 +71,6 @@ export default function CreateGroupModal({create, hide}) {
     };
 
     const onEmojiClick = (event, emojiObject) => {
-        console.log(emojiObject)
         setChosenEmoji(emojiObject);
     };
 
@@ -101,7 +98,6 @@ export default function CreateGroupModal({create, hide}) {
         })
        
         params.domain = domainList
-        console.log(params)
         // const formData = new FormData();
         // formData.append("group", params);
         // formData.append("user", user);

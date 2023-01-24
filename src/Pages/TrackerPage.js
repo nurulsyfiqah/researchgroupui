@@ -38,7 +38,6 @@ function TrackerPageComponent() {
     const getUserGroup = () => {
         axios.get(`${base_url}/group/member/${user.id}`).then((
             response)=>{
-            console.log(response.data)
             setUserGroup(response.data)
         }, (error)=>{
             toast.error("Something went wrong on Server")
@@ -46,10 +45,8 @@ function TrackerPageComponent() {
     }
 
     const getDataFromServer = () => {
-        console.log(user.id)
         axios.get(`${base_url}/tracker/all/${user.id}`)
         .then((response)=>{
-            console.log(response.data)
             setData(response.data)
         }, (error)=>{
             toast.error("Something went wrong on Server")

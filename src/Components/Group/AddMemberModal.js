@@ -35,7 +35,6 @@ export default function AddMemberModal({group, change, hide}) {
             input.member = group.member;
             flag=false;
         }
-        console.log(emailList)
     };
 
     const emailUpdate = e => {
@@ -62,12 +61,10 @@ export default function AddMemberModal({group, change, hide}) {
                 item.status = 1
             }
         });
-        console.log(input)
 
         const formdata = new FormData();
         formdata.append("group", JSON.stringify(input));
         formdata.append("newMember", JSON.stringify(emailList));
-        console.log([...formdata])
         axios({
             method: 'PUT',
             url: `${base_url}/group/update1`,

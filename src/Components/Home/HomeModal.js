@@ -20,20 +20,16 @@ export function UploadImageModal({data, hide, change}) {
 
     const getUploadParams = ({file, meta}) => {
         setImage(file)
-        console.log(image)
         return { url: 'https://httpbin.org/post'}
       }
     
       const handleChangeStatus = ({ meta }, status) => {
-        console.log(status, meta)
-        console.log(meta.size)
       }
     
       const handleSubmit = () => {
         const formData = new FormData();
         formData.append("image", image);
         formData.append("userId", data.id);
-        console.log(formData)
         try {
             axios({
                 method: 'POST',
@@ -128,7 +124,6 @@ export function EditSocialLinkModal({data, hide, change}) {
         const list = [...socialList];
         list.splice(index, 1);
         setSocialList(list);
-        console.log(socialList)
     };
 
     const submitHandler=()=>{
@@ -217,7 +212,6 @@ export function EditDomainModal({data, hide, change}) {
         const list = [...domainList];
         list.splice(index, 1);
         setDomainList(list);
-        console.log(domainList)
     };
 
     const submitHandler=()=>{
@@ -296,7 +290,6 @@ export function EditInfoModal({data, account, hide, change}) {
             [name]: value
         }));
         if (name === "username" || name === "email") {
-            console.log(name, value)
             if (name === "username") {
                 validateUniqueDetails("username", value);
               } else {
@@ -361,8 +354,6 @@ export function EditInfoModal({data, account, hide, change}) {
 
     const submitHandler =()=>{
         // update account
-        console.log(acc)
-        console.log(user)
         axios({
             method: 'PUT',
             url: `${base_url}/account/update`,
@@ -460,11 +451,9 @@ export function EditAboutModal({data, hide, change }) {
             ...prev,
             [name]: value
         }));
-        console.log(user)
     }
 
     const submitHandler =()=>{
-        console.log(user)
         axios({
             method: 'PUT',
             url: `${base_url}/user/update`,
@@ -529,7 +518,6 @@ export function AddAffiliationModal({hide, change}) {
     }
 
     const submitHandler =()=>{
-        console.log(affiliation)
 
         axios({
             method: 'PUT',
@@ -588,7 +576,6 @@ export function EditAffiliationModal({data, allData, hide, change, index}) {
     }
 
     const user = ReactSession.get("user");
-    console.log(allData)
     // const [affiliation, setAffiliation] = useState({
     //     userId: user.id,
     //     organization: '',
@@ -613,9 +600,7 @@ export function EditAffiliationModal({data, allData, hide, change, index}) {
     }
 
     const submitHandler =()=>{
-        console.log(affiliation)
         var newAff = updateObjectInArray(allData, data.id, affiliation);
-        console.log(newAff)
         axios({
             method: 'PUT',
             url: `${base_url}/user/affiliationlist/update`,
@@ -633,14 +618,12 @@ export function EditAffiliationModal({data, allData, hide, change, index}) {
 
         const results = a1.filter(({ id: id1 }) => !a2.some(({ id: id2 }) => id2 === id1));
           
-        console.log(results)
         return results;
     }
       
 
     const deleteAff=()=>{
         const diff = getDifference(allData, [data])
-        console.log(diff)
         axios({
             method: 'PUT',
             url: `${base_url}/user/affiliation/delete`,

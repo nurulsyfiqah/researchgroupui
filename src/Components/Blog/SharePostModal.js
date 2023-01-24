@@ -9,7 +9,6 @@ export default function SharePostModal({post, hide}) {
         display: 'block',
         backgroundColor: 'rgba(0,0,0,0.8)'
     }
-    console.log(post)
     return (
         <div className="modal show fade" id={post.id} data-bs-backdrop="static" data-bs-keyboard="false"
              aria-labelledby="staticBackdropLabel" aria-hidden="true" style={modalStyle}>

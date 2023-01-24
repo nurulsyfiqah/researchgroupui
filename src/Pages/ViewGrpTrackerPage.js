@@ -91,7 +91,6 @@ function ViewGrpTrackerComponent() {
             method: 'GET',
             url: `${base_url}/tracker/${trackerId}`,
         }).then((response)=>{
-            console.log(response.data)
             setTracker(response.data)
 
             let submittedTasks = getUserSubmittedTasks(response.data);
@@ -103,7 +102,6 @@ function ViewGrpTrackerComponent() {
             getGroupByTrackerId(response.data.groupId)
             setGroupSubmissionDetails(response.data.submittedTasks)
             setFiles(submission != null ? submission.file : [])
-            console.log(files)
         }, (error)=>{
             console.log(error)
         });
@@ -206,7 +204,6 @@ function ViewGrpTrackerComponent() {
             label: "Material", 
             options: {
             customBodyRender: (value, tableMeta, updateValue) => {
-                console.log(value)
                 // file submission
                 if (value !== null && value !== undefined && value.length > 0) {
                     if (value.length > 0 && value[0].hasOwnProperty("fileBinary")) {
@@ -322,7 +319,6 @@ function ViewGrpTrackerComponent() {
 
         // remove file from submission
         submission.file = [];
-        console.log([...formdata])
         axios({
             method: 'POST',
             url: `${base_url}/tracker/submit`,
@@ -356,7 +352,6 @@ function ViewGrpTrackerComponent() {
         let data = [];
         groupMembers?.map((member) => {
             groupSubmission?.map((submission) => {
-                console.log(submission)
                 if (member.memberId !== user.id) {
                     if (member.memberId === submission.userId && member.memberId !== user.id) {
                         let obj = {
@@ -388,7 +383,6 @@ function ViewGrpTrackerComponent() {
                 }
             })
         })
-        console.log(data)
         return data;
     }
 
@@ -544,7 +538,6 @@ function ViewGrpTrackerComponent() {
                      { tracker.submissionType === 'file' ?
                         <div className={`my-3 ${showSubmittedFile ? "" : "d-none"}`}>
                             { showSubmittedFile ?  submission.file?.map((file, index) => {
-                                // console.log(base64toFile(file.fileBinary.data,file.filename))
                                 return (
                                     <div>
                                         <a href={ file.fileBinary.data ? base64toFile(file.fileBinary.data,file.filename) : ''} download>-- {file.filename}</a>

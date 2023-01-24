@@ -9,7 +9,6 @@ export default function EditAnnouncementModal({ann, hide, edit}) {
 
     const editorRef = useRef(null);
     let [input, setInput] = useState(ann);
-    console.log(input)
     const onInputChange = e => {
         const { name, value } = e.target;
         setInput(prev => ({
@@ -21,7 +20,6 @@ export default function EditAnnouncementModal({ann, hide, edit}) {
     const submitHandler=(e)=>{
         input.createdDate = moment().format();
         input.content = editorRef.current ? editorRef.current.getContent() : "";
-        console.log(input)
         axios({
             method: 'PUT',
             url: `${base_url}/group/announcement/update`,

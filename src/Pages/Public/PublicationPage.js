@@ -8,14 +8,12 @@ import { ReactSession } from 'react-client-session';
 
 export default function PublicationPage() {
     const researcher_id = ReactSession.get("researcher_id");
-    console.log(researcher_id)
     const [pub, setPub] = useState([]);
 
     const getPublicationFromServer=()=>{
         axios.get(`http://localhost:8080/publication/all?id=${researcher_id }`).then((
             response)=>{
             const data = response.data;
-            console.log(data)
             setPub(data)
         }, (error)=>{
             toast.error("Something went wrong on Server")

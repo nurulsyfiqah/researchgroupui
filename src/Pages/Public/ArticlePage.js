@@ -22,9 +22,7 @@ import {
 export default function ArticlePage() {
 
     const postId = useParams()
-    console.log(postId)
     const [post, setPost] = useState([])
-    console.log("post stat " + (post.length))
 
     useEffect(()=>{
         getArticleFromServer()
@@ -34,9 +32,7 @@ export default function ArticlePage() {
         axios.get(`${base_url}/${postId.username}/${postId.articleid}`).then((
             response)=>{
             const data = response.data;
-            console.log(data)
             setPost(data)
-            console.log(post === undefined)
             }, (error)=>{
             console.log(error.text)
             }

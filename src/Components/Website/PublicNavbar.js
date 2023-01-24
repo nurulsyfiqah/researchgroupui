@@ -8,7 +8,6 @@ export default function PublicNavbar() {
     // check if there is session under account in localstorage
     // let username = ReactSession.get("account");
     const { username } = useParams();
-    console.log(username)
     // if username undefined or null, set a new username
     if (username === undefined || username === null) {
         ReactSession.set("username", username);

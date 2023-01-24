@@ -11,7 +11,6 @@ export default function VerifyPublication({publication, change, user, removepub}
 
     const skipPublication = () => {
         publication.userId = user.id;
-        console.log(publication)
         axios({
             method: 'PUT',
             url: `${base_url}/user/publication/reject`,
@@ -22,15 +21,12 @@ export default function VerifyPublication({publication, change, user, removepub}
                 // toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
                 const data = response.data;
                 removepub()
-                console.log(data)
             }, (error) => {
-                console.log(error)
                 toast.error("Something went wrong on Server", {autoClose: 1500,hideProgressBar: true})
             })
     }
 
     const verifyPublication = () => {
-        console.log("verify btn clicked")
         // scrape the article data from the link
         axios({
             method: 'GET',
@@ -65,7 +61,6 @@ export default function VerifyPublication({publication, change, user, removepub}
     }
 
     const previewPub=(e)=> {
-        console.log(e.target.value);
         window.open(
             e.target.value,
             '_blank' // <- This is what makes it open in a new window.

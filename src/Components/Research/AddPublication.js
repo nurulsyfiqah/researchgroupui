@@ -110,7 +110,6 @@ export default function AddPublication({change, active}) {
         } else {
             alert('Please enter an author name')
         }
-        console.log(authorList)
         setAuthor([]);
     };
 
@@ -122,7 +121,6 @@ export default function AddPublication({change, active}) {
         const list = [...authorList];
         list.splice(index, 1);
         setAuthorList(list);
-        console.log(authorList)
     };
 
     const getValue = e => {
@@ -146,9 +144,7 @@ export default function AddPublication({change, active}) {
             document.querySelectorAll('div.details')
         );
         
-        console.log(value)
         allWithClass.forEach(element => {
-            console.log(value==='Edited book')
             if (value==='Book'||value==='Book chapter'||value==='Book review'||value==='Dictionary entry'||value==='Encyclopedia entry'||value==='Edited book') {
                if(element.classList.contains('book')){
                 element.classList.remove('d-none')
@@ -255,15 +251,12 @@ export default function AddPublication({change, active}) {
     }
 
     const handleFile = e => {
-        console.log(e.target.files[0])
         setFile(e.target.files[0])
-        console.log(file)
     }
 
     const handleUpload = e => {
         e.preventDefault();
         const updatedInput = {...input, authors: authorList.toString()};
-        console.log(updatedInput)
         //* Upload the first page of publication detail
         const formData = new FormData();
         if (file !== null) {
@@ -271,8 +264,6 @@ export default function AddPublication({change, active}) {
         } 
 
         formData.append('input', JSON.stringify(updatedInput));
-        console.log(JSON.stringify(updatedInput))
-        console.log([...formData])
         axios({
             method: 'POST',
             url: `${base_url}/publication/add/manual`,
@@ -283,7 +274,6 @@ export default function AddPublication({change, active}) {
             }
         }).then(function (response) {
             setPublicationId(response.data.id);
-            console.log(response.data.id);
             toast.success("Successfully add the publication", {autoClose: 1500,hideProgressBar: true});
             setResearchDetails(true);
             setAddDetailsSection(false);
@@ -299,7 +289,6 @@ export default function AddPublication({change, active}) {
         input.addFilePath = addFiles;
         input.additionalDetails = additionalFields;
         input.additionalLinks = additionalLinks;
-        console.log(input)
 
         //* Upload the second page of publication detail
         const formData = new FormData();
@@ -318,7 +307,6 @@ export default function AddPublication({change, active}) {
         }
         
         formData.append('publicationid', publicationId);
-        console.log([...formData])
         axios({
             method: 'PUT',
             url: `${base_url}/publication/add/detail/manual`,

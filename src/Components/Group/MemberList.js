@@ -79,7 +79,6 @@ export default function MemberList({members, change}) {
             const arr = [];
             data.forEach(function(item,index){
                 // change the 
-                console.log(item[2])
                 if (item[2] === "Not Registered") {
                     item[2] = 0
                 } else if (item[2] === "Registered") {
@@ -92,14 +91,12 @@ export default function MemberList({members, change}) {
             input.member = arr;
             setEmailList(arr)
             setCounter(counter + 1)
-            console.log(input)
             axios({
                 method: 'PUT',
                 url: `${base_url}/group/member/update`,
                 data: input
             })  
                 .then(function(response){
-                    console.log("success")
                     setEmailList([])
                     change()
                     toast.success("Successfully deleting the member", {autoClose: 1500,hideProgressBar: true})

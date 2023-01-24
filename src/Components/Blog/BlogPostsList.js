@@ -98,9 +98,7 @@ export default function BlogPostsList({post, change}) {
             })
     }
 
-    console.log(account)
     const previewPost=()=> {
-        console.log(account.username)
         window.open(
             `${ui_url}/${account.username}/${params.id}`,
             '_blank'

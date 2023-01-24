@@ -24,7 +24,6 @@ export default function EditSettingModal({group, hide, change}) {
     const domainListUpdate = () => {
         setDomainList([...domainList, domain])
         setDomain("")
-        console.log(domainList)
     };
 
     const removeDomain = (index) => {
@@ -43,7 +42,6 @@ export default function EditSettingModal({group, hide, change}) {
                 item.status = 1
             }
         });
-        console.log(input)
         axios({
             method: 'PUT',
             url: `${base_url}/group/update`,

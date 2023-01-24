@@ -21,44 +21,6 @@ export default function EditPublicationModal({publication, hide, change}) {
     const [addFiles, setAddFiles] = useState(null);
     const [file, setFile] = useState(null);
 
-    console.log(input)
-    // const [input, setInput] = useState({
-    //     id: isObjectExist(publication, "id") ? publication.id : '' ,
-    //     userId: publication.hasOwnProperty("userId") ? publication.userId !== null ? publication.userId  :  ''  : '',
-    //     type: publication.hasOwnProperty("type") ? publication.type!== null ? publication.type  :  '' : '',
-    //     title: publication.hasOwnProperty("title") ? publication.title !== null ? publication.title  :  '' : '',
-    //     authors:publication.hasOwnProperty("authors") ? publication.authors !== null ? publication.authors  :  '' : '',
-    //     pubAbstract:publication.hasOwnProperty("pubAbstract") ? publication.pubAbstract !== null ? publication.pubAbstract  :  '' : '',
-    //     day:publication.hasOwnProperty("day") ? publication.day !== null ? publication.day  :  '' : '',
-    //     month:publication.hasOwnProperty("month") ? publication.month !== null ? publication.month  :  '' : '',
-    //     year:publication.hasOwnProperty("year") ? publication.year !== null ? publication.year  :  '' : '',
-    //     journal:publication.hasOwnProperty("journal") ? publication.journal !== null ? publication.journal  :  '' : '',
-    //     value:publication.hasOwnProperty("value") ? publication.value !== null ? publication.value  :  '' : '',
-    //     issue:publication.hasOwnProperty("issue") ? publication.issue !== null ? publication.issue  :  '' : '',
-    //     book:publication.hasOwnProperty("book") ? publication.book !== null ? publication.book  :  '' : '',
-    //     page:publication.hasOwnProperty("page") ? publication.page !== null ? publication.page  :  '' : '',
-    //     conferenceTitle:publication.hasOwnProperty("conferenceTitle") ? publication.conferenceTitle !== null ? publication.conferenceTitle : '' : '',
-    //     doi:publication.hasOwnProperty("doi") ? publication.doi !== null ? publication.doi  :  '' : '',
-    //     location:publication.hasOwnProperty("location") ? publication.location !== null ? publication.location  :  '' : '',
-    //     description:publication.hasOwnProperty("description") ? publication.description !== null ? publication.description  :  '' : '',
-    //     relPublication:publication.hasOwnProperty("relPublication") ? publication.relPublication !== null ? publication.relPublication  :  '' : '',
-    //     refNo:publication.hasOwnProperty("refNo") ? publication.refNo !== null ? publication.refNo  :  '' : '',
-    //     conferenceName:publication.hasOwnProperty("conferenceName") ? publication.conferenceName !== null ? publication.conferenceName  :  '' : '',
-    //     prStatus:publication.hasOwnProperty("prStatus") ? publication.prStatus !== null ? publication.prStatus  :  '' : '',
-    //     reportNumber:publication.hasOwnProperty("reportNumber") ? publication.reportNumber !== null ? publication.reportNumber  :  '' : '',
-    //     instution:publication.hasOwnProperty("institution") ? publication.institution !== null ? publication.institution  :  '' : '',
-    //     degree:publication.hasOwnProperty("degree") ? publication.degree !== null ? publication.degree  :  '' : '',
-    //     supervisor:publication.hasOwnProperty("supervisor") ? publication.supervisor !== null ? publication.supervisor  :  '' : '',
-    //     publisher:publication.hasOwnProperty("publisher") ? publication.publisher !== null ? publication.publisher  :  '' : '',
-    //     isbn:publication.hasOwnProperty("isbn") ? publication.isbn !== null ? publication.isbn  :  '' : '',
-    //     repoLink:publication.hasOwnProperty("repoLink") ? publication.repoLink !== null ? publication.repoLink  :  '' : '',
-    //     language:publication.hasOwnProperty("language") ? publication.language !== null ? publication.language  :  '' : '',
-    //     filePath:publication.hasOwnProperty("filePath") ? '' : '',
-    //     addFilePath:publication.hasOwnProperty("add_file") ? [] : [],
-    //     additionalDetails:publication.hasOwnProperty("additionalDetails") ? publication.additionalDetails !== null ? publication.additionalDetails  :  [] : [],
-    //     additionalLinks:publication.hasOwnProperty("additionalLinks") ? publication.additionalLinks !== null ? publication.additionalLinks :  [] : [],
-    //     addAddFilePath:publication.hasOwnProperty("addAddFilePath") ? publication.addAddFilePath !== null ? publication.addAddFilePath :  [] : [],
-    // });
     let modalStyle = {
         display: 'block',
         backgroundColor: 'rgba(0,0,0,0.8)'
@@ -74,7 +36,6 @@ export default function EditPublicationModal({publication, hide, change}) {
             ...prevState,
             [name]: value
         }))
-        console.log(name + " - " + value)
     } 
    
     const getSelectValue =( selectedOptions, actionMeta ) => {
@@ -99,7 +60,6 @@ export default function EditPublicationModal({publication, hide, change}) {
         );
         
         allWithClass.forEach(element => {
-            console.log(value==='Journal article')
             if (value==='Book'||value==='Book chapter'||value==='Book review'||value==='Dictionary entry'||value==='Encyclopedia entry'||value==='Edited book') {
                if(element.classList.contains('book')){
                 element.classList.remove('d-none')
@@ -155,7 +115,6 @@ export default function EditPublicationModal({publication, hide, change}) {
         } else {
             alert('Please enter an author name')
         }
-        // console.log(authorList)
         setAuthor([]);
     };
 
@@ -167,7 +126,6 @@ export default function EditPublicationModal({publication, hide, change}) {
         const list = [...authorList];
         list.splice(index, 1);
         setAuthorList(list);
-        // console.log(authorList)
     };
 
     function daysListSelect() {
@@ -343,8 +301,6 @@ export default function EditPublicationModal({publication, hide, change}) {
         input.additionalLinks = additionalLinks;
 
         // input.addFilePath = addFiles;
-        console.log(uploadedAddFile)
-        console.log(addFiles)
         const formData = new FormData();
         formData.append('publication', JSON.stringify(input));
         if (file !== null) {
@@ -356,11 +312,7 @@ export default function EditPublicationModal({publication, hide, change}) {
                 formData.append('files', file.file);
                 formData.append('description', file.description);
             }
-        }
-    
-        console.log(input)
-        console.log(uploadedAddFile)
-        console.log([...formData])  
+        } 
 
         axios({
             method: 'PUT',
