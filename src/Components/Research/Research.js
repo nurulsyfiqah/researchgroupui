@@ -21,7 +21,6 @@ export default function Research() {
 
     // get the scraped data from the google scholar
     const scrapePublication=()=>{   
-    console.log(user.id)
 
         const formdata = new FormData();
         formdata.append("gscLink", user.googleScholarLink);
@@ -49,8 +48,8 @@ export default function Research() {
 
     useEffect(() => {
         console.log("useEffect triggered")
-        scrapePublication()
-        setgsLink(true)
+        // scrapePublication()
+        // setgsLink(true)
     }, []);
 
     function removePublication(id){

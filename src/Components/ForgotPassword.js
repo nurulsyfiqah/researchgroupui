@@ -153,8 +153,9 @@ export default function ForgotPassword() {
 
     const stepThreeHandler =()=> {
         // update new password in the database
+        data.providedPassword = inputPassword.password;
+        data.password = "";
         console.log(data)
-        data.password = inputPassword.password;
         axios({
             method: 'PUT',
             url: `${base_url}/resetpassword`,

@@ -1,13 +1,14 @@
 import React, {useState,useEffect} from 'react';
 import { useParams } from 'react-router-dom';
-import parse from 'html-react-parser';
-import moment from "moment";
-import EditAnnouncementModal from "./EditAnnouncementModal"
-import axios from "axios";
 import {base_url} from "../../Service/serviceapi";
 import {toast} from "react-toastify";
 import { ReactSession } from 'react-client-session';
 import {contentStatus} from "../../Helper/util/util";
+import parse from 'html-react-parser';
+import moment from "moment";
+import EditAnnouncementModal from "./EditAnnouncementModal"
+import axios from "axios";
+import TimeAgo from 'react-timeago'
 
 export default function AnnouncementList({edit, group, announcement, tracker}) {
     const user = ReactSession.get("user");
@@ -39,7 +40,7 @@ export default function AnnouncementList({edit, group, announcement, tracker}) {
                     : 
                     <div className="card">
                         <div className="card-body">
-                            This is some text within a card body.
+                        No announcement yet
                         </div>
                     </div>
                 }
@@ -129,14 +130,53 @@ function AnnouncementBody({myKey, ann, edit, group}) {
                 toast.error("Error in publishing", {autoClose: 1500,hideProgressBar: true})
             })
     }
-
+    console.log(ann)
+    console.log(user)
+    if (ann.createdById === user.id && (ann.status === 0 || ann.status === 1)) {
     return (
         <div className="accordion-item" key={`key_${myKey}`}>
+        <h2 className="accordion-header">
+            <button className="accordion-button collapsed d-flex justify-content-md-between" type="button" data-bs-toggle="collapse"
+                    data-bs-target={`#ann${ann.id}`} aria-expanded="false"
+                    aria-controls="flush-collapseOne">
+                        <div>  <div>{ann.title}<span className="mx-2"> {contentStatus(ann.status)}</span></div></div>
+                        <div> <small className="text-muted"><TimeAgo date={ann.createdDate} /></small> </div>
+            </button>
+        </h2>
+        <div id={`ann${ann.id}`} className="accordion-collapse collapse"
+             aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+            <div className="accordion-body">
+                { ann.content.length > 0 ? parse(ann.content) : "No content"}
+                <blockquote><small>Created by { ann.createdByName } on { formatDate1(ann.createdDate) }</small></blockquote>
+                {
+                    (user.id === group.createdById) ? 
+                    <div className="d-grid gap-2 d-md-flex justify-content-md-end my-1">
+                        <button className="btn btn-danger btn-sm" id={`del_${ann.id}`} type="button" onClick={deleteAnn}>Delete</button>
+                        <button className="btn btn_dark_normal btn-sm" id={`edit_${ann.id}`} type="button" onClick={()=>showEditAnnModal()}>Edit</button>
+                        <button className={`btn btn-secondary btn-sm me-md-1 ${ann.status === 0 ? "d-none" : ""}`} id={`unpub_${ann.id}`} type="button" onClick={()=>unpublishAnn()}>Unpublish</button>
+                        <button className={`btn btn-outline-dark btn-sm me-md-1 ${ann.status === 1 ? "d-none" : ""}`} id={`pub_${ann.id}`} type="button" onClick={()=>publishAnn()}>Publish</button>
+                    </div>
+                    : "No Announcement yet" 
+                }
+                
+            </div>
+        </div>
+
+        {
+            editAnnModal === true ? <EditAnnouncementModal ann={ann} hide={()=>setEditAnnModal(false)} edit={editedStatus}/> : ""
+        }
+
+    </div>
+    )
+    } else if (ann.createdById !== user.id && ann.status === 1) {
+        return (
+            <div className="accordion-item" key={`key_${myKey}`}>
             <h2 className="accordion-header">
                 <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target={`#ann${ann.id}`} aria-expanded="false"
                         aria-controls="flush-collapseOne">
-                    <div>{ann.title} <span mx-2> {contentStatus(ann.status)}</span></div>
+                    <div>{ann.title}</div>
+                    <div> <small className="text-muted mx-2"><TimeAgo date={ann.createdDate} /></small> </div>
                 </button>
             </h2>
             <div id={`ann${ann.id}`} className="accordion-collapse collapse"
@@ -152,20 +192,23 @@ function AnnouncementBody({myKey, ann, edit, group}) {
                             <button className={`btn btn-secondary btn-sm me-md-1 ${ann.status === 0 ? "d-none" : ""}`} id={`unpub_${ann.id}`} type="button" onClick={()=>unpublishAnn()}>Unpublish</button>
                             <button className={`btn btn-outline-dark btn-sm me-md-1 ${ann.status === 1 ? "d-none" : ""}`} id={`pub_${ann.id}`} type="button" onClick={()=>publishAnn()}>Publish</button>
                         </div>
-                        : "No Announcement yet" 
+                        : "" 
                     }
                     
                 </div>
             </div>
-
+    
             {
                 editAnnModal === true ? <EditAnnouncementModal ann={ann} hide={()=>setEditAnnModal(false)} edit={editedStatus}/> : ""
             }
-
+    
         </div>
-
-
-    )
+        )
+    } else {
+        return (
+            <div></div>
+        )
+    }
 }
 
 function TrackerBody(tracker) {

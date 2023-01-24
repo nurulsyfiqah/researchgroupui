@@ -1,13 +1,15 @@
 import React from 'react';
 import { LinkedinShareButton, TwitterShareButton, FacebookShareButton, FacebookIcon, TwitterIcon, LinkedinIcon } from 'react-share';
 import ui_url from "../../Service/serviceui"
+import {ReactSession} from "react-client-session";
 
 export default function SharePostModal({post, hide}) {
+    const account = ReactSession.get("account");
     let modalStyle = {
         display: 'block',
         backgroundColor: 'rgba(0,0,0,0.8)'
     }
-
+    console.log(post)
     return (
         <div className="modal show fade" id={post.id} data-bs-backdrop="static" data-bs-keyboard="false"
              aria-labelledby="staticBackdropLabel" aria-hidden="true" style={modalStyle}>
@@ -21,30 +23,27 @@ export default function SharePostModal({post, hide}) {
                         Choose where you want to share your article with:
                         <div className="d-flex flex-row justify-content-center">
                             <FacebookShareButton
-                                url={"https://orcid.org/0000-0001-9624-3506"}
+                                url={`https://researchgroupui.herokuapp.com/${account.username}/${post.id}`}
                                 quote={post.title}
-                                hashtag="#research"
                                 className="m-2"
                             >
-                                <FacebookIcon size={36} round={true}/>
+                            <FacebookIcon size={36} round={true}/>
                             </FacebookShareButton>
 
                             <TwitterShareButton
-                                url={"https://orcid.org/0000-0001-9624-3506"}
+                                 url={`https://researchgroupui.herokuapp.com/${account.username}/${post.id}`}
                                 quote={post.title}
-                                hashtag="#research"
                                 className=" m-2"
                             >
-                                <TwitterIcon size={36} round={true}/>
+                            <TwitterIcon size={36} round={true}/>
                             </TwitterShareButton>
 
                             <LinkedinShareButton
-                                url={"https://orcid.org/0000-0001-9624-3506"}
+                                 url={`https://researchgroupui.herokuapp.com/${account.username}/${post.id}`}
                                 quote={post.title}
-                                hashtag="#research"
                                 className="m-2"
                             >
-                                <LinkedinIcon size={36} round={true}/>
+                            <LinkedinIcon size={36} round={true}/>
                             </LinkedinShareButton>
 
                         </div>

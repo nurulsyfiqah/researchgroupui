@@ -74,11 +74,20 @@ function BlogComponent() {
     },[change])
 
     return (
-        <div className="">
+        <div className="my-4 py-2">
              <ToastContainer />
-            <h1 className="page_title mt-2">Blog</h1>
+             <h2 className="page_title">Research</h2>
+            <button className="btn btn-sm btn_dark mt-3 mb-2" onClick={ createPost } > New Post</button>
 
-            <nav>
+            {
+                        posts.length > 0 ?
+                            posts.map((post)=>(
+                                <BlogPostsList post={post} change={()=>{setChange(change+1)}}/>
+                            ))
+                            :
+                            ""
+                    }
+            {/* <nav>
                 <div className="nav nav-tabs" id="nav-tab" role="tablist">
                     <button className="nav-link active" id="nav-post-tab" data-bs-toggle="tab"
                             data-bs-target="#nav-post" type="button" role="tab" aria-controls="nav-home"
@@ -91,8 +100,8 @@ function BlogComponent() {
                             type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Setting
                     </button>
                 </div>
-            </nav>
-            <div className="tab-content" id="nav-tabContent">
+            </nav> */}
+            {/* <div className="tab-content" id="nav-tabContent">
 
                 <div className="tab-pane fade show active" id="nav-post" role="tabpanel"
                      aria-labelledby="nav-home-tab">
@@ -115,7 +124,7 @@ function BlogComponent() {
                      aria-labelledby="nav-home-tab">Setting
                 </div>
 
-            </div>
+            </div> */}
 
         </div>
     )

@@ -533,7 +533,7 @@ export function AddAffiliationModal({hide, change}) {
 
         axios({
             method: 'PUT',
-            url: `${base_url}/user/user/affiliation/update`,
+            url: `${base_url}/user/affiliation/update`,
             data: affiliation
         }).then(function(response) {
             toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
@@ -618,7 +618,7 @@ export function EditAffiliationModal({data, allData, hide, change, index}) {
         console.log(newAff)
         axios({
             method: 'PUT',
-            url: `${base_url}/user/user/affiliation/updatelist`,
+            url: `${base_url}/user/affiliationlist/update`,
             data: newAff
         }).then(function(response) {
             toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})

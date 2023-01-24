@@ -44,7 +44,7 @@ export default function GroupSetting({group,change}) {
     }
 
     return (
-        <div key={group.id}>
+        <div key={`key_${group.id}`}>
             <div className="card my-2">
                 <div className="card-header d-flex justify-content-between">
                     <div>Group Information</div>

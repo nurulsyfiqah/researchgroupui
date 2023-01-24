@@ -13,8 +13,7 @@ import {toast} from "react-toastify";
 
 export default function BlogPostsList({post, change}) {
 
-    const account = ReactSession.get("username");
-    console.log(account);
+    const account = ReactSession.get("account");
     const [modal, setModal] = useState(false);
     const [tempData, setTempData] = useState([]);
 
@@ -31,9 +30,7 @@ export default function BlogPostsList({post, change}) {
         commentOption: post.commentOption,
     }
 
-    const getData = () => {
-        console.log(post)
-        let tempData = post
+    const sharePost = () => {
         setTempData(post)
         return setModal(true)
     }
@@ -101,10 +98,12 @@ export default function BlogPostsList({post, change}) {
             })
     }
 
+    console.log(account)
     const previewPost=()=> {
+        console.log(account.username)
         window.open(
-            `${ui_url}/${account}/${params.id}`,
-            '_blank' // <- This is what makes it open in a new window.
+            `${ui_url}/${account.username}/${params.id}`,
+            '_blank'
         );
         // window.location.href = `${ui_url}/${account}/${params.id}`;
     }
@@ -135,12 +134,11 @@ export default function BlogPostsList({post, change}) {
                         <div className="blog-icon"> { post.status === 0 ? <PublishIcon onClick={() =>publishPost()} data-bs-toggle="tooltip" data-bs-placement="bottom" title="Publish the Post" /> : <UnpublishIcon onClick={() => unPublishPost()} data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unpublish the Post" /> }  </div>
                         <div className="blog-icon" onClick={() =>previewPost()}><PreviewIcon  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Preview the Post"  /> </div>
                         <div className="blog-icon" onClick={() =>deletePost()}><TrashIcon  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete the Post"  /> </div>
+                        <div className={`blog-icon ${post.status === 0 ? "d-none" : ""}`}  ><ShareIcon onClick={() =>sharePost()}  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Share the Post" /> </div>
                     </div>
-                    <div className="d-flex flex-row justify-content-end">
-                        <div className={`blog-icon-small ${post.status === 0 ? "d-none" : ""} `}  onClick={() =>getData()} ><ShareIcon data-bs-toggle="tooltip" data-bs-placement="bottom" title="Share the Post" /> </div>
-                        <div className={`display-icon-small ${post.status === 0 ? "d-none" : ""} `} > 0 <CommentIcon  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Number of Comments"  /> </div>
-
-                    </div>
+                    {/* <div className="d-flex flex-row justify-content-end">
+                        <div className={`display-icon-small ${post.status === 0 ? "d-none" : ""} `} > </div>
+                    </div> */}
                 </div>
             </div>
             {

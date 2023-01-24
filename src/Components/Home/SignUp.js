@@ -60,7 +60,7 @@ export default function SignUp () {
                     break;
                 case "fullName":
                     if (value === "") {
-                        stateObj[name] = "Please enter full name";
+                        stateObj[name] = "Please enter user/publication/reject";
                     }
                     break;
                 case "username":
@@ -257,7 +257,7 @@ export default function SignUp () {
             
             {/* <div className="row mt-2">
                 <div className="col-md-12">
-                    <label htmlFor="fullName" className="form-label">Full Name*</label>
+                    <label htmlFor="fullName" className="form-label">user/publication/reject*</label>
                     <input
                         className="form-control"
                         id="fullName"

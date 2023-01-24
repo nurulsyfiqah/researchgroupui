@@ -287,9 +287,9 @@ export default function EditPublicationModal({publication, hide, change}) {
     }
 
     const removeUploadedAddFile=(index) => {
-        const data = [...uploadedAddFiles]; 
+        const data = [...uploadedAddFile]; 
         data.splice(index, 1)
-        setUploadedAddFiles(data)
+        setUploadedAddFile(data)
     }
 
     const addFile = () => {
@@ -338,8 +338,10 @@ export default function EditPublicationModal({publication, hide, change}) {
 
     function submit() {
         input.authors = authorList.toString();
+        input.addAddFilePath = uploadedAddFile;
         input.additionalDetails = additionalFields;
-        
+        input.additionalLinks = additionalLinks;
+
         // input.addFilePath = addFiles;
         console.log(uploadedAddFile)
         console.log(addFiles)
@@ -355,12 +357,7 @@ export default function EditPublicationModal({publication, hide, change}) {
                 formData.append('description', file.description);
             }
         }
-
-        
-        // input.addAddFilePath = addFiles;
-        input.additionalDetails = additionalFields;
-        input.additionalLinks = additionalLinks;
-        // formData.append('files',addFiles)
+    
         console.log(input)
         console.log(uploadedAddFile)
         console.log([...formData])  

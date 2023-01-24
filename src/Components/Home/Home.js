@@ -95,7 +95,7 @@ export default function Home() {
                         <EditIcon className="icon_dark" onClick={() =>showImageModal()}/>
                     </div>
                     {
-                         (isObjectExist(user,"image")) ? <img src={base64toImage(user.imageBinary.data, user.image)}  style={{overflow: "hidden", height: "250px", width: "auto", objectFit: "cover"}} className="img-fluid mx-auto d-block" alt="placeholder"/> : <img src={image_placeholder()} className="img-fluid mx-auto d-block" alt="placeholder"/>
+                         (isObjectExist(user,"image")) ? <img src={base64toFile(user.imageBinary.data, user.image)}  style={{overflow: "hidden", height: "250px", width: "auto", objectFit: "cover"}} className="img-fluid mx-auto d-block" alt="placeholder"/> : <img src={image_placeholder()} className="img-fluid mx-auto d-block" alt="placeholder"/>
                     }
                     
                 </div>
@@ -145,8 +145,8 @@ export default function Home() {
                         <h4>
                             {
                                 isObjectExist(user,"domain") ? user.domain?.map((data, index) =>
-                                    <span className="badge bg-secondary m-1 text-clamping-row" key={index}>{data}</span>
-                                ) : 'No domain added'
+                                    <span className="badge bg-dark m-1 text-clamping-row" key={index}>{data}</span>
+                                ) : <div className="fs-6">No domain added</div>
                             }
                         </h4>
                     </div>

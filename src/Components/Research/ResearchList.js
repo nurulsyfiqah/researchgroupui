@@ -42,7 +42,7 @@ export default function ResearchList({publication, change}) {
         })
         .then(function(response){
             change();
-            toast.success("Publication highlighted successfully", {autoClose:1500, hideProgressBar:true});
+            toast.success("Publication highlight successfully updated", {autoClose:1500, hideProgressBar:true});
         }, (error) => {
             toast.error("Error in highlighting publication", {autoClose:1500, hideProgressBar:true});
         })

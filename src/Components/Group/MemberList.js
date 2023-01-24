@@ -25,13 +25,11 @@ export default function MemberList({members, change}) {
 
     // change status    
     const updatedMemberData = mem?.map(item => Object.assign({}, item, { status: memberRegStatus(item) }));
-    console.log(updatedMemberData)
 
     useEffect(() => {
         input.member = emailList.length > 0 ? emailList : members.member;
     },[counter])
 
-    
 
     // datatable
     const columns = [
@@ -76,7 +74,7 @@ export default function MemberList({members, change}) {
         filter: false,
         elevation: 0,
         responsive: 'standard',
-        selectableRows: (user.id === members.createdById) ? 'single' : 'none',
+        selectableRows: (user.id === members.createdById) ? 'multiple' : 'none',
         onRowsDelete: function(rowsDeleted, data) {
             const arr = [];
             data.forEach(function(item,index){
@@ -97,7 +95,7 @@ export default function MemberList({members, change}) {
             console.log(input)
             axios({
                 method: 'PUT',
-                url: `${base_url}/group/update`,
+                url: `${base_url}/group/member/update`,
                 data: input
             })  
                 .then(function(response){

@@ -13,16 +13,7 @@ export default function AddMemberModal({group, change, hide}) {
     const [error, setError] = useState("");
 
     let flag = true;
-    const input = {
-        id: group.id,
-        name: group.name,
-        description: group.description,
-        domain: group.domain,
-        member: group.member,
-        createdBy: group.createdBy,
-        createdDate: group.createdDate,
-        status: 0,
-    }
+    const input = group;
 
     const emailListUpdate = () => {
 
@@ -34,7 +25,7 @@ export default function AddMemberModal({group, change, hide}) {
                     memberId: ""
                 }])
             } else {
-                setError("Email had been invited")
+                setError("Member had been invited")
             }
         } else {
             setError("Email field should not be empty")
@@ -62,7 +53,7 @@ export default function AddMemberModal({group, change, hide}) {
         e.preventDefault()
         // combine previous member and additional member
         Array.prototype.push.apply(input.member,emailList);
-        console.log(input)
+        
 
         input.member.forEach(function(item, index) {
             if (item.status === "Not Registered") {
@@ -71,42 +62,19 @@ export default function AddMemberModal({group, change, hide}) {
                 item.status = 1
             }
         });
+        console.log(input)
 
+        const formdata = new FormData();
+        formdata.append("group", JSON.stringify(input));
+        formdata.append("newMember", JSON.stringify(emailList));
+        console.log([...formdata])
         axios({
             method: 'PUT',
-            url: `${base_url}/group/update`,
-            data: input
+            url: `${base_url}/group/update1`,
+            data: formdata,
+            header: { 'Content-Type': 'multipart/form-data' }
         })
             .then(function(Response) {
-                if (emailList.length > 0) {
-                    emailList.forEach((email, index) => {
-                        // const emailParams = {
-                        //     service_id: "service_nc347wl",
-                        //     template_id: "template_a9a7mi9",
-                        //     user_id: "VJgY9rNMYrcl4jBgg",
-                        //     template_params: {
-                        //         'to_email': email.memberEmail,
-                        //         'reply_to': 'nurulsyfiqah25@gmail.com',
-                        //         'group_name': group.name,
-                        //         'creator': 'nurul',
-                        //         'message': '',
-                        //         'system_name': 'Research Group Management System'
-                        //     }
-                        // }
-                        // emailjs.send(emailParams.service_id, emailParams.template_id, emailParams.template_params, emailParams.user_id)
-                        //     .then((result) => {
-                        //         if (result.status === 200) {
-                        //             count++;
-                        //             if (count >= emailList.length) {
-                        //                 toast.success("Invitations had been sent")
-                        //                 window.location.reload(false)
-                        //             }
-                        //         }
-                        //     }, (error) => {
-                        //         console.log(error.text);
-                        //     });
-                    })
-                }
                 toast.success("Successfully inviting everyone", {autoClose: 1500,hideProgressBar: true});
                 hide()
                 change()
