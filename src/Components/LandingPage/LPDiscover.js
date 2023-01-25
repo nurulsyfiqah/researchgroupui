@@ -5,7 +5,7 @@ import "../../Assets/Styles/component.css"
 export default function LPDiscover () {
     return (
         <section id="section_publication" className="section_publication">
-        <div className="row">
+        {/* <div className="row">
           <div className="col-md-6 container_details">
             <div className="section_title">Discover</div>
             <div className="section_subtitle">
@@ -30,7 +30,7 @@ export default function LPDiscover () {
           <div className="col-md-6 container_image">
             <img className="img-fluid" src= {DiscoveryLogo} alt="research logo" />
           </div>
-        </div>
+        </div> */}
       </section>
     )
 }
