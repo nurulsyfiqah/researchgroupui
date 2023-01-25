@@ -15,16 +15,30 @@ export default function PublicationList({publication}) {
                 <div className="card-body">
                     <h5 className="card-title">{ publication.title!=null ? publication.title : "No Title" }</h5>
                     <div className="card-text my-1"> 
-                        <div className="fst-italic fw-light"> { publication.authors } </div>
+                        <div className="fst-italic fw-light text-truncate"> { publication.authors } </div>
                         <div> { publication.journal } </div>
                         <div> { publication.doi !== '' ? publication.doi : ''} </div>
                         <div className="text-clamping mt-2"> { publication.description } </div>
                     </div>
                     <div className="row">
                     {
+                        <div className="my-1 col-md-6">
+                            <ul>
+                                { isObjectExist(publication, "volume") ? <li>Volume: {publication.volume}</li> : ""}
+                                { isObjectExist(publication, "issue") ? <li>Issue: {publication.issue} </li>: ""}
+                                { isObjectExist(publication, "page") ? <li>Pages: {publication.page}</li> : ""}
+                                { isObjectExist(publication, "publisher") ? <li>Publisher: {publication.publisher}</li> : ""}
+                                { isObjectExist(publication, "isbn") ? <li>ISBN: {publication.isbn}</li> : ""}
+                                { isObjectExist(publication, "conferenceName") ? <li>Conference: {publication.conferenceName}</li> : ""}
+                                { isObjectExist(publication, "institution") ? <li>Institution: {publication.institution}</li> : ""}
+                                { isObjectExist(publication, "custodion") ? <li>Custodion: {publication.custodion }</li>: ""}
+                                { isObjectExist(publication, "doi") ? <li>DOI: {publication.doi}</li> : ""}
+                            </ul>
+                        </div>
+                    }
+                    {
                         isObjectExist(publication, "additionalDetails") ? 
                         <div className="my-1 col-md-6">
-                            <div className="fw-bold">Details</div>
                             <div className="">
                                 <ul>
                                 { addDetailList(publication.additionalDetails) }
@@ -36,10 +50,10 @@ export default function PublicationList({publication}) {
                     }
 
                     { 
-                        isObjectExist(publication, "filePath") ? 
+                        isObjectExist(publication, "file") ? 
                         <div className="my-1 col-md-6">
                             <div className="fw-bold">File</div>
-                            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                            <div className="">
                                 <ul>
                                 { addMaterialBtn(publication.file, "file", publication.filePath)}
                                 </ul>
@@ -53,7 +67,7 @@ export default function PublicationList({publication}) {
                         isObjectExist(publication, "addAddFilePath")? 
                         <div className="my-1 col-md-6">
                             <div className="fw-bold">Additional File(s)</div>
-                            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                            <div className="">
                                 <ul>
                                 { addMaterialBtn(publication.addAddFilePath, "file") }
                                 </ul>
@@ -67,7 +81,7 @@ export default function PublicationList({publication}) {
                         isObjectExist(publication, "link")? 
                         <div className="my-1 col-md-6">
                             <div className="fw-bold">Link</div>
-                            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                            <div className="">
                                 <ul>{ addMaterialBtn(publication.link, "g_scholar") }</ul>
                             </div>
                         </div>
@@ -78,25 +92,14 @@ export default function PublicationList({publication}) {
                         isObjectExist(publication, "additionalLinks") ?
                         <div className="my-1 col-md-6">
                             <div className="fw-bold">Additional Link(s)</div>
-                            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                            <div className="">
                                 <ul>{ addMaterialBtn(publication.additionalLinks, "add_link") }</ul>
-                            
                             </div>
                         </div>
                         :
                         ""
                     }
                     
-                    { 
-                        isObjectExist(publication, "link") ? 
-                        <div className="my-1 col-md-6">
-                            <div className="fw-bold">Link</div>
-                            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
-                                <ul>{ addMaterialBtn(publication.link, "g_scholar") }</ul>
-                            </div>
-                        </div>
-                        : ""
-                    }
                     </div>
                 </div>
                 
