@@ -112,7 +112,7 @@ export default function TrackerList({tracker, change, index}) {
     // useEffect(()=>{
     //     getDataFromServer();
     // })
-
+    console.log(tracker.userId + " " + user.id)
     return (
         <div key={`tr_${index}`}>
         { /* Group Tracker */ tracker.type === "Group" || tracker.type === "group" ? 
@@ -128,7 +128,12 @@ export default function TrackerList({tracker, change, index}) {
                     <Link to={`/tracker/${tracker.id}`}>
                         <button className="btn btn_dark_normal btn-sm me-md-2" type="button">View</button>
                     </Link>
-                    <button className="btn btn-dark btn-sm me-md-2" type="button" onClick={getData} value="group">Edit</button>
+                    {
+                        user.id === tracker.userId ? 
+                        <button className="btn btn-dark btn-sm me-md-2" type="button" onClick={getData} value="group">Edit</button>
+                        :
+                        ""
+                    }
                     </div>
                 </div>
             </div>
