@@ -13,6 +13,7 @@ export default function MemberList({members, change}) {
     const mem = members.member;
 
     let input = {
+        icon: members.icon,
         id: members.id,
         name: members.name,
         description: members.description,

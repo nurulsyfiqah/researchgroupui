@@ -26,38 +26,78 @@ export default function VerifyPublication({publication, change, user, removepub}
             })
     }
 
-    const verifyPublication = () => {
-        // scrape the article data from the link
-        axios({
-            method: 'GET',
-            url: base_url + '/publication/article?articleLink=' + articleLink ,
-          })
-            .then(function (response) {
-                // return result
-                const data = response.data;
-                const verifiedPub = response.data;
-                if (data.hasOwnProperty("userId")) {
-                    data.userId = user.id;
+    // const verifyPublication = () => {
+    //     // scrape the article data from the link
+    //     axios({
+    //         method: 'POST',
+    //         url: base_url + '/publication/article1?articleLink='+articleLink,
+    //         headers: {
+    //             'Content-Type': 'application/x-www-form-urlencoded',
+    //         }
+    //       })
+    //         .then(function (response) {
+    //             // return result
+    //             const data = response.data;
+    //             const verifiedPub = response.data;
+    //             if (data.hasOwnProperty("userId")) {
+    //                 data.userId = user.id;
+    //             }
+
+    //             axios({
+    //                 method: 'POST',
+    //                 url: base_url + '/publication/add' ,
+    //                 data : verifiedPub
+    //               })
+    //                 .then(function (response) {
+    //                     // return result
+    //                     toast.success("Verified", {autoClose: 1500,hideProgressBar: true})
+    //                     removepub()
+    //                     change()
+    //                 }, (error) => {
+    //                     toast.error("Something went wrong on Server",{autoClose: 1500,hideProgressBar: true})
+    //                 })
+
+    //         }, (error) => {
+    //             toast.error("Something went wrong on Server",{autoClose: 1500,hideProgressBar: true})
+    //         })
+    //     // save the publication data to db
+    // }
+    const verifyPublication = async () => {
+        try {
+            const encodedArticleLink = encodeURIComponent(articleLink);
+            const response = await axios({
+                method: 'POST',
+                url: base_url + '/publication/article1?articleLink='+encodedArticleLink,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 }
+              });
 
-                axios({
-                    method: 'POST',
-                    url: base_url + '/publication/add' ,
-                    data : verifiedPub
-                  })
-                    .then(function (response) {
-                        // return result
-                        toast.success("Verified", {autoClose: 1500,hideProgressBar: true})
-                        removepub()
-                        change()
-                    }, (error) => {
-                        toast.error("Something went wrong on Server")
-                    })
-
-            }, (error) => {
-                toast.error("Something went wrong on Server")
-            })
-        // save the publication data to db
+            const data = response.data;
+            console.log(data)
+            // if (data != null) {
+            //     removepub()
+            //     toast.success("Verified", {autoClose: 1500,hideProgressBar: true})
+            //     change()
+            // } else {
+            //     toast.error("Unable to verfy",{autoClose: 1500,hideProgressBar: true})
+            //     change()
+            // }
+            const verifiedPub = response.data;
+            if (data.hasOwnProperty("userId")) {
+                data.userId = user.id;
+            }
+            const addResponse = await axios({
+                method: 'POST',
+                url: base_url + '/publication/add',
+                data : verifiedPub
+              });
+              addResponse
+              removepub()
+              change()
+        } catch (error) {
+            toast.error("Something went wrong on Server",{autoClose: 1500,hideProgressBar: true})
+        }
     }
 
     const previewPub=(e)=> {

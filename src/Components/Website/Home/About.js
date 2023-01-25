@@ -34,7 +34,7 @@ export default function About({account, user}) {
                 <div className="col-md-3 mb-1">
                 <div className="">
                     <img
-                        src= {user.image !== "" ? base64toImage(user.imageBinary.data, user.image) : image_placeholder()}
+                        src= { isObjectExist(user, "imageBinary") ? base64toImage(user.imageBinary.data, user.image) : image_placeholder()}
                         alt="user_image"
                         className="img-fluid mx-auto d-inline-block align-text-top my-1 nav_logo d-block"
                         style={{overflow: "hidden", height: "190px", width: "150px", objectFit: "cover"}}
@@ -42,12 +42,12 @@ export default function About({account, user}) {
                 </div>
                 </div>
                 <div className="col-md-9 align-self-center">
-                    <h3 className="text-bold">{ account !== null ? account.lastName: ''}, { account !== null ? account.firstName : ''}</h3>
-                    <h5>Penultimate Software Engineering Student in University Malaya</h5>
+                    <h3 className="text-bold">{ isObjectExist(account, "firstName") ? account.firstName: ''} { isObjectExist(account, "lastName")  ? account.lastName : ''}</h3>
+                    {/* <h5>{ isObjectExist(user, "about") ? user.about : ''}</h5> */}
                     <div className="row justify-content-lg-start">
                         {
-                            user !== null ? 
-                            user.socialMedia.map((item, index)=>{
+                            isObjectExist(user, "socialMedia") ? 
+                            user.socialMedia?.map((item, index)=>{
                                 return(
                                     <SocialIcon key={`icon_${index}`} url={item} style={{ height: 30, width: 30 }} className="mx-2" />
                                 )
@@ -60,7 +60,7 @@ export default function About({account, user}) {
             </div>
 
             <div className="text-justify mt-2">
-                {user !== null ? user.about : ''}
+                {isObjectExist(user, "about") ? user.about : ''}
             </div>
 
             <hr/>
@@ -68,7 +68,7 @@ export default function About({account, user}) {
                 <h3 className="my-2">Highlight</h3>
                 {
                     highlightedPublications !== null ?
-                    highlightedPublications.map((item, index)=>{
+                    highlightedPublications?.map((item, index)=>{
                         return(
                             <div className="card my-2" key={`highlighted_${index}`}>
                                 <div className="row g-0">

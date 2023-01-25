@@ -52,7 +52,7 @@ export default function ResearchList({publication, change}) {
                 <div className="card-body">
                     <h5 className="card-title">{ publication.title!=null ? publication.title : "No Title" }</h5>
                     <div className="card-text my-1"> 
-                        <div className="fst-italic fw-light"> { publication.authors } </div>
+                        <div className="fst-italic fw-light text-truncate"> { publication.authors } </div>
                         <div> { publication.journal } </div>
                         <div> { publication.doi !== '' ? publication.doi : ''} </div>
                         <div className="text-clamping mt-2"> { publication.description } </div>
@@ -73,7 +73,7 @@ export default function ResearchList({publication, change}) {
                     }
 
                     { 
-                        isObjectExist(publication, "filePath") ? 
+                        isObjectExist(publication, "file") ? 
                         <div className="my-1 col-md-6">
                             <div className="fw-bold">File</div>
                             <div className="d-grid gap-2 d-md-flex justify-content-md-start">

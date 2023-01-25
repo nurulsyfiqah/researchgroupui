@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from "axios";
+import Picker from 'emoji-picker-react';
 import {base_url} from "../../Service/serviceapi";
 import {toast} from "react-toastify";
 import {BsXLg} from "react-icons/bs";
@@ -8,6 +9,7 @@ export default function EditSettingModal({group, hide, change}) {
     let [input, setInput] = useState(group);
     const [domainList, setDomainList] = useState(group.domain);
     const [domain, setDomain] = useState("");
+    const [chosenEmoji, setChosenEmoji] = useState(null);
 
     useEffect(() => {
         setInput(group)
@@ -32,8 +34,13 @@ export default function EditSettingModal({group, hide, change}) {
         setDomainList(list);
     };
 
+    const onEmojiClick = (event, emojiObject) => {
+        setChosenEmoji(emojiObject);
+    };
+
     const submitHandler = (e) => {
         e.preventDefault();
+        input.icon = chosenEmoji.emoji;
         input.domain = domainList;
         input.member.forEach(function(item, index) {
             if (item.status === "Not Registered") {
@@ -70,6 +77,10 @@ export default function EditSettingModal({group, hide, change}) {
                             <label htmlFor="groupNameModal" className="form-label">Name</label>
                             <div className="input-group input-group-sm mb-1">
                                 <input className="form-control" id="groupNameModal" onChange={onInputChange} name="name" value={input.name}/>
+                            </div>
+                            <label htmlFor="groupIconModal" className="form-label">Icon {chosenEmoji ? ( <span>{chosenEmoji.emoji}</span> ) : ( '' )}</label>
+                            <div className="input-group input-group-sm mb-1">
+                                <Picker native={true} onEmojiClick={onEmojiClick} pickerStyle={{ width: '100%', height: '13em' }} disableSearchBar={false}/>
                             </div>
                             <div className="mb-1">
                                 <label htmlFor="descriptionModal" className="form-label">Description</label>

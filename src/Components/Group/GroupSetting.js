@@ -56,6 +56,10 @@ export default function GroupSetting({group,change}) {
                         <div className="col-md-9">{group.name}</div>
                     </div>
                     <div className="row my-1">
+                        <div className="col-md-3 fw-bold">Icon</div>
+                        <div className="col-md-9">{group.icon}</div>
+                    </div>
+                    <div className="row my-1">
                         <div className="col-md-3 fw-bold">Description</div>
                         <div className="col-md-9">{group.description}</div>
                     </div>
