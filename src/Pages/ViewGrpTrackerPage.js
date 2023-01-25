@@ -469,7 +469,7 @@ function ViewGrpTrackerComponent() {
                     <h4><span className={`badge ${taskStatusBadgeColour(getTaskStatus(tracker.endDate))}`}>{getTaskStatus(tracker.endDate)}</span></h4>
                     <hr/>
                     
-                    {tracker.details}
+                    {/* {tracker.details}
                     {
                         tracker.filePath ? <div className="mt-3 my-1 fw-bold">File(s)</div> : ''
                     }
@@ -482,7 +482,7 @@ function ViewGrpTrackerComponent() {
                         })
                         :
                         "no file"
-                    }
+                    } */}
                     { 
                         isObjectExist(tracker, "file") ? 
                         <div className="my-1">
