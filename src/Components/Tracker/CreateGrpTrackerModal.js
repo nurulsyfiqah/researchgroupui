@@ -88,7 +88,7 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
             for(const file of files) {
                 formData.append('files', file);
             }
-
+            console.log(files)
             formData.append('tracker', JSON.stringify(input));
             axios({
                 method: 'POST',
@@ -108,18 +108,26 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
                 hide();
             })
         } else if (action === "edit") {
-            // axios({
-            //     method: 'PUT',
-            //     url: `${base_url}/tracker/update`,
-            //     data: input,
-            // }).then(function(response) {
-            //     toast.success("Successfully update the task", {autoClose: 1500,hideProgressBar: true})
-            //     hide();
-            //     change();
-            // }, (error) => {
-            //     toast.error("Error updating the task", {autoClose: 1500,hideProgressBar: true})
-            //     hide();
-            // })
+            const formData = new FormData();
+            for(const file of files) {
+                formData.append('files', file);
+            }
+            formData.append('tracker', JSON.stringify(input));
+            axios({
+                method: 'PUT',
+                url: `${base_url}/tracker/update`,
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            }).then(function(response) {
+                toast.success("Successfully update the task", {autoClose: 1500,hideProgressBar: true})
+                hide();
+                change();
+            }, (error) => {
+                toast.error("Error updating the task", {autoClose: 1500,hideProgressBar: true})
+                hide();
+            })
         }
     }
 

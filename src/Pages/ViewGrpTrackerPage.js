@@ -12,10 +12,8 @@ import {useParams } from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react';
 import { ReactSession } from "react-client-session";
 import {base_url} from "../Service/serviceapi";
-import { getFileName, isObjectExist, base64toFile} from "../Helper/util/util";
+import { getFileName, isObjectExist, base64toFile, addMaterialBtn} from "../Helper/util/util";
 import { FaTrashAlt as TrashIcon } from "react-icons/fa";
-
-
 
 export default function ViewGrpTrackerPage() {
 
@@ -96,12 +94,15 @@ function ViewGrpTrackerComponent() {
             let submittedTasks = getUserSubmittedTasks(response.data);
             if (isObjectExist(submittedTasks, "text")) {
                 setSubmission(submittedTasks)
+            } else {
+                setSubmission(submittedTasks)
             }
             // setSubmission(getUserSubmittedTasks(response.data))
             response.data.submittedTasks !== null ? setNum(response.data.submittedTasks.length) : setNum(0)
             getGroupByTrackerId(response.data.groupId)
             setGroupSubmissionDetails(response.data.submittedTasks)
             setFiles(submission != null ? submission.file : [])
+            console.log(submission)
         }, (error)=>{
             console.log(error)
         });
@@ -481,6 +482,19 @@ function ViewGrpTrackerComponent() {
                         })
                         :
                         "no file"
+                    }
+                    { 
+                        isObjectExist(tracker, "file") ? 
+                        <div className="my-1">
+                            <div className="fw-bold">File</div>
+                            <div className="">
+                                <ul>
+                                { addMaterialBtn(tracker.file, "file", tracker.file.filename)}
+                                </ul>
+                            </div>
+                        </div>
+                    
+                        : "" 
                     }
             
                     <hr/>

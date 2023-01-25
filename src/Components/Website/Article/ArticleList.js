@@ -1,12 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {decode} from 'html-entities';
 import ui_url from "../../../Service/serviceui";
 import { ReactSession } from 'react-client-session';
 import TimeAgo from 'react-timeago'
 
 export default function ArticleList({article}) {
-    const username = ReactSession.get("researcherusername");
+    const { username }= useParams();
+    console.log(username)
 
     function removeTags(str) {
         if ((str===null) || (str===''))

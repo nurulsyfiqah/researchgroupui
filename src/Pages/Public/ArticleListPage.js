@@ -14,7 +14,7 @@ export default function ArticleListPage() {
     const { username } = useParams();
 
     const getArticleFromServer=(userid)=>{
-        axios.get(`${base_url}/blog/${researcher_id}`).then((
+        axios.get(`${base_url}/blog/${userid}`).then((
         // axios.get(`${base_url}/blog/getpostsbyuserid?userId=63b7b81c9ab53d4a60ba7a1b`).then((
             response)=>{
             const data = response.data;
