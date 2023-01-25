@@ -314,6 +314,9 @@ export default function EditPublicationModal({publication, hide, change}) {
             }
         } 
 
+        console.log([...formData])
+        console.log(input)
+
         axios({
             method: 'PUT',
             url: `${base_url}/publication/edit`,

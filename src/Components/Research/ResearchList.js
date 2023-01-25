@@ -59,9 +59,10 @@ export default function ResearchList({publication, change}) {
                     </div>
                     <div className="row">
                     {
+                        (isObjectExist(publication, "volume")||isObjectExist(publication, "issue")||isObjectExist(publication, "page")||isObjectExist(publication, "publisher")||isObjectExist(publication, "isbn")||isObjectExist(publication, "conferenceName")||isObjectExist(publication, "doi")||isObjectExist(publication, "institution")||isObjectExist(publication, "custodion")) ?
                         <div className="my-1 col-md-6">
                             <ul>
-                            { isObjectExist(publication, "volume") ? <li>Volume: {publication.volume}</li> : ""}
+                                { isObjectExist(publication, "volume") ? <li>Volume: {publication.volume}</li> : ""}
                                 { isObjectExist(publication, "issue") ? <li>Issue: {publication.issue} </li>: ""}
                                 { isObjectExist(publication, "page") ? <li>Pages: {publication.page}</li> : ""}
                                 { isObjectExist(publication, "publisher") ? <li>Publisher: {publication.publisher}</li> : ""}
@@ -72,6 +73,8 @@ export default function ResearchList({publication, change}) {
                                 { isObjectExist(publication, "doi") ? <li>DOI: {publication.doi}</li> : ""}
                             </ul>
                         </div>
+                        :
+                        ""
                     }
                     {
                         isObjectExist(publication, "additionalDetails") ? 
