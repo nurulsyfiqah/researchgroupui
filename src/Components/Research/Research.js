@@ -10,7 +10,8 @@ import { isObjectExist } from '../../Helper/util/util';
 
 export default function Research() {
 
-    const [publications, setPublications] = useState([]);
+    const publication = ReactSession.get("scrapeData");
+    const [publications, setPublications] = useState( publication != undefined ? publication : []);
     const [pub, setPub] = useState([]);
     const [change, setChange] = useState(0);
     const [gsLink, setgsLink] = useState(false);
@@ -18,34 +19,40 @@ export default function Research() {
     const account = ReactSession.get("account");
     const user = ReactSession.get("user");
     let [activeTab, setActiveTab] = useState('research_tab');
+    
 
     // get the scraped data from the google scholar
-    const scrapePublication=()=>{   
-
+    const scrapePublication= async ()=>{   
         const formdata = new FormData();
         formdata.append("gscLink", user.googleScholarLink);
         formdata.append("userId", user.id);
         if (isObjectExist(user, "googleScholarLink")) {
-            axios({
-            method: 'POST',
-            // url: `${base_url}/publication?gscLink=${user.googleScholarLink}&userId=${user.id}`
-            url: `${base_url}/publication/scrape/author`,
-            data: formdata,
-            headers: {
-                'Content-Type': 'multipart/form-data'
+            try {
+                const response = await axios({
+                    method: 'POST',
+                    url: `${base_url}/publication/scrape/author`,
+                    data: formdata,
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                if (response.status === 200) {
+                    ReactSession.set("scrape", true);
+                    const data = response.data; 
+                    ReactSession.set("scrapeData", data);
+                    toast.success("You have a publication that need to be verified.", {autoClose: 9000,hideProgressBar: true})
+                }
+            } catch (error) {
+                console.log("Something went wrong on Server")
             }
-          })
-            .then(function (response) {
-                const data = response.data; 
-                setPublications(data);
-            }, (error) => {
-                toast.error("Something went wrong on Server")
-            })
         }
     }
 
     useEffect(() => {
-        scrapePublication()
+        const scrape = ReactSession.get("scrape");
+        if (!scrape || scrape === undefined) {
+            scrapePublication();
+        }
         setgsLink(true)
     }, []);
 
@@ -130,7 +137,7 @@ export default function Research() {
                 {
                 publications.length > 0 ?
                     publications.map((publication, index) => (
-                        <VerifyPublication key={index} publication={publication} user={user}  change={()=>{setChange(change+1)}} removepub={()=>removePublication(publication.id)}/>
+                        <VerifyPublication key={index} publication={publication} change={()=>{setChange(change+1)}} removepub={()=>removePublication(publication.id)}/>
                     ))
                     :
                     <div className="card"><div className="card-body">There is no publication that need to be verified.</div></div>

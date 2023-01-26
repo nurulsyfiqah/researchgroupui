@@ -110,12 +110,14 @@ export default function EditPostBody() {
     const publishPost=()=> {
         savePost()
         params.status = 1;
+        console.log(params)
         axios({
             method: 'PUT',
             url: `${base_url}/blog/update`,
             data: params
         })
             .then(function(response){
+                console.log(response)
                 toast.success("Successfully published", {autoClose: 1500,hideProgressBar: true})
             }, (error) => {
                 toast.error("Error in publishing", {autoClose: 1500,hideProgressBar: true})

@@ -78,58 +78,62 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
     };
 
     const submit = () => { 
-        input.subTask = subtasks;
-        if (input.submissionType === '') {
-            input.submissionType = 'text';
+        
+        if (input.title !== '' && input.groupId !== '' && input.groupName !== '' && input.submissionType !== '') {
+            input.subTask = subtasks;
+            if (action === "create") {
+                const formData = new FormData();
+                for(const file of files) {
+                    formData.append('files', file);
+                }
+                console.log(files)
+                formData.append('tracker', JSON.stringify(input));
+                axios({
+                    method: 'POST',
+                    url: `${base_url}/tracker/create`,
+                    data: formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Access-Control-Allow-Origin': '*'
+                    }
+                }).then(function(response) {
+                    
+                    toast.success("Successfully create the task", {autoClose: 1500,hideProgressBar: true})
+                    hide();
+                    change();
+                }, (error) => {
+                    toast.error("Error creating the task", {autoClose: 1500,hideProgressBar: true})
+                    hide();
+                })
+            } else if (action === "edit") {
+                const formData = new FormData();
+                for(const file of files) {
+                    formData.append('files', file);
+                }
+                formData.append('tracker', JSON.stringify(input));
+                axios({
+                    method: 'PUT',
+                    url: `${base_url}/tracker/update`,
+                    data: formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                }).then(function(response) {
+                    toast.success("Successfully update the task", {autoClose: 1500,hideProgressBar: true})
+                    hide();
+                    change();
+                }, (error) => {
+                    toast.error("Error updating the task", {autoClose: 1500,hideProgressBar: true})
+                    hide();
+                })
+            }
+            
+        } else {
+            toast.error("Please fill up all the required fields", {autoClose: 1500,hideProgressBar: true})
         }
 
-        if (action === "create") {
-            const formData = new FormData();
-            for(const file of files) {
-                formData.append('files', file);
-            }
-            console.log(files)
-            formData.append('tracker', JSON.stringify(input));
-            axios({
-                method: 'POST',
-                url: `${base_url}/tracker/create`,
-                data: formData,
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Access-Control-Allow-Origin': '*'
-                }
-            }).then(function(response) {
-                
-                toast.success("Successfully create the task", {autoClose: 1500,hideProgressBar: true})
-                hide();
-                change();
-            }, (error) => {
-                toast.error("Error creating the task", {autoClose: 1500,hideProgressBar: true})
-                hide();
-            })
-        } else if (action === "edit") {
-            const formData = new FormData();
-            for(const file of files) {
-                formData.append('files', file);
-            }
-            formData.append('tracker', JSON.stringify(input));
-            axios({
-                method: 'PUT',
-                url: `${base_url}/tracker/update`,
-                data: formData,
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                }
-            }).then(function(response) {
-                toast.success("Successfully update the task", {autoClose: 1500,hideProgressBar: true})
-                hide();
-                change();
-            }, (error) => {
-                toast.error("Error updating the task", {autoClose: 1500,hideProgressBar: true})
-                hide();
-            })
-        }
     }
+    
 
     const deleteTask = () => {
         axios({
@@ -158,11 +162,11 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
             <div className="modal-body">
                 
             <div className="my-2 input-group-sm">
-                <label className="fw-bold">Title</label>
+                <label className="fw-bold">Title*</label>
                 <input className="form-control" id="title" name="title" onChange={getValue} value={ input.title }/>
             </div>
             <div className="my-2 input-group-sm">
-                <label className="fw-bold">Group</label>
+                <label className="fw-bold">Group*</label>
                 {/* <input className="form-control" id="groupId" name="groupId" onChange={getValue} value={ input.type }/> */}
                 <select className="form-select" id="groupId" name="groupId" onChange={getValue}>
                     <option value={input.groupId}>{input.groupName}</option>
@@ -226,7 +230,7 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
                 <input type="date" className="form-control" id="endDate" name="endDate" onChange={getValue} defaultValue={ typeof data !== 'undefined' ? data.endDate != null ? moment(data.endDate).format('YYYY-MM-DD') : ""  : "" }/>
             </div>
             <div className="my-2 input-group-sm">
-                <label className="fw-bold">Type of Submission</label>
+                <label className="fw-bold">Type of Submission*</label>
                 <select className="form-select" name="submissionType" onChange={getValue} defaultValue="text">
                     <option value="text">Text</option>
                     <option value="file">Files (i.e.: .pdf, .jpeg, .png)</option>

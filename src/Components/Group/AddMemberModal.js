@@ -52,8 +52,6 @@ export default function AddMemberModal({group, change, hide}) {
         e.preventDefault()
         // combine previous member and additional member
         Array.prototype.push.apply(input.member,emailList);
-        
-
         input.member.forEach(function(item, index) {
             if (item.status === "Not Registered") {
                 item.status = 0
@@ -71,13 +69,17 @@ export default function AddMemberModal({group, change, hide}) {
             data: formdata,
             header: { 'Content-Type': 'multipart/form-data' }
         })
-            .then(function(Response) {
-                toast.success("Successfully inviting everyone", {autoClose: 1500,hideProgressBar: true});
+            .then(function(response) {
+                if (response.status === 200) {
+                    toast.success("Successfully inviting everyone", {autoClose: 1500,hideProgressBar: true});
+                } else {
+                    toast.error("Failed to invite everyone", {autoClose: 1500,hideProgressBar: true});
+                }
                 hide()
                 change()
                 //window.location.reload();
             }, (error)=>{
-                toast.error(error.text);
+                toast.error("Failed to invite everyone", {autoClose: 1500,hideProgressBar: true});
                 hide()
                 //window.location.reload();
             })

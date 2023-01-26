@@ -278,9 +278,14 @@ export function EditDomainModal({data, hide, change}) {
 export function EditInfoModal({data, account, hide, change}) {
     const [acc, setAcc] = useState((account));
     const [user, setUser] = useState((data));
+    const [flag, setFlag] = useState(false);
+    const [isValid, setIsValid] = useState(false);
     const [error, setError] = useState({
         username: '',
         email: '',
+        firstName: '',
+        lastName: '',
+        googleScholarLink: '',
     })
 
     const onAccChange =(e)=>{
@@ -296,6 +301,7 @@ export function EditInfoModal({data, account, hide, change}) {
                 validateUniqueDetails("email", value);
               }
         }
+        validateInput(e)
     }
 
     const onUserChange =(e)=>{
@@ -304,6 +310,7 @@ export function EditInfoModal({data, account, hide, change}) {
             ...prev,
             [name]: value
         }));
+        validateInput(e)
     }
 
     function validateUniqueDetails(name, value) {
@@ -352,31 +359,102 @@ export function EditInfoModal({data, account, hide, change}) {
 
     }
 
+    function validateLink(link) {
+        try {
+            new URL(link);
+            return true;
+          } catch (err) {
+            return false;
+          }
+    }
+
     const submitHandler =()=>{
-        // update account
-        axios({
-            method: 'PUT',
-            url: `${base_url}/account/update`,
-            data: acc
-        }).then(function(response) {
-            // update data in session
-            ReactSession.set("account", acc);
-            // update user
-            
-            axios({ 
+        if (flag) {
+            // update account
+            axios({
                 method: 'PUT',
-                url: `${base_url}/user/update`,
-                data: user
+                url: `${base_url}/account/update`,
+                data: acc
             }).then(function(response) {
-                toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
-                change()
-                hide()
+                // update data in session
+                ReactSession.set("account", acc);
+                // update user
+                
+                axios({ 
+                    method: 'PUT',
+                    url: `${base_url}/user/update`,
+                    data: user
+                }).then(function(response) {
+                    toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
+                    change()
+                    hide()
+                }, (error)=>{
+                    console.log(error.text)
+                })
             }, (error)=>{
                 console.log(error.text)
             })
-        }, (error)=>{
-            console.log(error.text)
-        })
+        } else {
+            toast.error("Please fill in all required fields", {autoClose: 1500,hideProgressBar: true})
+        }
+    }
+
+    const validateInput = e => {
+        let { name, value } = e.target;
+        setError(prev => {
+            const stateObj = { ...prev, [name]: "" };
+            switch (name) {
+                case "username":
+                    if (value === "") {
+                        stateObj[name] = "Please enter username";
+                        setFlag(false)
+                    } else {
+                        setFlag(true)
+                    }
+                    break;
+                case "firstName":
+                    if (value === "") {
+                        stateObj[name] = "Please enter first name";
+                        setFlag(false)
+                    } else {
+                        setFlag(true)
+                    } 
+                    break;
+                case "lastName":
+                    if (value === "") {
+                        stateObj[name] = "Please enter last name";
+                        setFlag(false)
+                    } else {
+                        setFlag(true)
+                    }
+                    break;                
+                case "email":
+                    if (value === "") {
+                        stateObj[name] = "Please enter email address";
+                        setFlag(false)
+                    } else {
+                        setFlag(true)
+                    }
+                    break;
+                case "googleScholarLink":
+                    if (value === "") {
+                        stateObj[name] = "Please enter google scholar link";
+                        setFlag(false)
+                    } else {
+                        if (!validateLink(value)) {
+                            stateObj[name] = "Please enter valid google scholar link";
+                            setFlag(false)
+                        } else {
+                            setFlag(true)
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            return stateObj;
+        });
     }
 
     let modalStyle = {
@@ -394,43 +472,45 @@ export function EditInfoModal({data, account, hide, change}) {
                     </div>
                     <div className="modal-body">
 
-                        <label htmlFor="username" className="form-label my-1">Username</label>
+                        <label htmlFor="username" className="form-label fw-bold my-1">Username*</label>
                         <div className="input-group">
                             <input type="text" className="form-control" id="username" name="username" defaultValue={acc.username} onChange={onAccChange}/>
                         </div>
-                        <div className='mb-3'>{error.username && <span className='text-danger'>{error.username}</span>}</div>
+                        <div className='mb-1 '>{error.username && <span className='text-danger'>{error.username}</span>}</div>
 
-                        <label htmlFor="publishedName" className="form-label my-1">Published Name</label>
+                        {/* <label htmlFor="publishedName" className="form-label my-1">Published Name</label>
                         <div className="input-group mb-3">
                             <input type="text" className="form-control" id="publishedName" name="publishedName" defaultValue={user.publishedName} onChange={onUserChange}/>
-                        </div>
+                        </div> */}
 
-                        <label htmlFor="firstName" className="form-label my-1">First Name</label>
-                        <div className="input-group mb-3">
+                        <label htmlFor="firstName" className="form-label fw-bold my-1">First Name*</label>
+                        <div className="input-group">
                             <input type="text" className="form-control" id="firstName" name="firstName" defaultValue={user.firstName} onChange={onUserChange}/>
                         </div>
+                        <div className='mb-1 '>{error.firstName && <span className='text-danger'>{error.firstName}</span>}</div>
 
-                        <label htmlFor="lastName" className="form-label my-1">Last Name</label>
-                        <div className="input-group mb-3">
+                        <label htmlFor="lastName" className="form-label fw-bold my-1">Last Name*</label>
+                        <div className="input-group">
                             <input type="text" className="form-control" id="lastName" name="lastName" defaultValue={user.lastName} onChange={onUserChange}/>
                         </div>
+                        <div className='mb-1 '>{error.lastName && <span className='text-danger'>{error.lastName}</span>}</div>
 
                         {/* <label htmlFor="fullName" className="form-label my-1">Full Name</label>
                         <div className="input-group mb-3">
                             <input type="text" className="form-control" id="fullName" name="fullName" defaultValue={user.fullName} onChange={onUserChange}/>
                         </div> */}
 
-                        <label htmlFor="email" className="form-label my-1">Email</label>
+                        <label htmlFor="email" className="form-label fw-bold my-1">Email*</label>
                         <div className="input-group">
                             <input type="email" className="form-control" id="email" name="email" defaultValue={acc.email} onChange={onAccChange}/>
                         </div>
-                        
-                        <div className='mb-3'>{error.email && <span className='text-danger'>{error.email}</span>}</div>
-                        <label htmlFor="googlescholar" className="form-label my-1">Google Scholar Link</label>
+                        <div className='mb-1 '>{error.email && <span className='text-danger'>{error.email}</span>}</div>
+
+                        <label htmlFor="googlescholar" className="form-label fw-bold my-1">Google Scholar Link*</label>
                         <div className="input-group">
                             <input className="form-control" id="googleScholar" name="googleScholarLink" defaultValue={user.googleScholarLink} onChange={onUserChange}/>
                         </div>
-                        <div className='mb-3'>{error.email && <span className='text-danger'>{error.email}</span>}</div>
+                        <div className='mb-1 '>{error.googleScholarLink && <span className='text-danger'>{error.googleScholarLink}</span>}</div>
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-sm btn-secondary" onClick={hide}>Close</button>

@@ -4,10 +4,12 @@ import { Link } from "react-router-dom"
 import {base_url} from "../../Service/serviceapi";
 import { ToastContainer, toast } from "react-toastify";
 import {ReactSession} from "react-client-session";
+import { isObjectExist } from '../../Helper/util/util';
 
-export default function VerifyPublication({publication, change, user, removepub}) {
+export default function VerifyPublication({ publication, change,removepub}) {
 
-    const articleLink = publication.link;
+    const articleLink = isObjectExist(publication, "link") ? publication.link : "";
+    const user = ReactSession.get("user");
 
     const skipPublication = () => {
         publication.userId = user.id;
@@ -19,82 +21,63 @@ export default function VerifyPublication({publication, change, user, removepub}
             .then(function (response) {
                 // return result
                 // toast.success("Successfully update user details", {autoClose: 1500,hideProgressBar: true})
-                const data = response.data;
                 removepub()
             }, (error) => {
                 toast.error("Something went wrong on Server", {autoClose: 1500,hideProgressBar: true})
             })
     }
 
-    // const verifyPublication = () => {
-    //     // scrape the article data from the link
-    //     axios({
-    //         method: 'POST',
-    //         url: base_url + '/publication/article1?articleLink='+articleLink,
-    //         headers: {
-    //             'Content-Type': 'application/x-www-form-urlencoded',
-    //         }
-    //       })
-    //         .then(function (response) {
-    //             // return result
-    //             const data = response.data;
-    //             const verifiedPub = response.data;
-    //             if (data.hasOwnProperty("userId")) {
-    //                 data.userId = user.id;
-    //             }
 
-    //             axios({
-    //                 method: 'POST',
-    //                 url: base_url + '/publication/add' ,
-    //                 data : verifiedPub
-    //               })
-    //                 .then(function (response) {
-    //                     // return result
-    //                     toast.success("Verified", {autoClose: 1500,hideProgressBar: true})
-    //                     removepub()
-    //                     change()
-    //                 }, (error) => {
-    //                     toast.error("Something went wrong on Server",{autoClose: 1500,hideProgressBar: true})
-    //                 })
-
-    //         }, (error) => {
-    //             toast.error("Something went wrong on Server",{autoClose: 1500,hideProgressBar: true})
-    //         })
-    //     // save the publication data to db
-    // }
-    const verifyPublication = async () => {
+    const verifyPublication = () => {
         try {
             const encodedArticleLink = encodeURIComponent(articleLink);
-            const response = await axios({
-                method: 'POST',
-                url: base_url + '/publication/article1?articleLink='+encodedArticleLink,
+            axios({
+                method: 'GET',
+                url: base_url + '/publication/article1?articleLink='+encodedArticleLink+'&userId='+user.id,
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
-              });
+            }).then(function(response) {
+                if (response.status === 200) {
+                    const data = response.data;
+                    
+                    if (data.hasOwnProperty("userId") && data.hasOwnProperty("title")) {
+                        data.userId = user.id;
+                        console.log(response)
+                        removepub()
+                        change()
+                        toast.success("Verified", {autoClose: 1500,hideProgressBar: true})
+                    }
+                    
+                } else {
+                    toast.error("Unable to verify",{autoClose: 1500,hideProgressBar: true})
+                    change()
+                }
+               
+            });
 
-            const data = response.data;
-            console.log(data)
-            // if (data != null) {
-            //     removepub()
-            //     toast.success("Verified", {autoClose: 1500,hideProgressBar: true})
-            //     change()
-            // } else {
-            //     toast.error("Unable to verfy",{autoClose: 1500,hideProgressBar: true})
-            //     change()
+            // const data = response.data;
+            // console.log(data)
+            // // if (data != null) {
+            // //     removepub()
+            // //     toast.success("Verified", {autoClose: 1500,hideProgressBar: true})
+            // //     change()
+            // // } else {
+            // //     toast.error("Unable to verfy",{autoClose: 1500,hideProgressBar: true})
+            // //     change()
+            // // }
+            // const verifiedPub = response.data;
+            // if (data.hasOwn Property("userId")) {
+            //     data.userId = user.id;
             // }
-            const verifiedPub = response.data;
-            if (data.hasOwnProperty("userId")) {
-                data.userId = user.id;
-            }
-            const addResponse = await axios({
-                method: 'POST',
-                url: base_url + '/publication/add',
-                data : verifiedPub
-              });
-              addResponse
-              removepub()
-              change()
+            // const addResponse = await axios({
+            //     method: 'POST',
+            //     url: base_url + '/publication/add',
+            //     data : verifiedPub
+            //   });
+            //   addResponse
+            //   removepub()
+            //   change()
         } catch (error) {
             toast.error("Something went wrong on Server",{autoClose: 1500,hideProgressBar: true})
         }
@@ -109,13 +92,13 @@ export default function VerifyPublication({publication, change, user, removepub}
     }
 
     return(
-        <div key={publication.id} id={`pub_${publication.id}`}>
+        <div key={`pub_${ isObjectExist(publication, "id") ? publication.id : ""}`}>
             <div className="card my-2">
                 <div className="card-body">
-                    <h5 className="card-title">{ publication.title }</h5>
+                    <h5 className="card-title">{ isObjectExist(publication, "title") ? publication.title : "" }</h5>
                     <div className="card-text"> 
-                        <div> { publication.authors } </div>
-                        <div> { publication.journal } </div>
+                        <div> {  isObjectExist(publication, "authors") ? publication.authors : "" } </div>
+                        <div> {  isObjectExist(publication, "journal") ? publication.journal : ""} </div>
                     </div>
                         
                     <div className="d-grid gap-2 d-md-flex justify-content-md-end">

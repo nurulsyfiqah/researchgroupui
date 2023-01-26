@@ -4,6 +4,7 @@ import {base_url} from "../../Service/serviceapi";
 import { toast } from 'react-toastify';
 import {ReactSession} from 'react-client-session';
 import { publicationTypeData } from '../../Data/PublicationType';
+import { isObjectExist } from '../../Helper/util/util';
 import axios from 'axios';
 import Select from 'react-select';
 import classNames from 'classnames';
@@ -103,10 +104,26 @@ export default function AddPublication({change, active}) {
     const [file, setFile] = useState(null);
     const [addFiles, setAddFiles] = useState([]);
     const [additionalLinks, setAdditionalLinks] = useState([]);
+    const [flag, setFlag] = useState(false);
+    const [error, setError] = useState({
+        type: '',
+        title: '',
+        year: '',
+    });
     
     const authorListUpdate = () => {
         if (author.length > 0) {
-            setAuthorList([...authorList, author])
+            if (author.split(',').length > 1) {
+                let authorArray = author.split(',');
+                authorArray = authorArray.filter(element => element.trim() !== '')
+                console.log(authorArray)
+                setAuthorList(authorList.concat(authorArray))
+                // setAuthorList(newArr);
+            } else {
+                setAuthorList([...authorList, author])
+            }
+            console.log(authorList)
+
         } else {
             alert('Please enter an author name')
         }
@@ -130,6 +147,7 @@ export default function AddPublication({change, active}) {
             ...prevState,
             [name]: value
         }))
+        validateInput(e)
     }    
 
     const getSelectValue =( selectedOptions, actionMeta ) => {
@@ -139,7 +157,6 @@ export default function AddPublication({change, active}) {
             ...prevState,
             [name]: value
         }))
-
         const allWithClass = Array.from(
             document.querySelectorAll('div.details')
         );
@@ -254,34 +271,84 @@ export default function AddPublication({change, active}) {
         setFile(e.target.files[0])
     }
 
-    const handleUpload = e => {
-        e.preventDefault();
-        const updatedInput = {...input, authors: authorList.toString()};
-        //* Upload the first page of publication detail
-        const formData = new FormData();
-        if (file !== null) {
-            formData.append('file', file);
-        } 
-
-        formData.append('input', JSON.stringify(updatedInput));
-        axios({
-            method: 'POST',
-            url: `${base_url}/publication/add/manual`,
-            data: formData,
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                'Access-Control-Allow-Origin': '*',
+    const validateInput = (e) => { 
+        let { name, value } = e.target;
+        setError(prev => {
+            const stateObj = { ...prev, [name]: "" };
+            switch (name) {
+                case "type":
+                    if (value === "") {
+                        stateObj[name] = "Please choose publication type";
+                        setFlag(false)
+                    } else {
+                        setFlag(true)
+                    }
+                    break;
+                case "title":
+                    if (value === "") {
+                        stateObj[name] = "Please enter title";
+                        setFlag(false)
+                    } else {
+                        setFlag(true)
+                    } 
+                    break;
+                case "year":
+                    if (value === "") {
+                        stateObj[name] = "Please enter year";
+                        setFlag(false)
+                    } else {
+                        setFlag(true)
+                    }
+                    break;                
+                default:
+                    break;
             }
-        }).then(function (response) {
-            setPublicationId(response.data.id);
-            toast.success("Successfully add the publication", {autoClose: 1500,hideProgressBar: true});
-            setResearchDetails(true);
-            setAddDetailsSection(false);
-            change();
-        },(error) => {
-            toast.error("Error creating the task", {autoClose: 1500,hideProgressBar: true});
-     
-        })
+            return stateObj;
+        });
+    }
+
+ 
+    const handleUpload = e => {
+        if ( isObjectExist(input,"type") && isObjectExist(input,"title") && isObjectExist(input,"year")) {
+            setFlag(false)
+        } else {
+            setFlag(true)
+        }
+        console.log(input)
+        console.log(input.type + " " + flag)
+
+        if (flag) {
+            e.preventDefault();
+            const updatedInput = {...input, authors: authorList.toString()};
+            //* Upload the first page of publication detail
+            const formData = new FormData();
+            if (file !== null) {
+                formData.append('file', file);
+            } 
+    
+            formData.append('input', JSON.stringify(updatedInput));
+            axios({
+                method: 'POST',
+                url: `${base_url}/publication/add/manual`,
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Access-Control-Allow-Origin': '*',
+                }
+            }).then(function (response) {
+                setPublicationId(response.data.id);
+                toast.success("Successfully adding the publication", {autoClose: 1500,hideProgressBar: true});
+                setResearchDetails(true);
+                setAddDetailsSection(false);
+                change();
+            },(error) => {
+                toast.error("Error creating the task", {autoClose: 1500,hideProgressBar: true});
+         
+            })
+        } else {
+            toast.error("Please fill all the required fields", {autoClose: 1500,hideProgressBar: true});
+        }
+       
   
     }
 
@@ -339,9 +406,11 @@ export default function AddPublication({change, active}) {
                 <label className="my-1 fw-bold">Type of publication*</label>
                 {/* <Select name="type" options={publicationList} onChange={handleSelect} isSearchable={true}/> */}
                 <Select className="basic-single" classNamePrefix="select" isSearchable={true} name="type" options={options} onChange={getSelectValue}/>
+                <div className='mb-1 '>{error.type && <span className='text-danger'>{error.type}</span>}</div>
 
                 <label className="my-1 fw-bold">Title*</label>
                 <input className="form-control my-1" id="title" name="title" onChange={getValue}/>
+                <div className='mb-1 '>{error.title && <span className='text-danger'>{error.title}</span>}</div>
 
                 <label className="my-1 fw-bold">Subtitle</label>
                 <input className="form-control my-1" id="subtitle" name="subtitle" onChange={getValue}/>
@@ -378,6 +447,7 @@ export default function AddPublication({change, active}) {
                     { daysListSelect() }
                     { monthsListSelect() }
                     { yearsListSelect() }
+                    <div className='mb-1 '>{error.year && <span className='text-danger'>{error.year}</span>}</div>
                             
                 </div>
                 

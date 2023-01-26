@@ -36,7 +36,7 @@ export default function GroupSetting({group,change}) {
             data: group
         })
             .then(function(response){
-                toast.success("Successfully deleted")
+                toast.success("Successfully delete the group")
                 window.location.href = `${ui_url}/group/`;
             }, (error) => {
                 toast.error("Error in deleting")

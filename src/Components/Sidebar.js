@@ -21,6 +21,10 @@ export default function Sidebar({content}) {
         };
     }
 
+    const logout = () => {
+        localStorage.removeItem("__react_session__");
+    }
+
     function useWindowDimensions() {
         const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
 
@@ -87,7 +91,7 @@ export default function Sidebar({content}) {
                         </div>
                     </div>
                     <NavLink to="/" className="nav-logo">
-                        <LogoutIcon className="nav-logo-icon"/>
+                        <LogoutIcon className="nav-logo-icon" onClick={logout}/>
                         <span className="nav-logo-name">Logout</span>
                     </NavLink>
                 </nav>

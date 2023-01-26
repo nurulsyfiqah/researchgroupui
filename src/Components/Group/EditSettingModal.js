@@ -4,12 +4,17 @@ import Picker from 'emoji-picker-react';
 import {base_url} from "../../Service/serviceapi";
 import {toast} from "react-toastify";
 import {BsXLg} from "react-icons/bs";
+import {isObjectExist} from "../../Helper/util/util";
 
 export default function EditSettingModal({group, hide, change}) {
     let [input, setInput] = useState(group);
     const [domainList, setDomainList] = useState(group.domain);
     const [domain, setDomain] = useState("");
     const [chosenEmoji, setChosenEmoji] = useState(null);
+    const [flag, setFlag] = useState(false);
+    const [error, setError] = useState({
+        name: "",
+    });
 
     useEffect(() => {
         setInput(group)
@@ -21,6 +26,7 @@ export default function EditSettingModal({group, hide, change}) {
             ...prev,
             [name]: value
         }));
+        validateInput(e);
     }
 
     const domainListUpdate = () => {
@@ -38,9 +44,29 @@ export default function EditSettingModal({group, hide, change}) {
         setChosenEmoji(emojiObject);
     };
 
+    const validateInput = e => {
+        let { name, value } = e.target;
+        setError(prev => {
+            const stateObj = {...prev, [name]: ""};
+            switch (name) {
+                case "name":
+                    if (value === "") {
+                        stateObj[name] = "Please enter group name";
+                        setFlag(false)
+                    } else {
+                        setFlag(true)
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return stateObj;
+        });
+    }
+
     const submitHandler = (e) => {
         e.preventDefault();
-        input.icon = chosenEmoji.emoji;
+        input.icon = isObjectExist(chosenEmoji, "emoji") ? chosenEmoji.emoji : "";
         input.domain = domainList;
         input.member.forEach(function(item, index) {
             if (item.status === "Not Registered") {
@@ -49,24 +75,33 @@ export default function EditSettingModal({group, hide, change}) {
                 item.status = 1
             }
         });
+        console.log(flag)
+        if (flag) {
         axios({
             method: 'PUT',
             url: `${base_url}/group/update`,
             data: input
         }).then(function(response) {
-            toast.success("Successfully updated", {autoClose: 1500,hideProgressBar: true})
+            console.log(response)
+            if (response.status === 200) {
+                toast.success("Successfully update group", {autoClose: 1500,hideProgressBar: true}) 
+            } else {
+                toast.error("Failed to update group", {autoClose: 1500,hideProgressBar: true})
+            }
             change()
             hide()
-            //window.location.reload()
         }, (error) => {
             toast.error("Failed to update group", {autoClose: 1500,hideProgressBar: true})
             console.log(error.text)
         })
+        } else {
+            toast.error("Please fill the required field", {autoClose: 1500,hideProgressBar: true})
+        }
+        
     }
 
-
     return (
-            <div className="modal show fade" id="editSettingModal" key={group.id} data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-hidden="true"  style={{display:'block', backgroundColor: 'rgba(0,0,0,0.8)'}}>
+            <div className="modal show fade" id="editSettingModal" key={`gi_${group.id}`} data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-hidden="true"  style={{display:'block', backgroundColor: 'rgba(0,0,0,0.8)'}}>
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -78,6 +113,7 @@ export default function EditSettingModal({group, hide, change}) {
                             <div className="input-group input-group-sm mb-1">
                                 <input className="form-control" id="groupNameModal" onChange={onInputChange} name="name" value={input.name}/>
                             </div>
+                            <div className='mb-1'>{error.name && <span className='text-danger'>{error.name}</span>}</div>  
                             <label htmlFor="groupIconModal" className="form-label">Icon {chosenEmoji ? ( <span>{chosenEmoji.emoji}</span> ) : ( '' )}</label>
                             <div className="input-group input-group-sm mb-1">
                                 <Picker native={true} onEmojiClick={onEmojiClick} pickerStyle={{ width: '100%', height: '13em' }} disableSearchBar={false}/>

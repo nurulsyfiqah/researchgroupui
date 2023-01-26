@@ -20,6 +20,12 @@ export default function EditPublicationModal({publication, hide, change}) {
     const [additionalLinks, setAdditionalLinks] = useState(input.additionalLinks);
     const [addFiles, setAddFiles] = useState(null);
     const [file, setFile] = useState(null);
+    const [flag, setFlag] = useState(false);
+    const [error, setError] = useState({
+        type: '',
+        title: '',
+        year: '',
+    });
 
     let modalStyle = {
         display: 'block',
@@ -36,13 +42,13 @@ export default function EditPublicationModal({publication, hide, change}) {
             ...prevState,
             [name]: value
         }))
+        validateInput(e)
     } 
    
     const getSelectValue =( selectedOptions, actionMeta ) => {
-
         var name = '';
         var value = '';
-        if (Array.isArray(selectedOptions)) {
+        if (isObjectExist(selectedOptions, "value")) {
             name = actionMeta.name;
             value = selectedOptions.value;
         } else {
@@ -294,44 +300,92 @@ export default function EditPublicationModal({publication, hide, change}) {
     }
     // End of Additional Link
 
+    const validateInput = (e) => { 
+        let { name, value } = e.target;
+        setError(prev => {
+            const stateObj = { ...prev, [name]: "" };
+            switch (name) {
+                case "type":
+                    if (value === "") {
+                        stateObj[name] = "Please choose publication type";
+                        setFlag(false)
+                    } else {
+                        setFlag(true)
+                    }
+                    break;
+                case "title":
+                    if (value === "") {
+                        stateObj[name] = "Please enter title";
+                        setFlag(false)
+                    } else {
+                        setFlag(true)
+                    } 
+                    break;
+                case "year":
+                    if (value === "") {
+                        stateObj[name] = "Please enter year";
+                        setFlag(false)
+                    } else {
+                        setFlag(true)
+                    }
+                    break;                
+                default:
+                    break;
+            }
+            return stateObj;
+        });
+    }
+
     function submit() {
-        input.authors = authorList.toString();
-        input.addAddFilePath = uploadedAddFile;
-        input.additionalDetails = additionalFields;
-        input.additionalLinks = additionalLinks;
-
-        // input.addFilePath = addFiles;
-        const formData = new FormData();
-        formData.append('publication', JSON.stringify(input));
-        if (file !== null) {
-            formData.append('file', file)
+        if (flag) {
+            input.authors = authorList.toString();
+            input.file = uploadedFile;
+            input.addAddFilePath = uploadedAddFile;
+            input.additionalDetails = additionalFields;
+            input.additionalLinks = additionalLinks;
+    
+            // input.addFilePath = addFiles;
+            const formData = new FormData();
+            formData.append('publication', JSON.stringify(input));
+            if (file !== null) {
+                formData.append('file', file)
+            }
+    
+            if (addFiles !== null) {
+                for(const file of addFiles) {
+                    formData.append('files', file.file);
+                    formData.append('description', file.description);
+                }
+            } 
+    
+            if ( isObjectExist(input,"type") && isObjectExist(input,"title") && isObjectExist(input,"year")) {
+                setFlag(false)
+            } else {
+                setFlag(true)
+            }
+            axios({
+                method: 'PUT',
+                url: `${base_url}/publication/edit`,
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Access-Control-Allow-Origin': '*'
+                }
+            }).then(function(response) {
+                if (response.status === 200) {
+                    toast.success("Successfully updating the publication", {autoClose: 1500,hideProgressBar: true})
+                } else {
+                    toast.error("Error updating publication", {autoClose: 1500,hideProgressBar: true})
+                }
+                change();
+                hide();
+            }, (error) => {
+                toast.error("Error updating publication", {autoClose: 1500,hideProgressBar: true})
+                hide();
+            })
+        } else {
+            toast.error("Please fill all required fields", {hideProgressBar: true, autoClose: 1500})
         }
-
-        if (addFiles !== null) {
-            for(const file of addFiles) {
-                formData.append('files', file.file);
-                formData.append('description', file.description);
-            }
-        } 
-
-        console.log([...formData])
-        console.log(input)
-
-        axios({
-            method: 'PUT',
-            url: `${base_url}/publication/edit`,
-            data: formData,
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                'Access-Control-Allow-Origin': '*'
-            }
-        }).then(function(response) {
-            toast.success("Successfully updated publication", {autoClose: 1500,hideProgressBar: true})
-            change();
-            hide();
-        }, (error) => {
-            toast.error("Error updating publication", {autoClose: 1500,hideProgressBar: true})
-        })
 
     }
 
@@ -351,8 +405,9 @@ export default function EditPublicationModal({publication, hide, change}) {
                         {/* <Select name="type" options={publicationList} onChange={handleSelect} isSearchable={true}/> */}
                         <Select className="basic-single" classNamePrefix="select" isSearchable={true} name="type" options={options} onChange={getSelectValue} defaultValue={{ label: publication.type, value: publication.type }}/>
                         
-                        <label className="my-1 fw-bold">Title</label>
+                        <label className="my-1 fw-bold">Title*</label>
                         <textarea className="form-control my-1" rows="2"  id="title" key="title" name="title" onChange={getValue} defaultValue={publication.title} />
+                        <div className='mb-1 '>{error.title && <span className='text-danger'>{error.title}</span>}</div>
                         
                         <label className="my-1 fw-bold">Description</label>
                         <textarea className="form-control" rows="2" name="description" id="description" onChange={getValue} defaultValue={publication.description != null ? publication.description : ''}/>
@@ -470,8 +525,8 @@ export default function EditPublicationModal({publication, hide, change}) {
                                 </div>
                             </div>
                             :
-                            <div class="input-group my-1">
-                                <input type="file" class="form-control" name="file" onChange={handleFileChange}/>
+                            <div className="input-group my-1">
+                                <input type="file" className="form-control" name="file" onChange={handleFileChange}/>
                             </div>
                         }
 

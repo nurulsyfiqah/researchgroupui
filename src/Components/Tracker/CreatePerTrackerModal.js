@@ -86,33 +86,39 @@ export default function CreatePerTrackerModal({data, hide, change, action}) {
     const submit = () => {  
         input.subTask = subtasksTemp;
 
-        if (action === "create") {
-            axios({
-                method: 'POST',
-                url: `${base_url}/tracker/personal/create`,
-                data: input,
-            }).then(function(response) {
-                toast.success("Successfully create the task", {autoClose: 1500,hideProgressBar: true})
-                hide();
-                change();
-            }, (error) => {
-                toast.error("Error creating the task", {autoClose: 1500,hideProgressBar: true})
-                hide();
-            })
-        } else if (action === "edit") {
-            axios({
-                method: 'PUT',
-                url: `${base_url}/tracker/update`,
-                data: input,
-            }).then(function(response) {
-                toast.success("Successfully update the task", {autoClose: 1500,hideProgressBar: true})
-                hide();
-                change();
-            }, (error) => {
-                toast.error("Error updating the task", {autoClose: 1500,hideProgressBar: true})
-                hide();
-            })
+        if(input.title !== "" && input.subTask !== "") {
+            if (action === "create") {
+                axios({
+                    method: 'POST',
+                    url: `${base_url}/tracker/personal/create`,
+                    data: input,
+                }).then(function(response) {
+                    toast.success("Successfully create the task", {autoClose: 1500,hideProgressBar: true})
+                    hide();
+                    change();
+                }, (error) => {
+                    toast.error("Error creating the task", {autoClose: 1500,hideProgressBar: true})
+                    hide();
+                })
+            } else if (action === "edit") {
+                axios({
+                    method: 'PUT',
+                    url: `${base_url}/tracker/update`,
+                    data: input,
+                }).then(function(response) {
+                    toast.success("Successfully update the task", {autoClose: 1500,hideProgressBar: true})
+                    hide();
+                    change();
+                }, (error) => {
+                    toast.error("Error updating the task", {autoClose: 1500,hideProgressBar: true})
+                    hide();
+                })
+            }
+        } else {
+            toast.error("Please fill up all the fields", {autoClose: 1500,hideProgressBar: true})
         }
+
+        
     }
 
     const deleteTask = () => {
@@ -142,7 +148,7 @@ export default function CreatePerTrackerModal({data, hide, change, action}) {
             <div className="modal-body">
                 
             <div className="my-2 input-group-sm">
-                <label>Title</label>
+                <label className="fw-bold">Title*</label>
                 <input className="form-control" id="title" name="title" onChange={getValue} value={ input.title }/>
             </div>
             {/* <div className="my-2">
@@ -150,7 +156,7 @@ export default function CreatePerTrackerModal({data, hide, change, action}) {
                 <textarea className="form-control" id="act_details" name="act_details"></textarea>
             </div> */}
             <div className="my-2">
-                <label>Add subtask</label>
+                <label className="fw-bold">Add subtask*</label>
                 <div className="input-group input-group-sm mb-1">
                     <input type="text" className="form-control" name="subtask" id="subtask" onChange={subtaskUpdate} value={subtask.length > 0 ? removeAfterColon(subtask) : ""} />
                     <button className="btn btn-outline-dark" type="button" onClick={subtasksUpdate}>Add</button>
@@ -171,11 +177,11 @@ export default function CreatePerTrackerModal({data, hide, change, action}) {
                 }
             </div>
             <div className="my-2 input-group-sm">
-                <label>Start Date</label>
+                <label className="fw-bold">Start Date</label>
                 <input type="date" className="form-control" id="startDate" name="startDate" onChange={getValue} defaultValue={ typeof data !== 'undefined' ? data.startDate != null ? moment(data.startDate).format('YYYY-MM-DD') : ""  : "" }/>
             </div>
             <div className="my-2 input-group-sm">
-                <label>End Date</label>
+                <label className="fw-bold">End Date</label>
                 <input type="date" className="form-control" id="endDate" name="endDate" onChange={getValue} defaultValue={ typeof data !== 'undefined' ? data.endDate != null ? moment(data.endDate).format('YYYY-MM-DD') : ""  : "" }/>
             </div>
 

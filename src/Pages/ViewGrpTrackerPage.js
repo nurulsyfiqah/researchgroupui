@@ -62,6 +62,7 @@ function ViewGrpTrackerComponent() {
         username: user.lastName + " " + user.firstName,
         email: account.email,
     });
+    console.log(submission)
     const [submissionFile, setSubmissionFile] = useState([]);
     const editorRef = useRef(null);
     
@@ -90,13 +91,17 @@ function ViewGrpTrackerComponent() {
             url: `${base_url}/tracker/${trackerId}`,
         }).then((response)=>{
             setTracker(response.data)
-
+            console.log(response)
             let submittedTasks = getUserSubmittedTasks(response.data);
-            if (isObjectExist(submittedTasks, "text")) {
-                setSubmission(submittedTasks)
-            } else {
+            console.log(submittedTasks)
+            if (submittedTasks !== null && submittedTasks !== undefined) {
                 setSubmission(submittedTasks)
             }
+            // if (isObjectExist(submittedTasks, "text")) {
+            //     setSubmission(submittedTasks)
+            // } else {
+            //     setSubmission(submittedTasks)
+            // }
             // setSubmission(getUserSubmittedTasks(response.data))
             response.data.submittedTasks !== null ? setNum(response.data.submittedTasks.length) : setNum(0)
             getGroupByTrackerId(response.data.groupId)
@@ -142,7 +147,6 @@ function ViewGrpTrackerComponent() {
                 setShowTextContainer(true)
                 setSubmitBtn(true)
             }
-        } else {
         }
 
         if (isObjectExist(tracker, "submissionType") && tracker.submissionType === "file") {
@@ -310,16 +314,10 @@ function ViewGrpTrackerComponent() {
         if (files.length > 0) {
             formdata.append('binaryFiles', JSON.stringify(files))
         }
-        
-        // old file (base64)
-        // if (files.length > 0) {
-        //     for (const file of files) {
-        //         formdata.append('binaryFiles', file.filename);
-        //     }
-        // }
 
         // remove file from submission
         submission.file = [];
+        console.log([...formdata])
         axios({
             method: 'POST',
             url: `${base_url}/tracker/submit`,
@@ -329,26 +327,29 @@ function ViewGrpTrackerComponent() {
                 'Access-Control-Allow-Origin': '*',
             }
         }).then(function (response) {
-            
-            if (tracker.submissionType === "text") {
-                setShowTextContainer(false)
-                setShowSubmittedText(true)
-            } else if (tracker.submissionType === "file") {
-                setShowFileContainer(false)
-                setShowSubmittedFile(true)
+            if (response.status === 200) {
+                if (tracker.submissionType === "text") {
+                    setShowTextContainer(false)
+                    setShowSubmittedText(true)
+                } else if (tracker.submissionType === "file") {
+                    setShowFileContainer(false)
+                    setShowSubmittedFile(true)
+                }
+                setCancelBtn(false)
+                setEditBtn(true)
+                setSubmitBtn(false)
+                toast.success("Submission Successful", {autoClose:1500, hideProgressBar:true})
+                setCounter(counter+1)
+            } else {
+                toast.error("Submission Failed", {autoClose:1500, hideProgressBar:true})
             }
-            setCancelBtn(false)
-            setEditBtn(true)
-            setSubmitBtn(false)
-            toast.success("Submission Successful", {autoClose:1500, hideProgressBar:true})
-            setCounter(counter+1)
+            
         }, (error)=>{
             console.log(error)
             toast.error("Submission Failed", {autoClose:1500, hideProgressBar:true})
         })
     }
 
-    
     const membersSubmissionStat = (groupSubmission, submissionType) => {
         let data = [];
         groupMembers?.map((member) => {
