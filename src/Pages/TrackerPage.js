@@ -63,7 +63,7 @@ function TrackerPageComponent() {
              <ToastContainer />
             <h2 className="page_title">Tracker</h2>
 
-            <div className="d-grid gap-2 d-md-flex justify-content-md-start mb-3">
+            <div className="d-grid gap-2 d-flex justify-content-md-start mb-3">
                 <button className="btn btn-sm btn_dark_normal" type="button" onClick={showGrpModal}>Create Group Tracker</button>
                 <button className="btn btn-dark btn-sm" type="button" onClick={showPerModal} >Create Personal Tracker</button>
             </div>

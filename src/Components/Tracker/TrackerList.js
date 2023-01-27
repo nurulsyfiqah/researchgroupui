@@ -124,10 +124,8 @@ export default function TrackerList({tracker, change, index}) {
                     <p className="card-text">{ tracker.details }</p>
                     <div>Start Date: { tracker.startDate != null ? moment(tracker.startDate).format('DD/MM/YYYY') : "-"} </div>
                     <div>End Date: { tracker.endDate != null ? moment(tracker.endDate).format('DD/MM/YYYY') : "-"} </div>
-                    <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <Link to={`/tracker/${tracker.id}`}>
-                        <button className="btn btn_dark_normal btn-sm me-md-2" type="button">View</button>
-                    </Link>
+                    <div className="d-grid gap-2 d-flex justify-content-end">
+                        <button className="btn btn_dark_normal btn-sm me-md-2" type="button"><Link to={`/tracker/${tracker.id}`}>View</Link></button>
                     {
                         user.id === tracker.userId ? 
                         <button className="btn btn-dark btn-sm me-md-2" type="button" onClick={getData} value="group">Edit</button>

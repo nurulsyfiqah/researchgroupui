@@ -22,7 +22,7 @@ export default function Sidebar({content}) {
     }
 
     const logout = () => {
-        localStorage.removeItem("__react_session__");
+        sessionStorage.removeItem("__react_session_");
     }
 
     function useWindowDimensions() {
@@ -47,8 +47,8 @@ export default function Sidebar({content}) {
                 </div>
                 <div className='me-4 dropdown'>
                     <div className="position-relative dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <NotiIcon/>
-                        {/* <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {/* <NotiIcon/>
+                        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                             3
                             <span className="visually-hidden">unread messages</span>
                         </span> */}

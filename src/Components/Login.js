@@ -56,7 +56,7 @@ export default function Login () {
                     toast.error("Wrong email or password", {hideProgressBar:true, autoClose: 2000});
                 }
             }, (error)=>{
-               console.log(error.text)
+               toast.error("Something wrong with the server!", {hideProgressBar:true, autoClose: 6000});
             });
     }
 
