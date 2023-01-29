@@ -53,7 +53,7 @@ export default function ArticlePage() {
             <div className="text-center">Share this article</div>
             <div className="d-flex flex-row justify-content-center mb-4">
                 <EmailShareButton
-                    url={`${ui_url}/${postId.username}/${postId.articleid}`}
+                    url={`${base_url}/${postId.username}/${postId.articleid}`}
                     quote={post.title}
                     hashtag="#research"
                     className="m-2"
@@ -61,7 +61,7 @@ export default function ArticlePage() {
                     <EmailIcon size={36} round={true}/>
                 </EmailShareButton>
                 <FacebookShareButton
-                    url={`${ui_url}/${postId.username}/${postId.articleid}`}
+                    url={`${base_url}/${postId.username}/${postId.articleid}`}
                     quote={post.title}
                     hashtag="#research"
                     className="m-2"
@@ -70,7 +70,7 @@ export default function ArticlePage() {
                 </FacebookShareButton>
 
                 <TwitterShareButton
-                    url={`${ui_url}/${postId.username}/${postId.articleid}`}
+                    url={`${base_url}/${postId.username}/${postId.articleid}`}
                     quote={post.title}
                     hashtag="#research"
                     className=" m-2"
@@ -79,7 +79,7 @@ export default function ArticlePage() {
                 </TwitterShareButton>
 
                 <LinkedinShareButton
-                    url={`${ui_url}/${postId.username}/${postId.articleid}`}
+                    url={`${base_url}/${postId.username}/${postId.articleid}`}
                     quote={post.title}
                     hashtag="#research"
                     className="m-2"
@@ -87,7 +87,7 @@ export default function ArticlePage() {
                     <LinkedinIcon size={36} round={true}/>
                 </LinkedinShareButton>
                 <TelegramShareButton
-                    url={`${ui_url}/${postId.username}/${postId.articleid}`}
+                    url={`${base_url}/${postId.username}/${postId.articleid}`}
                     quote={post.title}
                     hashtag="#research"
                     className="m-2"
@@ -95,7 +95,7 @@ export default function ArticlePage() {
                     <TelegramIcon size={36} round={true}/>
                 </TelegramShareButton>
                 <WhatsappShareButton
-                    url={`${ui_url}/${postId.username}/${postId.articleid}`}
+                    url={`${base_url}/${postId.username}/${postId.articleid}`}
                     quote={post.title}
                     hashtag="#research"
                     className="m-2"
