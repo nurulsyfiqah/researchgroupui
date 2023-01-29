@@ -4,6 +4,7 @@ import  axios from 'axios';
 import Navbar from '../../Components/Website/PublicNavbar'
 import Article from '../../Components/Website/Article/ViewArticle'
 import {base_url} from "../../Service/serviceapi"
+import { base_url as ui_url } from '../../Service/serviceui';
 import { useLocation } from 'react-router-dom';
 import {
     EmailIcon,
@@ -40,7 +41,7 @@ export default function ArticlePage() {
             }
         )
     }
-    console.log(base_url + '/' + postId.username + '/' +postId.articleid)
+    console.log(base_url + '/' + post.username + '/' +post.articleid)
 
     return (
         <div>
@@ -52,7 +53,7 @@ export default function ArticlePage() {
             <div className="text-center">Share this article</div>
             <div className="d-flex flex-row justify-content-center mb-4">
                 <EmailShareButton
-                    url={`${base_url}/${postId.username}/${postId.articleid}`}
+                    url={`${ui_url}/${postId.username}/${postId.articleid}`}
                     quote={post.title}
                     hashtag="#research"
                     className="m-2"
@@ -60,7 +61,7 @@ export default function ArticlePage() {
                     <EmailIcon size={36} round={true}/>
                 </EmailShareButton>
                 <FacebookShareButton
-                    url={`${base_url}/${postId.username}/${postId.articleid}`}
+                    url={`${ui_url}/${postId.username}/${postId.articleid}`}
                     quote={post.title}
                     hashtag="#research"
                     className="m-2"
@@ -69,7 +70,7 @@ export default function ArticlePage() {
                 </FacebookShareButton>
 
                 <TwitterShareButton
-                    url={`${base_url}/${postId.username}/${postId.articleid}`}
+                    url={`${ui_url}/${postId.username}/${postId.articleid}`}
                     quote={post.title}
                     hashtag="#research"
                     className=" m-2"
@@ -78,7 +79,7 @@ export default function ArticlePage() {
                 </TwitterShareButton>
 
                 <LinkedinShareButton
-                    url={`${base_url}/${postId.username}/${postId.articleid}`}
+                    url={`${ui_url}/${postId.username}/${postId.articleid}`}
                     quote={post.title}
                     hashtag="#research"
                     className="m-2"
@@ -86,7 +87,7 @@ export default function ArticlePage() {
                     <LinkedinIcon size={36} round={true}/>
                 </LinkedinShareButton>
                 <TelegramShareButton
-                    url={`${base_url}/${postId.username}/${postId.articleid}`}
+                    url={`${ui_url}/${postId.username}/${postId.articleid}`}
                     quote={post.title}
                     hashtag="#research"
                     className="m-2"
@@ -94,7 +95,7 @@ export default function ArticlePage() {
                     <TelegramIcon size={36} round={true}/>
                 </TelegramShareButton>
                 <WhatsappShareButton
-                    url={`${base_url}/${postId.username}/${postId.articleid}`}
+                    url={`${ui_url}/${postId.username}/${postId.articleid}`}
                     quote={post.title}
                     hashtag="#research"
                     className="m-2"
