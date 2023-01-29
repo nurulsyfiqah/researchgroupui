@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom'
 import  axios from 'axios';
 import Navbar from '../../Components/Website/PublicNavbar'
 import Article from '../../Components/Website/Article/ViewArticle'
-import {base_url} from "../../Service/serviceapi"
-import { base_url as ui_url } from '../../Service/serviceui';
+import {base_url as api} from "../../Service/serviceapi"
+import  base_url  from '../../Service/serviceui';
 import { useLocation } from 'react-router-dom';
 import {
     EmailIcon,
@@ -32,7 +32,7 @@ export default function ArticlePage() {
     })
 
     const getArticleFromServer =()=>{
-        axios.get(`${base_url}/${postId.username}/${postId.articleid}`).then((
+        axios.get(`${api}/${postId.username}/${postId.articleid}`).then((
             response)=>{
             const data = response.data;
             setPost(data)
