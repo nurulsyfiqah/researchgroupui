@@ -37,24 +37,30 @@ export default function Research() {
                     }
                 });
                 if (response.status === 200) {
-                    ReactSession.set("scrape", true);
                     const data = response.data; 
-                    ReactSession.set("scrapeData", data);
-                    toast.success("You have a publication that need to be verified.", {autoClose: 9000,hideProgressBar: true})
+                    if (data.length !== 0) {
+                        ReactSession.set("scrape", true);
+                        ReactSession.set("scrapeData", data);   
+                        setgsLink(true)
+                        toast.success("You have a publication that need to be verified.", {autoClose: 3000,hideProgressBar: true})
+                    } 
+                    
                 }
             } catch (error) {
-                console.log("Something went wrong on Server")
+                console.log("Something went wrong on Server search")
             }
         }
     }
 
     useEffect(() => {
-        const scrape = ReactSession.get("scrape");
+        const scrape = ReactSession.get("scrapeData");
         if (!scrape || scrape === undefined) {
             scrapePublication();
+        } else {
+            setPublications(scrape)
         }
-        setgsLink(true)
-    }, []);
+        
+    }, [gsLink]);
 
     function removePublication(id){
         //get the index of the object in the array.
@@ -63,7 +69,10 @@ export default function Research() {
         });        
         // remove the element at that index.
         publications.splice(indexOfObject, 1);
+        ReactSession.set("scrapeData",publications)
         setPublications([...publications])
+        // const scrapeDate = ReactSession.get("scrapeDate");
+        
     }
 
     useEffect(() => {getPublicationFromServer()}, [change]);
@@ -92,26 +101,35 @@ export default function Research() {
         <div className="my-4 py-2">
             <h2 className="page_title">Research</h2>
             <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                
                 <li className="nav-item" role="presentation">
                     <button className={`nav-link ${(activeTab === "research_tab" ? "active" : "")}`} id="pills-home-tab" data-bs-toggle="pill"
                             data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
-                            aria-selected="true" value="research_tab" onClick={()=>changeActiveTab}>Research
+                            aria-selected="true" value="research_tab" onClick={changeActiveTab}>Research
                     </button>
                 </li>
                 <li className="nav-item" role="presentation">
                     <button className={`nav-link ${(activeTab === "add_tab" ? "active" : "")}`} id="pills-profile-tab" data-bs-toggle="pill"
                             data-bs-target="#pills-add-research" type="button" role="tab" aria-controls="pills-profile"
-                            aria-selected="false" value="add_tab" onClick={()=>changeActiveTab}>Add
+                            aria-selected="false" value="add_tab" onClick={changeActiveTab}>Add
                     </button>
                 </li>
                 <li className="nav-item" role="presentation">
                     <button className={`nav-link ${(activeTab === "verify_tab" ? "active" : "")}`} id="pills-contact-tab" data-bs-toggle="pill"
                             data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact"
-                            aria-selected="false" value="verify_tab" onClick={()=>changeActiveTab}>Verify
+                            aria-selected="false" value="verify_tab" onClick={changeActiveTab}>Verify
                     </button>
                 </li>
             </ul>
+            {/* {
+                (publications.length > 0)  ? 
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    You have publication that need to be verified, please click on the verify tab to verify your publication.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                : 
+                ""
+            } */}
+            
 
             <div className="tab-content" id="pills-tabContent">
 

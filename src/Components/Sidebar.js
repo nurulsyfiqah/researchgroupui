@@ -6,6 +6,7 @@ import { FaBars as MenuIcon, FaUserCircle as ProfileIcon, FaUsers as GroupIcon, 
 import { GiSoapExperiment as ResearchIcon } from "react-icons/gi";
 import { FiLogOut as LogoutIcon } from "react-icons/fi";
 import { MdOutlineArticle as BlogIcon } from "react-icons/md";
+import { ReactSession } from "react-client-session";
 
 export default function Sidebar({content}) {
 
@@ -22,7 +23,13 @@ export default function Sidebar({content}) {
     }
 
     const logout = () => {
-        sessionStorage.removeItem("__react_session_");
+        console.log("logout")
+        ReactSession.remove("account");
+        ReactSession.remove("scrape");
+        ReactSession.remove("scrapeData");
+        ReactSession.remove("user");
+        // sessionStorage.removeItem("__react_session__");
+        // remove();
     }
 
     function useWindowDimensions() {

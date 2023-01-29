@@ -70,6 +70,7 @@ export default function AddAnnouncementModal({group, hide, edit}) {
 
     const publishAnn=()=>{
         if (flag) {
+            input.icon = group.icon;
             input.groupId = group.id;
             input.content = editorRef.current ? editorRef.current.getContent() : "";
             input.status = 1;
@@ -95,6 +96,7 @@ export default function AddAnnouncementModal({group, hide, edit}) {
     const submitHandler=(e)=>{
         if (flag) {
             e.preventDefault();
+            input.icon = group.icon;
             input.groupId = group.id;
             input.content = editorRef.current ? editorRef.current.getContent() : "";
             axios({

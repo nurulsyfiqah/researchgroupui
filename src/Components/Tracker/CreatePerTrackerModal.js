@@ -101,10 +101,15 @@ export default function CreatePerTrackerModal({data, hide, change, action}) {
                     hide();
                 })
             } else if (action === "edit") {
+                const formdata = new FormData();
+                formdata.append('tracker', JSON.stringify(input));
                 axios({
                     method: 'PUT',
                     url: `${base_url}/tracker/update`,
-                    data: input,
+                    data: formdata,
+                    header: {
+                        'Content-Type': 'multipart/form-data'
+                    }
                 }).then(function(response) {
                     toast.success("Successfully update the task", {autoClose: 1500,hideProgressBar: true})
                     hide();

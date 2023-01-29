@@ -182,7 +182,7 @@ export default function Home() {
                         </div>
                         <div className="row my-1">
                             <div className="col-md-4 fw-bold">Google Scholar</div>
-                            <div className="col-md-8">{ isObjectExist(user,"googleScholarLink") ? user.googleScholarLink : "Please update your Google Scholar Profile Link"}</div>
+                            <div className="col-md-8">{ isObjectExist(user,"googleScholarLink") ? user.googleScholarLink : <div className="text-danger">Please update your Google Scholar Profile Link</div>}</div>
                         </div>
 
                     </div>

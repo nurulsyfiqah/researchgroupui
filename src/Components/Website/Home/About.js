@@ -96,7 +96,7 @@ export default function About({account, user}) {
                                             }
 
                                             { 
-                                                isObjectExist(item, "filePath") ? 
+                                                isObjectExist(item, "file") ? 
                                                 <div className="my-1 col-md-6">
                                                     <div className="fw-bold">File</div>
                                                     <div className="d-grid gap-2 d-md-flex justify-content-md-start">

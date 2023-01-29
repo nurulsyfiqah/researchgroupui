@@ -73,7 +73,7 @@ function BlogComponent() {
     return (
         <div className="my-4 py-2">
              <ToastContainer />
-             <h2 className="page_title">Research</h2>
+             <h2 className="page_title">Blog</h2>
             <button className="btn btn-sm btn_dark mt-3 mb-2" onClick={ createPost } > New Post</button>
 
             {

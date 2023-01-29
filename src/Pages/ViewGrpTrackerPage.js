@@ -52,6 +52,7 @@ function getTaskStatus(duedate) {
 function ViewGrpTrackerComponent() {
     const user = ReactSession.get("user");
     const account = ReactSession.get("account");
+    const ref = useRef();
     const { trackerId } = useParams();
     const [tracker, setTracker] = useState({});
     const [submission, setSubmission] = useState({
@@ -62,7 +63,6 @@ function ViewGrpTrackerComponent() {
         username: user.lastName + " " + user.firstName,
         email: account.email,
     });
-    console.log(submission)
     const [submissionFile, setSubmissionFile] = useState([]);
     const editorRef = useRef(null);
     
@@ -97,17 +97,10 @@ function ViewGrpTrackerComponent() {
             if (submittedTasks !== null && submittedTasks !== undefined) {
                 setSubmission(submittedTasks)
             }
-            // if (isObjectExist(submittedTasks, "text")) {
-            //     setSubmission(submittedTasks)
-            // } else {
-            //     setSubmission(submittedTasks)
-            // }
-            // setSubmission(getUserSubmittedTasks(response.data))
             response.data.submittedTasks !== null ? setNum(response.data.submittedTasks.length) : setNum(0)
             getGroupByTrackerId(response.data.groupId)
             setGroupSubmissionDetails(response.data.submittedTasks)
             setFiles(submission != null ? submission.file : [])
-            console.log(submission)
         }, (error)=>{
             console.log(error)
         });
@@ -338,6 +331,7 @@ function ViewGrpTrackerComponent() {
                 setCancelBtn(false)
                 setEditBtn(true)
                 setSubmitBtn(false)
+                ref.current.value = ""
                 toast.success("Submission Successful", {autoClose:1500, hideProgressBar:true})
                 setCounter(counter+1)
             } else {
@@ -469,21 +463,7 @@ function ViewGrpTrackerComponent() {
                     <div><b>Due: </b>{formatDate(tracker.endDate)}</div>
                     <h4><span className={`badge ${taskStatusBadgeColour(getTaskStatus(tracker.endDate))}`}>{getTaskStatus(tracker.endDate)}</span></h4>
                     <hr/>
-                    
-                    {/* {tracker.details}
-                    {
-                        tracker.filePath ? <div className="mt-3 my-1 fw-bold">File(s)</div> : ''
-                    }
-                    {
-                        tracker.filePath ? 
-                        tracker.filePath?.map((file, index) => {
-                            return (
-                                <a href={file} target="_blank" rel="noreferrer" download={file} key={index}>-- {file}</a>
-                            ) 
-                        })
-                        :
-                        "no file"
-                    } */}
+                    {tracker.details}
                     { 
                         isObjectExist(tracker, "file") ? 
                         <div className="my-1">
@@ -505,7 +485,7 @@ function ViewGrpTrackerComponent() {
                     <div className="submission_container">
                     {   tracker.submissionType === 'file' ?
                         <div className={`my-3 ${showFileContainer ? "" : "d-none"}`}>
-                            <input type="file" name="files" className="form-control my-2" onChange={handleFileChange} multiple/>
+                            <input type="file" name="files" className="form-control my-2" onChange={handleFileChange}  ref={ref} multiple/>
                         
                             {/* File list */}
                             { files.length > 0 ? files.map((file, index) => {

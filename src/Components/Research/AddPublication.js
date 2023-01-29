@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useRef} from 'react';
 import {BsXLg} from "react-icons/bs";
 import {base_url} from "../../Service/serviceapi";
 import { toast } from 'react-toastify';
@@ -11,7 +11,8 @@ import classNames from 'classnames';
 
 export default function AddPublication({change, active}) {
     const user = ReactSession.get("user");
-    
+    const ref = useRef();
+   
     function daysListSelect() {
         const days = Array.from({length: 31}, (_, i) => i + 1)
     
@@ -55,6 +56,20 @@ export default function AddPublication({change, active}) {
         )
     }
 
+    const resetInput = () => {
+        setAuthorList([user.firstName + ' ' + user.lastName]);
+        setInput({userId: user.id})
+        // setInput(prevState => ({ ...prevState, ...input }));
+        setPublicationId('')
+        setFile(null);
+        setAddFiles([]);
+        setAdditionalLinks([]);
+        setAdditionalFields([]);
+        setFlag(false);
+        ref.current.value = "";     
+        formRef.current.reset();
+    }
+
     //* show the additional details section and hide the add publication details
     
     const [researchDetails, setResearchDetails] = useState(false);
@@ -65,41 +80,10 @@ export default function AddPublication({change, active}) {
     const [author, setAuthor] = useState([]);
     const [publicationId, setPublicationId] = useState('');
     const [additionalFields, setAdditionalFields] = useState([])
-
     const [input, setInput] = useState({
         userId: user.id,
-        // type: '',
-        // title: '',
-        // authors: '',
-        // abstract: '',
-        // day: '',
-        // month: '',
-        // year: '',
-        // journalName: '',
-        // value: '',
-        // issue: '',
-        // bookTitle: '',
-        // page: '',
-        // conferenceTitle: '',
-        // doi: '',
-        // location: '',
-        // description: '',
-        // relPublication: '',
-        // refNo: '',
-        // conferenceName: '',
-        // prStatus: '',
-        // reportNumber: '',
-        // instution: '',
-        // degree: '',
-        // supervisor: '',
-        // publisher: '',
-        // isbn: '',
-        // repoLink: '',
-        // language: '',
-        // filepath: null,
-        // additionalDetails: [],
-        // addFilePath: []
     });
+    const formRef = useRef(null);
 
     const [file, setFile] = useState(null);
     const [addFiles, setAddFiles] = useState([]);
@@ -122,8 +106,6 @@ export default function AddPublication({change, active}) {
             } else {
                 setAuthorList([...authorList, author])
             }
-            console.log(authorList)
-
         } else {
             alert('Please enter an author name')
         }
@@ -263,8 +245,11 @@ export default function AddPublication({change, active}) {
     }
 
     const skip = () => {
+        setResearchDetails(false);
+        setAddDetailsSection(true);
+        resetInput();
         active();
-        window.location.reload();
+        // window.location.reload();
     }
 
     const handleFile = e => {
@@ -307,15 +292,12 @@ export default function AddPublication({change, active}) {
         });
     }
 
- 
     const handleUpload = e => {
         if ( isObjectExist(input,"type") && isObjectExist(input,"title") && isObjectExist(input,"year")) {
             setFlag(false)
         } else {
             setFlag(true)
         }
-        console.log(input)
-        console.log(input.type + " " + flag)
 
         if (flag) {
             e.preventDefault();
@@ -373,7 +355,9 @@ export default function AddPublication({change, active}) {
             formData.append('additionallinks', JSON.stringify(additionalLinks));
         }
         
+        
         formData.append('publicationid', publicationId);
+        console.log([...formData])
         axios({
             method: 'PUT',
             url: `${base_url}/publication/add/detail/manual`,
@@ -384,14 +368,11 @@ export default function AddPublication({change, active}) {
             }
         }).then(function (response) {
             toast.success("Successfully add the publication", {autoClose: 1500,hideProgressBar: true})
-            setAddFiles([]);
-            setAdditionalFields([]);
-            setAdditionalLinks([]);
-            setInput([]);
             setResearchDetails(false);
             setAddDetailsSection(true);
+            resetInput();
             active();
-            window.location.reload();
+            // window.location.reload();
         },(error) => {
             toast.error("Error creating the task", {autoClose: 1500,hideProgressBar: true})
      
@@ -401,7 +382,7 @@ export default function AddPublication({change, active}) {
     const options = publicationTypeData();
     return (
         <div>
-           
+           <form ref={formRef}>
             <div className={classNames('add-step-one-publication', { 'd-none': researchDetails })}>
                 <label className="my-1 fw-bold">Type of publication*</label>
                 {/* <Select name="type" options={publicationList} onChange={handleSelect} isSearchable={true}/> */}
@@ -416,7 +397,7 @@ export default function AddPublication({change, active}) {
                 <input className="form-control my-1" id="subtitle" name="subtitle" onChange={getValue}/>
 
                 <label className="my-1 fw-bold">File</label>
-                <input className="form-control my-1" type="file" id="file" name="file" onChange={handleFile}/>
+                <input className="form-control my-1" type="file" id="file" name="file" ref={ref} onChange={handleFile}/>
 
                 <label className="my-1 fw-bold">Description</label>
                 <textarea className="form-control" rows="2" name="description" id="description" onChange={getValue}></textarea>
@@ -443,13 +424,12 @@ export default function AddPublication({change, active}) {
 
 
                 <label className="my-1 fw-bold">Date</label>
-                <div className="input-group my-1">
+                <div className="input-group">
                     { daysListSelect() }
                     { monthsListSelect() }
                     { yearsListSelect() }
-                    <div className='mb-1 '>{error.year && <span className='text-danger'>{error.year}</span>}</div>
-                            
                 </div>
+                <div className='mb-1'>{error.year && <span className='text-danger'>{error.year}</span>}</div>
                 
                 <div className="details journal book d-none">
                     <label className="my-1 fw-bold">DOI</label>
@@ -528,7 +508,7 @@ export default function AddPublication({change, active}) {
                     <button className="btn btn_dark_normal btn-sm" type="button" onClick={handleUpload} >Submit</button>
                 </div>
             </div>
-            
+            </form>            
                     
             <div className={classNames('add-step-two-details',{ 'd-none': addDetailsSection })}>
                 <h5 className="my-1">{`Add ${input.type}'s Details`}</h5>

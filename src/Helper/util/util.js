@@ -1,5 +1,7 @@
 import React from 'react';
 import FileViewer from 'react-file-viewer-extended';
+import urlRegex from 'url-regex-safe';
+
 
 export function replaceNullToEmptyArray(value) {
     try {
@@ -283,4 +285,10 @@ export function isObjectExistAndNotEqual(obj, key, value) {
     } else {
         return false;
     }
+}
+
+export function isGoogleScholarLinkValid(link) {
+    const pattern = new RegExp(`^https://scholar.google.(com|ca)/citations\\?user=\\w+$`, 'i');
+
+    return pattern.test(link);
 }

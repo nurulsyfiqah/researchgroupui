@@ -4,7 +4,7 @@ import {toast} from "react-toastify";
 import {ReactSession} from "react-client-session";
 import {base_url} from "../../Service/serviceapi"
 import {BsXLg} from "react-icons/bs";
-import { isObjectExist } from "../../Helper/util/util";
+import { isObjectExist, isGoogleScholarLinkValid } from "../../Helper/util/util";
 import Dropzone from 'react-dropzone-uploader'
 import moment from "moment";
 import axios from 'axios';
@@ -116,8 +116,18 @@ export function EditSocialLinkModal({data, hide, change}) {
     }
 
     const socialListUpdate = () => {
-        setSocialList([...socialList, social])
-        setSocial("")
+        if (social.length > 0) {
+            if (social.split(',').length > 1) {
+                let socialArray = social.split(',');
+                socialArray = socialArray.filter(element => element.trim() !== '')
+                setSocialList(socialList.concat(socialArray))
+            } else {
+                setSocialList([...socialList, social])
+            }
+            setSocial("")
+        } else {
+            alert('Please enter a valid social link')
+        }
     };
 
     const removeEmail = (index) => {
@@ -204,8 +214,20 @@ export function EditDomainModal({data, hide, change}) {
     }
 
     const domainListUpdate = () => {
-        setDomainList([...domainList, domain])
-        setDomain("")
+        if (domain.length > 0) {
+            if (domain.split(',').length > 1) {
+                let domainArray = domain.split(',');
+                domainArray = domainArray.filter(element => element.trim() !== '')
+                console.log(domainArray)
+                setDomainList(domainList.concat(domainArray))
+                // setAuthorList(newArr);
+            } else {
+                setDomainList([...domainList, domain])
+            }
+            setDomain("")
+        } else {
+            alert('Please enter an valid domain')
+        }
     };
 
     const removeDomain = (index) => {
@@ -441,7 +463,7 @@ export function EditInfoModal({data, account, hide, change}) {
                         stateObj[name] = "Please enter google scholar link";
                         setFlag(false)
                     } else {
-                        if (!validateLink(value)) {
+                        if (!isGoogleScholarLinkValid(value)) {
                             stateObj[name] = "Please enter valid google scholar link";
                             setFlag(false)
                         } else {

@@ -22,6 +22,7 @@ export default function PublicationList({publication}) {
                     </div>
                     <div className="row">
                     {
+                        (isObjectExist(publication, "volume")||isObjectExist(publication, "issue")||isObjectExist(publication, "page")|| isObjectExist(publication, "publisher")||isObjectExist(publication, "doi")  ) ?
                         <div className="my-1 col-md-6">
                             <ul>
                                 { isObjectExist(publication, "volume") ? <li>Volume: {publication.volume}</li> : ""}
@@ -35,6 +36,7 @@ export default function PublicationList({publication}) {
                                 { isObjectExist(publication, "doi") ? <li>DOI: {publication.doi}</li> : ""}
                             </ul>
                         </div>
+                        :""
                     }
                     {
                         isObjectExist(publication, "additionalDetails") ? 

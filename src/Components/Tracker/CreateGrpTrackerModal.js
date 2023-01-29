@@ -6,6 +6,7 @@ import {base_url} from "../../Service/serviceapi";
 import axios from "axios";
 import moment from 'moment';
 import { FourGMobiledataOutlined } from "@mui/icons-material";
+import { isObjectExist } from "../../Helper/util/util";
 
 export default function CreateGrpTrackerModal({data, hide, change, action, group}) {
     const account = ReactSession.get("account");
@@ -231,7 +232,7 @@ export default function CreateGrpTrackerModal({data, hide, change, action, group
             </div>
             <div className="my-2 input-group-sm">
                 <label className="fw-bold">Type of Submission*</label>
-                <select className="form-select" name="submissionType" onChange={getValue} defaultValue="text">
+                <select className="form-select" name="submissionType" onChange={getValue} defaultValue={isObjectExist(data, "submissionType") ? data.submissionType : ""}>
                     <option value="text">Text</option>
                     <option value="file">Files (i.e.: .pdf, .jpeg, .png)</option>
                 </select>

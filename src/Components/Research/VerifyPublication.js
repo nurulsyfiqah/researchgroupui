@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import {ReactSession} from "react-client-session";
 import { isObjectExist } from '../../Helper/util/util';
 
-export default function VerifyPublication({ publication, change,removepub}) {
+export default function VerifyPublication({ publication, change, removepub}) {
 
     const articleLink = isObjectExist(publication, "link") ? publication.link : "";
     const user = ReactSession.get("user");
@@ -27,8 +27,9 @@ export default function VerifyPublication({ publication, change,removepub}) {
             })
     }
 
-
     const verifyPublication = () => {
+        const verifyPromise = toast.loading("Getting the data...")
+
         try {
             const encodedArticleLink = encodeURIComponent(articleLink);
             axios({
@@ -46,11 +47,14 @@ export default function VerifyPublication({ publication, change,removepub}) {
                         console.log(response)
                         removepub()
                         change()
-                        toast.success("Verified", {autoClose: 1500,hideProgressBar: true})
+                        toast.update(verifyPromise, { render: "Verified", type: "success", isLoading: false, autoClose: 1500, hideProgressBar: true });
+
+                        // toast.success("Verified", {autoClose: 1500,hideProgressBar: true})
                     }
                     
                 } else {
-                    toast.error("Unable to verify",{autoClose: 1500,hideProgressBar: true})
+                    toast.update(verifyPromise, { render: "Unable to verify", type: "error", isLoading: false, autoClose: 1500, hideProgressBar: true });
+                    // toast.error("Unable to verify",{autoClose: 1500,hideProgressBar: true})
                     change()
                 }
                
@@ -88,7 +92,6 @@ export default function VerifyPublication({ publication, change,removepub}) {
             e.target.value,
             '_blank' // <- This is what makes it open in a new window.
         );
-        // window.location.href = e.target.value;
     }
 
     return(
