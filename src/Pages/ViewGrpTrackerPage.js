@@ -101,6 +101,7 @@ function ViewGrpTrackerComponent() {
             getGroupByTrackerId(response.data.groupId)
             setGroupSubmissionDetails(response.data.submittedTasks)
             setFiles(submission != null ? submission.file : [])
+            console.log(submission)
         }, (error)=>{
             console.log(error)
         });
@@ -329,8 +330,15 @@ function ViewGrpTrackerComponent() {
                     setShowSubmittedFile(true)
                 }
                 setCancelBtn(false)
-                setEditBtn(true)
                 setSubmitBtn(false)
+                if (isObjectExist(submission, "file")) {
+                    if(submission.file.length > 0) {
+                        setEditBtn(true)
+                    } else {
+                        setEditBtn(false)
+                    }
+                }
+                
                 ref.current.value = ""
                 toast.success("Submission Successful", {autoClose:1500, hideProgressBar:true})
                 setCounter(counter+1)
@@ -432,11 +440,13 @@ function ViewGrpTrackerComponent() {
             
     
             { /* Group Creator Section - able to see the list of submission */
+            group.createdById && user.id ?
                 group.createdById === user.id ? 
                 <div className="researcher_section">
                 <div className="border m-auto p-2">
                     <div><b>Start : </b> {formatDate(tracker.startDate)}</div>
                     <div><b>Due: </b>{formatDate(tracker.endDate)}</div>
+                    <h4><span className={`badge ${taskStatusBadgeColour(getTaskStatus(tracker.endDate))}`}>{getTaskStatus(tracker.endDate)}</span></h4>
                     <div><b>Submission Progress: </b> {num}/{deno} Members completed
                         <div className="progress">
                             <div className="progress-bar" role="progressbar"  style={{width: `${calculatePercentage(num, deno)}%`}}  aria-valuemin="0" aria-valuemax="100"></div>
@@ -551,14 +561,17 @@ function ViewGrpTrackerComponent() {
                      </div>
                    {/* End of Submitted Task Section */}
                    <div className={`d-flex justify-content-md-end my-2`}  >
+                        <button type="button" className={`btn btn-sm btn_dark ${ editBtn ? "" : "d-none" }`} onClick={editSubmitted}>Edit</button>
                         <button type="button" className={`btn btn-sm btn-secondary me-md-2 ${ cancelBtn ? "" : "d-none" }`} onClick={cancelEdittingSubmittedText}>Cancel</button>
                         <button type="button" className={`btn btn-sm btn_dark ${ submitBtn ? "" : "d-none" }`} onClick={submitHandler}>Submit</button>
                     </div>
-                    <div className={`d-flex justify-content-md-end my-2 ${ editBtn ? "" : "d-none" }`}>
-                        <button type="button" className="btn btn-sm btn_dark" onClick={editSubmitted}>Edit</button>
-                    </div>
+                    {/* <div className={`d-flex justify-content-md-end my-2 ${ editBtn ? "" : "d-none" }`}>
+                        <button type="button" className={`btn btn-sm btn_dark ${ editBtn ? "" : "d-none" }`} onClick={editSubmitted}>Edit</button>
+                    </div> */}
                 </div>
             </div>
+            :
+            ""
             }
             
         </div>
