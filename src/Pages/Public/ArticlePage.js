@@ -40,6 +40,7 @@ export default function ArticlePage() {
             }
         )
     }
+    console.log(base_url + '/' + postId.username + '/' +postId.articleid)
 
     return (
         <div>
