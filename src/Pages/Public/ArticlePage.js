@@ -29,6 +29,7 @@ export default function ArticlePage() {
 
     useEffect(()=>{
         getArticleFromServer()
+        document.title = post.title;
     })
 
     const getArticleFromServer =()=>{
@@ -41,7 +42,6 @@ export default function ArticlePage() {
             }
         )
     }
-    console.log(base_url + '/' + post.username + '/' +post.articleid)
 
     return (
         <div>
