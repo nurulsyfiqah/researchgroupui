@@ -337,7 +337,7 @@ export default function EditPublicationModal({publication, hide, change}) {
     }
 
     function submit() {
-        if (flag) {
+        if (input.type !== "" || input.title !== "" || input.year !== "") {
             input.authors = authorList.toString();
             input.file = uploadedFile;
             input.addAddFilePath = uploadedAddFile;

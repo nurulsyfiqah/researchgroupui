@@ -78,7 +78,7 @@ export default function About({account, user}) {
                                     <div className="col-md-12">
                                         <div className="card-body h-100">
                                             <h5 className="card-title">{item.title}</h5>
-                                            <p className="card-text text-clamping">{item.pubAbstract}</p>
+                                            <p className="card-text text-clamping">{item.description}</p>
 
                                             <div className="row">
                                             {
